@@ -1,0 +1,116 @@
+{
+  "producto": "Entrepares",
+  "fecha": "2026-10-30",
+  "tarea": "SP01-T01",
+  "arquitectura": "2026-10-29 arquitectura v1",
+  "estilo": "Monolito modular",
+  "series_de_referencia_sin_parches_resueltos": {
+    "python": "3.13",
+    "django": "5.2 LTS",
+    "drf": "3.16",
+    "vue": "3",
+    "postgresql": "17",
+    "parches": "Por resolver y ensayar en implementación"
+  },
+  "raiz_de_fuentes": "Carpeta de tesis que contiene Entrepares y DSRM; las fuentes no se incluyen en este repositorio inicial.",
+  "fuentes": [
+    {
+      "archivo": "DSRM/03 - Diseno y desarrollo/07 - Arquitectura de la solucion/Registro de arquitectura.json",
+      "sha256": "c45eb8f21ad084f72996287688c3c29b2a375a77e553c7f69017dd3cfa125f4b",
+      "version_declarada": "2026-10-29 arquitectura v1"
+    },
+    {
+      "archivo": "DSRM/03 - Diseno y desarrollo/08 - Modelo logico de datos/Diccionario logico de datos.json",
+      "sha256": "94ce2f274e5b2ebe38b95941a839e102800833cb357d5e2b08d1949ebef59132",
+      "version_declarada": "2026-10-29 logico v1"
+    },
+    {
+      "archivo": "DSRM/03 - Diseno y desarrollo/09 - Contratos de API/Registro de contratos API.json",
+      "sha256": "aefa4713471fda3aeab7befd0149b79f6a18f96b3ceda78054abded32a948b05",
+      "version_declarada": "2026-10-29 API diseño 1"
+    },
+    {
+      "archivo": "DSRM/03 - Diseno y desarrollo/09 - Contratos de API/openapi.json",
+      "sha256": "aab95f98cbdc4451e003280021bf23938790fc20d7793ce0a3fa43670a10494d",
+      "version_declarada": null
+    },
+    {
+      "archivo": "DSRM/03 - Diseno y desarrollo/04 - Matriz de permisos/Matriz de permisos para revision.json",
+      "sha256": "66edb90ce00fc19c815775afb2e93d6c2766a62ba2ced3f77196099ec907411e",
+      "version_declarada": "2026-10-29"
+    },
+    {
+      "archivo": "DSRM/03 - Diseno y desarrollo/06 - Validacion de requisitos/Registro de validacion de requisitos.json",
+      "sha256": "6fd181ba6d623883c1e7ae59a29d38bdd9f9d903c26abc4a307dc33bef441467",
+      "version_declarada": "2026-10-29 v1"
+    },
+    {
+      "archivo": "DSRM/03 - Diseno y desarrollo/05 - Planificacion de iteraciones/Desglose por sprints/Plan de sprints y tareas.json",
+      "sha256": "3b3252ba77bcf64621b290cb1f4387b029e2b28b6f1959c38ae627376b562d9a",
+      "version_declarada": "2026-10-29 desglose v1"
+    }
+  ],
+  "modulos": [
+    {
+      "id": "M01",
+      "paquete": "identity",
+      "ubicacion": "backend/modules/identity",
+      "responsabilidad": "Cuenta, credenciales, sesiones y comprobación de control de correo; recuperación de identidad por el mecanismo que se concrete."
+    },
+    {
+      "id": "M02",
+      "paquete": "profiles",
+      "ubicacion": "backend/modules/profiles",
+      "responsabilidad": "Perfil personal, formación declarada, contactos y visibilidad, experiencia y méritos declarados; reglas de completitud."
+    },
+    {
+      "id": "M03",
+      "paquete": "academics",
+      "ubicacion": "backend/modules/academics",
+      "responsabilidad": "Catálogos de carreras e instituciones, ámbitos académicos, dominios reconocidos, verificación personal y distinción de investigador."
+    },
+    {
+      "id": "M04",
+      "paquete": "organizations",
+      "ubicacion": "backend/modules/organizations",
+      "responsabilidad": "Perfil y solicitud organizacional, revisión y estado de verificación de la entidad, representación vigente y su revocación."
+    },
+    {
+      "id": "M05",
+      "paquete": "opportunities",
+      "ubicacion": "backend/modules/opportunities",
+      "responsabilidad": "Proyectos que buscan colaboración, titularidad, necesidades, financiación declarada, contacto público y vigencia."
+    },
+    {
+      "id": "M06",
+      "paquete": "publications",
+      "ubicacion": "backend/modules/publications",
+      "responsabilidad": "Novedades, eventos y destacados; autor material y titular personal u organizacional del contenido."
+    },
+    {
+      "id": "M07",
+      "paquete": "moderation",
+      "ubicacion": "backend/modules/moderation",
+      "responsabilidad": "Reporte, decisión, medida y solicitud o decisión de revisión; alcance temporal y por acción del bloqueo."
+    },
+    {
+      "id": "M08",
+      "paquete": "access",
+      "ubicacion": "backend/modules/access",
+      "responsabilidad": "Concesiones de capacidades con ámbito y vigencia. Reglas que evalúan actor, contexto, acción, recurso y restricciones actuales."
+    },
+    {
+      "id": "M09",
+      "paquete": "notifications",
+      "ubicacion": "backend/modules/notifications",
+      "responsabilidad": "Avisos programados, registros persistentes de salida, intentos y resultado del envío por un adaptador de canal."
+    },
+    {
+      "id": "M10",
+      "paquete": "audit",
+      "ubicacion": "backend/modules/audit",
+      "responsabilidad": "Historial transversal de decisiones con actor, fecha, contexto, acción, recurso, motivo y correlación; acceso restringido."
+    }
+  ],
+  "estado": "Estructura del repositorio; sin aplicación configurada ni ensayos técnicos del producto."
+}

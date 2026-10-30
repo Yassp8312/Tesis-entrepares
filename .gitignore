@@ -1,0 +1,60 @@
+# Configuración privada y credenciales
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.pgpass
+.pg_service.conf
+
+# Datos locales, participantes, archivos cargados y copias
+/data/
+/private/
+/backups/
+/media/
+/uploads/
+/tmp/
+*.sqlite
+*.sqlite3
+*.sqlite3-journal
+*.db
+*.db-journal
+*.dump
+*.backup
+*.har
+*.log
+
+# Python y herramientas de análisis
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+
+# Dependencias y compilación del cliente
+node_modules/
+dist/
+coverage/
+.vite/
+.cache/
+*.tsbuildinfo
+
+# Editor, sistema y archivos temporales
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+~$*
+*.swp
+*.swo
+*.tmp
