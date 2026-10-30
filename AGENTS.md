@@ -4,6 +4,8 @@
 
 Leer `docs/arquitectura.md`, `docs/base-documental.json` y `docs/seguimiento.md` antes de modificar la estructura. La documentación de tesis indicada en el registro es la fuente de requisitos, permisos, datos y contratos. Si la copia local de una fuente no está disponible, conservar el alcance documentado y localizarla antes de cambiar sus decisiones.
 
+La decisión técnica `docs/decisiones/DA03-E01-dependencias.md` actualiza DRF 3.16 a 3.18.3 por correcciones de seguridad. Consultar esa concreción antes de interpretar la referencia histórica. Conservar el formato de errores de OpenAPI al implementar la adaptación HTTP.
+
 ## Arquitectura
 
 - Mantener un monolito modular con Vue y TypeScript, Django y DRF, y PostgreSQL. Los diez módulos de negocio están en `backend/modules` con los nombres establecidos.

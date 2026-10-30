@@ -10,4 +10,10 @@ Los estados de los documentos de planificación conservan su versión de diseño
 
 ## Siguiente trabajo
 
-SP01-T02 resolverá dependencias y fijará versiones reproducibles. Después se prepararán el usuario propio, la configuración de Django, el cliente Vue y las comprobaciones del arranque según las dependencias del plan. Todavía no se han instalado dependencias, aplicado migraciones, creado una base o desplegado una aplicación.
+SP01-T02 se completó con Python 3.13.17, Django 5.2.18, DRF 3.18.3, Node 24.18.0 y las dependencias Vue fijadas. `uv.lock` y `frontend/package-lock.json` permiten reproducir las versiones. Se preparó el script Windows `scripts/preparar-entorno.ps1`, con descarga de uv verificada por SHA256, Python local sin registro global, instalación bloqueada y comprobaciones técnicas.
+
+Se ejecutó el script completo y se repitió la instalación en una carpeta independiente con un entorno virtual y un `node_modules` nuevos. Coincidieron los 16 paquetes Python instalados y las huellas de ambos bloqueos; funcionaron los imports, los ajustes sintéticos de Django, el adaptador PostgreSQL, el análisis Ruff, los tipos Vue/TypeScript, una compilación Vite y una ruta en memoria. No se abrió una conexión a la base ni se aplicaron migraciones.
+
+La referencia DRF 3.16 se ajustó mediante [DA03 E01](decisiones/DA03-E01-dependencias.md): la auditoría inicial encontró siete registros equivalentes a cinco avisos; el corte final con 3.18.3 no presentó avisos en uv ni npm. Estas consultas no certifican la seguridad del producto. La evidencia compacta está en `evidencias/dependencias.json`; los originales de QA permanecen fuera de los archivos versionados del producto.
+
+El siguiente trabajo es **SP01-T03**, crear la configuración y el modelo de usuario propio. Después SP01-T04 prepara PostgreSQL de desarrollo y prueba; SP01-T07 puede preparar Vue desde las dependencias ya resueltas. El parche del servidor PostgreSQL y su conexión aún no se han ensayado; los binarios existentes son 17.5 y su servicio se conserva. El sprint SP01 y WI06 siguen abiertos.

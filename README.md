@@ -6,9 +6,21 @@ El producto contempla una bolsa de perfiles con acceso autorizado, oportunidades
 
 ## Estado
 
-Repositorio local inicial de SP01. Incluye la estructura de directorios y las reglas de trabajo; la aplicación todavía no tiene arranque, dependencias instaladas ni migraciones. El siguiente trabajo es resolver y fijar las versiones compatibles de las herramientas en SP01-T02.
+Repositorio local de SP01 con estructura modular y dependencias fijadas e instaladas. Se han preparado SP01-T01 y SP01-T02. Los siguientes trabajos incorporarán el usuario propio y la configuración del servidor; la aplicación de producto todavía no tiene arranque ni migraciones.
 
 La investigación sigue DSRM y el desarrollo utiliza OpenUP adaptado. La base de diseño establece Vue 3 y TypeScript para la interfaz, Django y Django REST Framework para el servidor y PostgreSQL para los datos, organizados como un monolito modular.
+
+## Preparar el entorno
+
+Con Node 24.18.0 y npm 11.16.0 disponibles, desde PowerShell en la raíz del repositorio:
+
+```powershell
+.\scripts\preparar-entorno.ps1
+```
+
+El script prepara uv y Python dentro de `.tools`, sincroniza `.venv` y `frontend/node_modules` desde sus archivos de bloqueo y ejecuta las comprobaciones técnicas de dependencias. No requiere activar el entorno virtual. Consulta [Entorno de desarrollo](docs/entorno.md) para versiones, comandos de verificación y alcance de los ensayos.
+
+La referencia inicial DRF 3.16 se actualiza a 3.18.3 por correcciones de seguridad, según [DA03 E01](docs/decisiones/DA03-E01-dependencias.md).
 
 ## Estructura
 

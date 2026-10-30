@@ -1,0 +1,60 @@
+{
+  "fecha": "2026-10-30",
+  "tarea": "SP01-T02",
+  "sistema": "Windows x64",
+  "python": {
+    "python": "3.13.17",
+    "paquetes": {
+      "Django": "5.2.18",
+      "djangorestframework": "3.18.3",
+      "psycopg": "3.3.6",
+      "whitenoise": "6.12.0"
+    },
+    "adaptador_postgresql": "binary",
+    "libpq": 180004,
+    "comprobaciones_django": "Correctas con configuración sintética",
+    "conexion_base": "No realizada",
+    "migraciones": "No ejecutadas"
+  },
+  "paquetes_python_instalados": 16,
+  "instalacion_independiente": "Correcta; entorno virtual y node_modules nuevos, con caché de descargas reutilizada",
+  "versiones_python_coincidentes": true,
+  "bloqueos_sin_cambios": {
+    "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+    "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+  },
+  "frontend": "Comprobación de tipos, compilación Vite y Vue Router correctas en ambas instalaciones",
+  "arbol_npm": "Sin dependencias obligatorias ausentes",
+  "migraciones": "No ejecutadas",
+  "conexion_postgresql": "No realizada",
+  "auditoria_python_inicial": {
+    "resumen": {
+      "audited_packages": 17,
+      "vulnerabilities": 7,
+      "adverse_statuses": 0
+    },
+    "avisos_unicos": [
+      "CVE-2026-114136",
+      "CVE-2026-114137",
+      "CVE-2026-114138",
+      "CVE-2026-73228",
+      "CVE-2026-73229"
+    ]
+  },
+  "auditoria_python_final": {
+    "audited_packages": 17,
+    "vulnerabilities": 0,
+    "adverse_statuses": 0
+  },
+  "auditoria_npm_final": {
+    "total": 0,
+    "comando": "npm audit --json",
+    "resultado": "Sin avisos en el corte del 30 de octubre de 2026"
+  },
+  "bootstrap_windows": "Script completo ejecutado correctamente",
+  "analisis_python": "Ruff correcto",
+  "decision_tecnica": "DA03-E01: referencia DRF 3.16 actualizada a 3.18.3 por correcciones de seguridad",
+  "postgresql_detectado": "17.5; solo binarios detectados. Preparación y revisión del parche del proyecto pendientes de SP01-T04.",
+  "linux": "Bloqueo con marcador de Gunicorn conservado; ejecución Linux no realizada",
+  "limite": "Comprobaciones de dependencias y compilador con muestras sintéticas; no pruebas de la plataforma ni resultados del piloto."
+}

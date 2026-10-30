@@ -1,0 +1,36 @@
+[project]
+name = "entrepares"
+version = "0.1.0"
+description = "Plataforma para el descubrimiento de colaboradores y oportunidades académicas"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "Django==5.2.18",
+    "djangorestframework==3.18.3",
+    "psycopg[binary]==3.3.6",
+    "whitenoise==6.12.0",
+    "gunicorn==26.2.0; sys_platform != 'win32'",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+    "pytest-django==4.14.0",
+    "ruff==0.17.3",
+]
+
+[tool.uv]
+package = false
+required-version = "==0.13.6"
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+src = ["backend", "scripts"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

@@ -2,6 +2,8 @@
 
 Se adopta la arquitectura documental v1 del 29 de octubre de 2026 y el desglose SP00–SP19 del plan OpenUP. Las ubicaciones se crean en SP01-T01; las funciones, dependencias, datos y contratos se implementarán en sus tareas correspondientes.
 
+La resolución de dependencias de SP01-T02 ajusta la referencia DRF 3.16 a DRF 3.18.3 por avisos de seguridad corregidos. La decisión [DA03 E01](decisiones/DA03-E01-dependencias.md) registra la evidencia, compatibilidad e impacto en el tratamiento de errores. El registro documental original conserva su huella histórica.
+
 ## Capas
 
 `frontend/src` contiene la interfaz. `backend/api/v1` adapta HTTP; `backend/application` coordina casos, autorización y transacciones. Los propietarios de reglas y persistencia son los módulos de `backend/modules`. `backend/config` aloja los ajustes y puntos de arranque. `backend/core` reserva utilidades técnicas sin datos de negocio.

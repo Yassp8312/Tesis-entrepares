@@ -16,6 +16,7 @@
 /media/
 /uploads/
 /tmp/
+/.tools/
 *.sqlite
 *.sqlite3
 *.sqlite3-journal
