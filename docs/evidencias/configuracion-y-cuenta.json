@@ -1,0 +1,64 @@
+{
+  "fecha": "2026-11-02",
+  "tarea": "SP01-T03",
+  "resultado": "Preparado con comprobaciones sin base",
+  "pruebas": {
+    "comando": ".venv/Scripts/python.exe -m pytest -q",
+    "correctas": 35,
+    "fallidas": 0,
+    "duracion_segundos": 27.74,
+    "acceso_base": "No habilitado"
+  },
+  "analisis_estatico": {
+    "comando": ".venv/Scripts/ruff.exe check backend scripts",
+    "resultado": "Correcto"
+  },
+  "django_check": {
+    "comando": "scripts/django.ps1 check --fail-level WARNING",
+    "resultado": "Sin incidencias activas; un aviso silenciado",
+    "aviso_sustituido": "auth.W004",
+    "control_aplicacion": "identity.E001 exige modelo y unicidad funcional esperados"
+  },
+  "modelo": {
+    "nombre": "identity.Account",
+    "tabla": "identity_account",
+    "columnas_T01": 9,
+    "checks": [
+      "ck_t01_01",
+      "ck_t01_02"
+    ],
+    "indice_unico": "uq_t01_01 sobre lower(email)",
+    "permisos_tecnicos": "Dos tablas de enlace de PermissionsMixin; no equivalen a capacidades del producto"
+  },
+  "migracion": {
+    "nombre": "identity/0001_initial",
+    "generador": "Autodetector y escritor de migraciones Django con traducciones desactivadas",
+    "base_conectada": false,
+    "aplicada": false,
+    "grafo": "Sustitución de auth.User comprobada",
+    "diferencias_con_modelos": 0
+  },
+  "seguridad_comprobada": [
+    "Hash y validación de contraseñas mediante Django",
+    "Creación ordinaria sin privilegios técnicos",
+    "Autenticación sintética síncrona y asíncrona",
+    "Denegación por omisión incluso a superusuario técnico",
+    "Producción sin depuración y con cookies seguras",
+    "Rechazo de configuración de producción incompleta",
+    "Secretos locales excluidos de Git"
+  ],
+  "artefactos_sha256": {
+    "backend/modules/identity/models.py": "f4ec9440e8732073d7dd4c2559e96c81630ffe8cd3302a525e40f843f3405301",
+    "backend/modules/identity/migrations/0001_initial.py": "942b9b7bd319394b194fd166a0c74f3ef5a0f7dbd986235eddda1d5fcc4a14b2"
+  },
+  "diccionario_fuente_sha256": "94ce2f274e5b2ebe38b95941a839e102800833cb357d5e2b08d1949ebef59132",
+  "pendientes": [
+    "Preparar y conectar PostgreSQL en SP01-T04",
+    "Aplicar migraciones en una base vacía y probar restricciones reales",
+    "Probar guardado y duplicados de correo sobre PostgreSQL",
+    "CSRF anónimo y contratos HTTP en SP01-T06",
+    "Evaluación de endpoints del producto y del piloto"
+  ],
+  "decision_tecnica": "DA04-E01",
+  "limite": "Las pruebas de creación y autenticación usan persistencia o búsquedas sustituidas; no se acredita creación de cuentas en una base ni validación SQL ejecutada."
+}

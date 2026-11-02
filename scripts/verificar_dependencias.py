@@ -15,7 +15,9 @@ from django.conf import settings
 ROOT = Path(__file__).resolve().parents[1]
 expected_python = ROOT.joinpath(".python-version").read_text(encoding="utf-8").strip()
 if platform.python_version() != expected_python:
-    raise SystemExit(f"Se esperaba Python {expected_python}; se encontró {platform.python_version()}.")
+    raise SystemExit(
+        f"Se esperaba Python {expected_python}; se encontró {platform.python_version()}."
+    )
 
 manifest = tomllib.loads(ROOT.joinpath("pyproject.toml").read_text(encoding="utf-8"))
 versions = {}
@@ -50,12 +52,18 @@ if connection.vendor != "postgresql" or connection.connection is not None:
 if django.VERSION[:2] != (5, 2) or not rest_framework.VERSION.startswith("3.18."):
     raise SystemExit("Las series instaladas no corresponden a la arquitectura.")
 
-print(json.dumps({
-    "python": platform.python_version(),
-    "paquetes": versions,
-    "adaptador_postgresql": psycopg.pq.__impl__,
-    "libpq": psycopg.pq.version(),
-    "comprobaciones_django": "Correctas con configuración sintética",
-    "conexion_base": "No realizada",
-    "migraciones": "No ejecutadas",
-}, ensure_ascii=False, indent=2))
+print(
+    json.dumps(
+        {
+            "python": platform.python_version(),
+            "paquetes": versions,
+            "adaptador_postgresql": psycopg.pq.__impl__,
+            "libpq": psycopg.pq.version(),
+            "comprobaciones_django": "Correctas con configuración sintética",
+            "conexion_base": "No realizada",
+            "migraciones": "No ejecutadas",
+        },
+        ensure_ascii=False,
+        indent=2,
+    )
+)
