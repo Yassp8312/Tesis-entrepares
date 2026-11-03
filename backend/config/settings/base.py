@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "modules.identity.apps.IdentityConfig",
 ]
 MIDDLEWARE = [
+    "api.middleware.ApiBoundaryMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -73,6 +74,10 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": ["api.permissions.DenyUnconfiguredAccess"],
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    "DEFAULT_PARSER_CLASSES": ["api.parsers.StrictJSONParser"],
+    "EXCEPTION_HANDLER": "api.errors.exception_handler",
+    "LIST_SERIALIZER_ERRORS_AS_DICT": True,
+    "URL_FORMAT_OVERRIDE": None,
 }
 
 LANGUAGE_CODE = "es"
@@ -88,6 +93,7 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+CSRF_FAILURE_VIEW = "api.errors.csrf_failure"
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 STATIC_URL = "/static/"

@@ -1,0 +1,137 @@
+{
+  "fecha": "2026-11-03",
+  "tarea": "SP01-T06",
+  "resultado": "Entrada JSON y controles de transporte comprobados",
+  "trazabilidad": {
+    "WI": [
+      "WI06"
+    ],
+    "AT14": "Parcial: resolver/API y HTTP local; Vue y HTTPS de piloto pendientes",
+    "CT12": "Pruebas de transporte relacionadas; no evaluación funcional de las 99 operaciones",
+    "decision": "DA02-E01",
+    "fuentes_de_diseno_verificadas": 7,
+    "openapi_sha256": "aab95f98cbdc4451e003280021bf23938790fc20d7793ce0a3fa43670a10494d"
+  },
+  "adaptacion": {
+    "espacio": "/api/v1/",
+    "rutas_desconocidas": "404 JSON en /api y /api/... con DEBUG verdadero o falso",
+    "operaciones_negocio_publicadas": 0,
+    "API001": "Planificada en SP03-T03; rutas de CSRF del ensayo solo en URLConf de pruebas",
+    "error": [
+      "code",
+      "message",
+      "fields",
+      "request_id"
+    ],
+    "cabeceras": [
+      "X-Request-ID generado por servidor",
+      "Cache-Control: no-store"
+    ],
+    "listas_DRF": "Formato diccionario activado; adaptación de diccionario y formato anterior comprobada",
+    "codigos_de_transporte_concretados": [
+      "CREDENTIALS_INVALID",
+      "METHOD_NOT_ALLOWED",
+      "NOT_ACCEPTABLE",
+      "UNSUPPORTED_MEDIA_TYPE",
+      "SERVICE_UNAVAILABLE"
+    ]
+  },
+  "validacion": {
+    "JSON": "Sin claves duplicadas, números no finitos o detalles de parser en errores",
+    "objetos": "Propiedades desconocidas, read_only y HiddenField rechazadas; tipos y reglas específicos por operación",
+    "consulta": "Lista cerrada declarada por vista, parámetros escalares únicos, enteros y booleanos explícitos",
+    "paginacion": {
+      "page_default": 1,
+      "page_size_default": 20,
+      "page_size_max": 100,
+      "fuera_de_rango": "400 VALIDATION_ERROR",
+      "respuesta": [
+        "count",
+        "page",
+        "page_size",
+        "results"
+      ]
+    }
+  },
+  "csrf": "Base JSONAPIView exige comprobación Django también sin sesión; mantiene SessionAuthentication y comprobaciones de origen/referente",
+  "pruebas": {
+    "comando": "scripts/probar.ps1 -Modo todas -q",
+    "correctas": 153,
+    "sin_base": 134,
+    "integracion_postgresql": 19,
+    "fallidas": 0,
+    "errores": 0,
+    "omitidas": 0,
+    "duracion_reportada_segundos": 37.83,
+    "incorporadas_en_T06": {
+      "transporte_sin_base": 70,
+      "sesion_PostgreSQL": 2
+    },
+    "rutas_sinteticas": "Solo en api.tests.test_transport; no publicadas por config.urls"
+  },
+  "escenarios_comprobados": [
+    "Errores y rutas desconocidas en ambos modos DEBUG, incluso con Accept HTML",
+    "UUID por solicitud, sin confiar en cabecera del cliente, y no-store",
+    "Rutas fuera de API conservan su respuesta web",
+    "Rechazo de campos inesperados, reservados y objetos JSON de tipo incorrecto",
+    "Índices de errores anidados en formatos de listas nuevo y anterior",
+    "Sintaxis JSON, claves duplicadas, NaN, Infinity y desbordamiento numérico rechazados",
+    "Media type, negociación y parámetros repetidos o fuera de esquema",
+    "Valores predeterminados, límites, página final y colección vacía",
+    "CSRF ausente, token inválido, origen ajeno, referente HTTPS y rotación",
+    "Sesión real necesita CSRF y cuenta técnicamente deshabilitada pierde acceso privado",
+    "Permisos, credenciales, estados, método y throttling con cabeceras aplicables",
+    "Fallo interno y de renderizado sin datos privados en respuesta; log propio con UUID/clase",
+    "Longitudes y cantidad de errores acotadas, incluso tras truncamiento"
+  ],
+  "http_real_local": {
+    "tipo": "HTTP real en loopback con wsgiref",
+    "ajustes": "config.settings.development",
+    "debug": true,
+    "ruta": "/api/v1/ruta-inexistente/",
+    "status": 404,
+    "content_type": "application/json",
+    "cache_control": "no-store",
+    "correlacion_de_servidor": true,
+    "propiedades_y_limites_ApiError_fuente": "Correctos para la respuesta observada",
+    "servidor_temporal_cerrado": true
+  },
+  "otros_controles": {
+    "ruff_check": "Correcto",
+    "ruff_format_check": "92 archivos Python con formato correcto",
+    "django_check_database": "Sin incidencias activas; un aviso auth.W004 sustituido por identity.E001",
+    "makemigrations_check_dry_run": "Sin cambios",
+    "migraciones_desarrollo": 16,
+    "tablas_desarrollo": 9,
+    "cuentas_desarrollo": 0,
+    "bases_persistentes": [
+      "entrepares_development",
+      "entrepares_test"
+    ],
+    "base_efimera_eliminada": true,
+    "dependencias": "Sin cambios"
+  },
+  "artefactos_sha256": {
+    "backend/api/context.py": "2ec4447c0d37059e6eb64f901b29a6a0d2f7c722c65ee195c1c949dbb7461837",
+    "backend/api/errors.py": "26addc246205445bf10a3d1e2af5eb6c304edcfa45d20ae86974a68dcf98c877",
+    "backend/api/middleware.py": "2a2d255df67b21b45c53e259249cc9d9090b2be9b1cb42f7c402e86596a56a6f",
+    "backend/api/pagination.py": "8ac51c59431a114200d9e6095ad7939be0b822c606759dbf86e0fd584cd91ed3",
+    "backend/api/parsers.py": "df22f910f987462ea3741712e67a9aceaa9dcf53b96d9582e45282faf39d44fc",
+    "backend/api/serializers.py": "d89e5cad5d32654f345010fd7a489bc1e43bad28dcc72651a8bef6f5ccf3c756",
+    "backend/api/views.py": "4b11916305c3dbf92c56bd681f236a71db3bb0d22307c03e9d4ef7e53eac2311",
+    "backend/api/v1/urls.py": "a45745a7d10376cbbf26eb95a33d25d827f884e2e60977f3dfb8e4b3bd9772ab",
+    "backend/config/urls.py": "dbb11590b4611684d764425674e7dd8758ae78e5f58d90f0636b807c85c2ef97",
+    "backend/config/settings/base.py": "43694edc1558f7a3f1058beac65c8b898d296ba0baa7a15775b89e7abe0b3e32",
+    "backend/api/tests/test_transport.py": "459c35111f57d558b605d566351f430f609b3bf47a00e4e1864fa8f1a0b62203",
+    "backend/api/tests/test_transport_postgresql.py": "8be130bb46aaba2b11a3985eecf4cd913d0f76c397fa5882133a116eeb52ab42"
+  },
+  "limites": [
+    "No hay endpoints funcionales de identidad, perfiles, oportunidades o administración",
+    "No se ejecutan aún los 99 contratos ni se implementan sus 116 esquemas",
+    "Base JSONSerializer cierra propiedades; cada operación debe concretar tipos, formatos y reglas",
+    "Sin cliente Vue, navegación recargada, piloto HTTPS o despliegue Linux",
+    "Los errores 429/503 están preparados; no se afirma un sistema de límites de abuso activo",
+    "El logger propio evita datos sensibles; no se audita en este paso toda configuración de logging de terceros",
+    "Sin validación OpenAPI completa del servidor: se comprobó la forma de ApiError observada y sus límites fuente"
+  ]
+}

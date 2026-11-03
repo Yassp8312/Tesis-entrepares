@@ -11,3 +11,5 @@ Las dependencias se declaran en el `pyproject.toml` de la raíz y se fijan en `u
 - `core`: reloj, identificadores y tipos técnicos mínimos.
 
 `modules/identity` define `Account` sobre `identity_account`, su gestor y su primera migración, aplicada en SP01-T04. Sus interfaces `commands` y `selectors` devuelven `contracts.AccountState`, un estado técnico mínimo. Los diez módulos tienen sus paquetes de interfaz; las funciones restantes se incorporarán en sus incrementos. `core` aporta reloj inyectable, UUID y correlación explícita. Consulta [Contratos internos y reloj](../docs/contratos-y-reloj.md).
+
+La base `api.views.JSONAPIView` valida consulta y cuerpo declarados y exige CSRF también sin sesión. `api.middleware` delimita las respuestas JSON y la correlación; `api.errors`, `parsers`, `serializers` y `pagination` preparan los contratos comunes. Consulta [Entrada JSON](../docs/entrada-json.md) antes de registrar una operación de negocio. El URLConf del producto no incorpora las rutas sintéticas de los ensayos.

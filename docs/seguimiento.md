@@ -47,3 +47,17 @@ Pasaron **81 pruebas en 49,24 s: 64 sin base y 17 con PostgreSQL**, sin fallos n
 Pasaron Ruff, formato de los 81 archivos Python, chequeo de Django con la base y ausencia de diferencias entre modelos y migraciones. Se verificaron las siete huellas de fuentes de diseño; permanecen sin cambios. El esquema conserva nueve tablas y 16 migraciones, sin cuentas de pruebas en desarrollo, y la base efímera fue eliminada. La evidencia compacta está en [contratos-y-reloj.json](evidencias/contratos-y-reloj.json).
 
 El siguiente trabajo es **SP01-T06: entrada JSON y errores**, con `/api/v1/`, correlación en errores, validación y paginación conforme a OpenAPI. SP01, WI06 y WI08 permanecen abiertos; este incremento no incorpora aún pantallas ni resultados del piloto.
+
+### Entrada JSON y controles HTTP: SP01-T06
+
+Cierre el 3 de noviembre de 2026. Se reservó `/api/v1/` y se incorporaron middleware de límite JSON y correlación, manejador de errores, parser JSON, serializadores cerrados, parámetros escalares y paginación. Las rutas API desconocidas devuelven 404 JSON incluso con DEBUG activo o Accept HTML; todas las respuestas API llevan correlación de servidor y no-store. Se conserva el origen común y la denegación por omisión.
+
+`JSONAPIView` exige CSRF de Django también sin sesión y valida consulta y cuerpo declarados. Los objetos rechazan propiedades inesperadas o reservadas y la consulta rechaza repeticiones. La paginación usa 1/20, máximo 100, y devuelve las cuatro propiedades del contrato. Se normalizan errores anidados con índices para los formatos nuevo y anterior de listas DRF; los fallos internos tienen mensaje controlado y registro propio con UUID y clase. [DA02 E01](decisiones/DA02-E01-entrada-json.md) concreta los códigos de transporte y las convenciones de rango y cabeceras sin modificar las fuentes de diseño.
+
+Pasaron **153 pruebas en 37,83 s: 134 sin base y 19 de integración PostgreSQL**, sin fallos ni omisiones. T06 incorpora 70 pruebas de transporte y dos de sesión persistida. Los casos usan el cliente Django con CSRF activado y cubren campos, JSON ambiguo, consulta, paginación, permisos, método, negociación, cabeceras, origen, referente HTTPS, rotación de CSRF, sesiones, deshabilitación técnica y fallos de renderizado. Las rutas sintéticas existen únicamente en el URLConf de pruebas. El arranque CSRF API001 y las operaciones de sesión siguen planificados en SP03-T03.
+
+Se comprobó una petición HTTP real en loopback mediante WSGI temporal de desarrollo: 404 JSON con UUID y no-store frente a Accept HTML y un identificador de cliente no confiable. Se contrastaron sus propiedades y límites con ApiError fuente y se cerró el servidor temporal. Pasaron Ruff y formato de 92 archivos Python, Django check con base y makemigrations sin cambios. Las siete fuentes conservan sus huellas; se mantienen nueve tablas y 16 migraciones, cero cuentas sintéticas en desarrollo y dos bases persistentes tras eliminar la base efímera.
+
+La evidencia está en [entrada-json.json](evidencias/entrada-json.json) y los comandos y límites en [Entrada JSON](entrada-json.md). Es evidencia parcial de AT14 y del transporte relacionado con CT12; no acredita Vue, HTTPS de piloto, límites de abuso activos o validación funcional de los 99 contratos.
+
+El siguiente trabajo es **SP01-T07: crear Vue y cliente HTTP común**, con TypeScript, Vue Router, proxy local y tratamiento de errores y CSRF. La identidad visual se incorpora con sus recursos acordados y el enlace discreto a Apoyar a Jorge. SP01 y WI06 permanecen abiertos.
