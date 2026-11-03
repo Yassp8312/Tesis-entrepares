@@ -61,3 +61,17 @@ Se comprobó una petición HTTP real en loopback mediante WSGI temporal de desar
 La evidencia está en [entrada-json.json](evidencias/entrada-json.json) y los comandos y límites en [Entrada JSON](entrada-json.md). Es evidencia parcial de AT14 y del transporte relacionado con CT12; no acredita Vue, HTTPS de piloto, límites de abuso activos o validación funcional de los 99 contratos.
 
 El siguiente trabajo es **SP01-T07: crear Vue y cliente HTTP común**, con TypeScript, Vue Router, proxy local y tratamiento de errores y CSRF. La identidad visual se incorpora con sus recursos acordados y el enlace discreto a Apoyar a Jorge. SP01 y WI06 permanecen abiertos.
+
+### Cliente Vue y transporte común: SP01-T07
+
+Cierre el 3 de noviembre de 2026. Se incorporó Vue con TypeScript, navegación HTML5, portada, presentación y página no encontrada. La interfaz integra inicialmente los recursos de la propuesta de marca v1 y conserva el estado real del desarrollo; no presenta contactos, proyectos o resultados ficticios. Doce recursos se contrastaron con el manifiesto y las licencias acompañan también a la compilación. La biblioteca completa de componentes de SP01-T08 sigue pendiente.
+
+El transporte común mantiene el origen, las cookies de sesión y un contexto organizacional explícito, valida errores y correlación, limita rutas a API y no sigue redirecciones. CSRF se conserva en memoria, con obtención compartida, actualización/reset y cancelación de espera sin afectar a otros participantes. No hay reintentos automáticos de mutaciones. Vite no carga dotenv ni expone variables personalizadas del proceso; el proxy local conserva Host y Origin y reserva api/admin/static al servidor.
+
+Pasaron **37 pruebas del cliente**, sin fallos ni omisiones, y los chequeos de tipos y compilación. Se verificó el cliente frente a Vite y Django reales: reconoce el 404 del servidor y, si el bootstrap CSRF no existe, no llega a enviar el POST. API001 y la sesión siguen en SP03-T03. El backend y los bloqueos de dependencias no cambiaron; sus 153 pruebas previas se conservan como evidencia de T06, sin atribuirles una ejecución nueva.
+
+La revisión en navegador comprobó navegación, recarga, página no encontrada, menú por teclado, Escape, foco, salto al contenido y el enlace del pie. Se examinaron anchos de 1413, 1280, 390 y 320 px sin desbordamiento horizontal; también se verificó la compilación mediante Vite preview. Las fuentes e imágenes cargaron localmente y no hubo errores o advertencias de consola en los recorridos observados. Se corrigió el cierre del menú al seleccionar la página actual. Las capturas quedan en `.cache/vue-http` y el tamaño temporal del navegador se restableció.
+
+La compilación no contiene los secretos conocidos del proyecto ni configuración privada de servidor. Las siete fuentes de diseño conservan sus huellas. Los servidores HTTP utilizados para la revisión se cerraron al terminar y el PostgreSQL privado se conserva activo. La guía está en [Cliente Vue](cliente-vue.md), con evidencia en [cliente-vue.json](evidencias/cliente-vue.json) y [recursos iniciales](evidencias/recursos-marca-iniciales.json). Es evidencia parcial de AT14/AT18; siguen pendientes collectstatic y retorno Django, despliegue y piloto.
+
+El siguiente trabajo es **SP01-T08: integrar recursos de marca y componentes comunes**, completando botones, campos, estados, diálogo y avisos con su comprobación de foco, etiquetas, contraste y adaptación. SP01 y WI06 permanecen abiertos.

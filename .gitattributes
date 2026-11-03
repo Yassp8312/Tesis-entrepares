@@ -11,3 +11,6 @@
 *.pdf binary
 *.docx binary
 *.zip binary
+
+# Conservar los textos de licencia originales, incluidos espacios y finales de línea.
+frontend/public/licenses/*.txt -text whitespace=-blank-at-eol,cr-at-eol

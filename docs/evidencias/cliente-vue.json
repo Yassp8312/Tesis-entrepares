@@ -1,0 +1,127 @@
+{
+  "fecha": "2026-11-03",
+  "tarea": "SP01-T07",
+  "resultado": "Cliente Vue, navegación y transporte común preparados",
+  "trazabilidad": {
+    "WI": [
+      "WI06"
+    ],
+    "DV": [
+      "DV06"
+    ],
+    "AT14": "Parcial: navegación local, recarga y proxy; despliegue Django pendiente de SP01-T09",
+    "AT18": "Parcial: configuración de cliente y ausencia de credenciales conocidas en compilación; resto de seguridad en sus escenarios",
+    "fuentes_de_diseno_verificadas": 7
+  },
+  "interfaz": {
+    "rutas": [
+      "/",
+      "/acerca-de",
+      "vista de página no encontrada"
+    ],
+    "estado": "Presentación inicial; sin funciones de negocio ni datos ficticios del producto",
+    "marca": "Propuesta v1 integrada inicialmente; SP01-T08 pendiente",
+    "recursos_locales_verificados": 12,
+    "fuentes_y_licencias": "TTF locales y licencias incluidas en dist/licenses",
+    "enlace_pie": "https://jorge-coffee.onrender.com/"
+  },
+  "cliente_http": {
+    "espacio": "/api/v1/",
+    "retorno_exitoso": "unknown; cada funcionalidad valida su proyección",
+    "credenciales": "same-origin",
+    "modo": "same-origin",
+    "redireccion": "error",
+    "cache": "no-store",
+    "csrf": "Solo memoria; bootstrap compartido, renovación/reset, sin reintentar mutaciones",
+    "errores": "Forma y límites ApiError/FieldError verificados con UUID de cabecera coincidente",
+    "cancelacion": "AbortSignal y plazo de 30 segundos por omisión; no acredita rollback del servidor",
+    "contexto_organizacional": "UUID explícito; no se retira al recibir una denegación"
+  },
+  "configuracion": {
+    "servidores": "Solo loopback con puertos estrictos",
+    "envDir": false,
+    "envPrefix": [],
+    "proxy": "Espacios api/admin/static; conserva Host y Origin",
+    "credenciales_conocidas_en_compilacion": false,
+    "dependencias_y_bloqueos": "Sin cambios"
+  },
+  "pruebas": {
+    "comando": "npm test",
+    "correctas": 37,
+    "fallidas": 0,
+    "omitidas": 0,
+    "herramienta": "Ejecutor nativo de Node 24.18.0",
+    "tipos": "vue-tsc --noEmit correcto",
+    "build": "npm run build correcto; 42 módulos transformados",
+    "backend": "Sin cambios; los 153 resultados de T06 se conservan sin repetirlos en este incremento"
+  },
+  "integracion_proxy_real": {
+    "proxy": "Vite 5173 a Django 8000, ambos en loopback",
+    "errorReal": "404 NOT_FOUND reconocido por cliente común",
+    "csrfNoImplementado": "404 real sin envío de POST",
+    "publicacionSimulada": false
+  },
+  "revision_navegador": {
+    "herramienta": "CUA, navegador interno",
+    "anchos_comprobados": [
+      1413,
+      1280,
+      390,
+      320
+    ],
+    "sin_desbordamiento_horizontal": true,
+    "navegacion": "Portada a presentación, recarga directa y página no encontrada",
+    "teclado": "Escape, salto al contenido y foco de main",
+    "menu": "Cierra al navegar, incluida selección de página actual",
+    "consola_recorridos_observados": "Sin errores o advertencias",
+    "compilacion": "Vite preview 4173: navegación y recarga correctas; API inexistente sigue en JSON",
+    "medicion_movil_compilado": {
+      "bodyFontLoaded": true,
+      "height": 844,
+      "horizontalOverflow": false,
+      "imagesLoaded": true,
+      "supportHref": "https://jorge-coffee.onrender.com/",
+      "titleFontLoaded": true,
+      "width": 390
+    },
+    "capturas_locales": [
+      ".cache/vue-http/inicio-escritorio.jpg",
+      ".cache/vue-http/inicio-movil.jpg"
+    ],
+    "viewport_temporal": "Restablecido"
+  },
+  "entrega": {
+    "servidores_http_de_revision": "Cerrados al terminar; usar comandos de docs/cliente-vue.md",
+    "postgresql_privado": "Se conserva activo en 55432",
+    "javascript_bytes": 99722,
+    "fuentes_ttf_bytes": 1079768,
+    "peso": "Inventario estático, no medición del piloto",
+    "formatos_de_recursos": "Licencias originales preservadas; tokens normalizados a LF con ambas huellas registradas."
+  },
+  "artefactos_sha256": {
+    "frontend/src/App.vue": "6d4a7e2ec82cbfeb76955928cc1da2e4756e8ef2fc2e2c61be9550d01df10ee4",
+    "frontend/src/api/client.ts": "e5ecd590ec2d78fba1df395cf5a5f704cbbdcb763b68ad1f712235a9ce349c4b",
+    "frontend/src/api/errors.ts": "d44b1e7c4803cb1555a1605ae4348d97dc441d9ed1f9f94e02b586d72f6d2d3b",
+    "frontend/src/assets/app.css": "0b4c7eb225de259e5d3003f44640cddd6c73a8aca49c3ea8f02ac3976bdcab0f",
+    "frontend/src/assets/tokens.css": "2c72d7c1e5f5bef5ac9bb3b223ead2e0a01305569f09986f51edba1262709d45",
+    "frontend/src/components/BrandIcon.vue": "2c8fabae9c5fead08020f20d89bf80bffe182c068234b75282590f7fb82d9cc0",
+    "frontend/src/env.d.ts": "f4bedf6b8d3a85eabd9d8d1b659316e26035e0ad9eaf1c852e180fdbf80fb757",
+    "frontend/src/features/home/AboutView.vue": "f9b9ee7b7f3c5436ca481219915fc3b3455840d6e1652cfe7bdf015b0f7376f4",
+    "frontend/src/features/home/HomeView.vue": "6efcc7e3ea587f32bce9d12afdfe81ce477808da5ab7a3aaac818774440d5379",
+    "frontend/src/features/home/NotFoundView.vue": "78d061977cf14233c8c7b84bb5a0edfaf535df8b1225ab4293d45e24e7b9314c",
+    "frontend/src/main.ts": "6c82e8e86d65c4916691632bd9bd7b15a149d5294fe9308026e3c835754decef",
+    "frontend/src/router.ts": "654873320537a0d95be841a06bf7d441a42d4649638cc98f93d6d48c9862c0d9",
+    "frontend/tests/client.test.ts": "e7dd1d1f5e1dae897b030ba97d63b81bc5ca6d04a33f0bed6984ffaf5978d3f8",
+    "frontend/tests/navigation.test.ts": "b3a3ac8961dc0f1b2c190ef10bc2dfa53081db337443e33ca0b6b6d519c887ef",
+    "frontend/vite.config.ts": "b86009e085e4fb0fc4d78d7c2fd0e9ee4c0285f2613223e714dc1f93296777b9"
+  },
+  "limites": [
+    "No se implementan registro, login, bolsa de perfiles, oportunidades o novedades funcionales",
+    "API001 bootstrap CSRF sigue en SP03-T03; su 404 impide enviar una mutación",
+    "Pruebas de CSRF correcto usan transportes sintéticos; no se acredita login real desde Vue",
+    "Biblioteca completa de componentes y aprobación visual final pendientes de SP01-T08",
+    "Sin collectstatic y retorno de navegación Django de SP01-T09, HTTPS del piloto o despliegue Linux",
+    "Sin medición de rendimiento, compatibilidad exhaustiva o certificación WCAG",
+    "La compilación no se publica ni se registra en Sites; trabajo únicamente local"
+  ]
+}

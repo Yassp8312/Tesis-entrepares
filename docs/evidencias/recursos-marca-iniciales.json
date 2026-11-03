@@ -1,0 +1,69 @@
+{
+  "fecha": "2026-11-03",
+  "estado": "Integración inicial de propuesta v1; SP01-T08 pendiente",
+  "manifiesto_fuente_sha256": "2c70dc72f28d0add9924d64c88c7fcd4ba030db3c2bc2f9a6285a8e688fa94a6",
+  "archivos": [
+    {
+      "fuente": "Logos/entrepares-horizontal-color.svg",
+      "destino": "frontend/src/assets/brand/logo.svg",
+      "sha256": "561a5085b244eeb4c725019d722df3ba920820d6d38bfb544835c8ccd9120a85"
+    },
+    {
+      "fuente": "Logos/entrepares-horizontal-blanco.svg",
+      "destino": "frontend/src/assets/brand/logo-white.svg",
+      "sha256": "2645deefda00e5fc3fa2563b55efde71c7a1904ea2ed019a839f555fbaeff840"
+    },
+    {
+      "fuente": "Logos/entrepares-simbolo-color.svg",
+      "destino": "frontend/src/assets/brand/symbol.svg",
+      "sha256": "14e1bc0c93059fe7ed739025e38920b1837ebe268ae464ff77e0ebb7fc9454c6"
+    },
+    {
+      "fuente": "Logos/entrepares-simbolo-color.svg",
+      "destino": "frontend/public/favicon.svg",
+      "sha256": "14e1bc0c93059fe7ed739025e38920b1837ebe268ae464ff77e0ebb7fc9454c6"
+    },
+    {
+      "fuente": "Iconos/entrepares-sprite.svg",
+      "destino": "frontend/src/assets/brand/icons.svg",
+      "sha256": "4fdf9aee0b65059a19ddbf9bd9125533ac93eefa0d061576088f2b183a00a30d"
+    },
+    {
+      "fuente": "Interfaz/entrepares-tokens.css",
+      "destino": "frontend/src/assets/tokens.css",
+      "sha256": "2c72d7c1e5f5bef5ac9bb3b223ead2e0a01305569f09986f51edba1262709d45",
+      "sha256_fuente": "fe6fb94b77adaadf864474966acbbab093b327411317a549d831d3546d29bd85",
+      "transformacion": "Solo finales de línea CRLF a LF; valores de tokens sin cambios."
+    },
+    {
+      "fuente": "Tipografias/Lora-variable.ttf",
+      "destino": "frontend/src/assets/fonts/Lora-variable.ttf",
+      "sha256": "822a6621ccbe8d97d20ac88c1c41f5615c9c2c202eaa75f272cd452aac6475a7"
+    },
+    {
+      "fuente": "Tipografias/Lora-italic-variable.ttf",
+      "destino": "frontend/src/assets/fonts/Lora-italic-variable.ttf",
+      "sha256": "22d8d8854b53807aa664ca34f2031a9ed57a1d0dea296b8b96cdd3aad937a2b3"
+    },
+    {
+      "fuente": "Tipografias/SourceSans3-variable.ttf",
+      "destino": "frontend/src/assets/fonts/SourceSans3-variable.ttf",
+      "sha256": "042fe2cc0b933e328410d7acbd0aa6a1873dca5aef81875f4bc214b08825c7b9"
+    },
+    {
+      "fuente": "Licencias/Lora-OFL.txt",
+      "destino": "frontend/public/licenses/Lora-OFL.txt",
+      "sha256": "1d9a970809ac804b582a6ce7f0ebc4e7fefcbfd7ff6299cad35ee656a21be716"
+    },
+    {
+      "fuente": "Licencias/SourceSans3-OFL.txt",
+      "destino": "frontend/public/licenses/SourceSans3-OFL.txt",
+      "sha256": "09746787287a289323b0ec3cff4d1a4a801331b82b7207c1e186f5d26619a392"
+    },
+    {
+      "fuente": "Licencias/Graficos propios.txt",
+      "destino": "frontend/public/licenses/Graficos propios.txt",
+      "sha256": "dbe809ea3f9b42a486f72861bac5e258ceee307e9962e5ac197e3214d58c1773"
+    }
+  ]
+}

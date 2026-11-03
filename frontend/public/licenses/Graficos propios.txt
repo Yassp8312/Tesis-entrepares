@@ -1,0 +1,5 @@
+ENTREPARES · GRÁFICOS DEL PROYECTO
+
+El símbolo, composiciones, patrón, iconos y plantillas de este paquete se diseñaron para el proyecto de Jorge Ricardo Cintra Rad. Su uso y modificación en el proyecto no requieren comprar una licencia gráfica. No se ha realizado registro de marca ni se atribuye exclusividad jurídica sobre el nombre o formas geométricas.
+
+Las tipografías son recursos de terceros: se redistribuyen sin modificar con sus avisos SIL OFL. El trazado de palabras en el logotipo no cambia la licencia de los archivos de fuente.

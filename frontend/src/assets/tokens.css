@@ -1,0 +1,27 @@
+/* Entrepares · Tokens de identidad v1 · propuesta de diseño */
+:root {
+  --ep-ink: #172E3A;
+  --ep-terra: #A4442D;
+  --ep-terra-hover: #843522;
+  --ep-paper: #F7F3EA;
+  --ep-white: #FFFFFF;
+  --ep-muted: #52636B;
+  --ep-line: #DDDCD5;
+  --ep-control: #7B878A;
+  --ep-soft: #EDE7DD;
+  --ep-celadon: #D8E8BA;
+  --ep-success: #246147;
+  --ep-success-bg: #EDF5ED;
+  --ep-warning: #805200;
+  --ep-warning-bg: #FFF2D6;
+  --ep-danger: #A12A2A;
+  --ep-danger-bg: #FBEDEC;
+  --ep-info: #315B7A;
+  --ep-info-bg: #EEF3F8;
+  --ep-font-display: "Lora", Georgia, serif;
+  --ep-font-body: "Source Sans 3", Arial, sans-serif;
+  --ep-radius-control: 6px;
+  --ep-radius-panel: 10px;
+  --ep-target: 44px;
+  --ep-max-width: 1200px;
+}
