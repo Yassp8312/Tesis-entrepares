@@ -1,0 +1,11 @@
+{
+  "version": "17.11",
+  "build": 5,
+  "filename": "postgresql-17.11-5-windows-x64-binaries.zip",
+  "url": "https://get.enterprisedb.com/postgresql/postgresql-17.11-5-windows-x64-binaries.zip",
+  "bytes": 381531864,
+  "sha256": "80379b2c04d51c30225532e0ae04509899141e9957ed096fe749d7fd9df8f82f",
+  "platform": "windows-x64",
+  "source": "https://www.enterprisedb.com/download-postgresql-binaries",
+  "initial_integrity": "HTTPS del distribuidor, tamaño y CRC ZIP; SHA256 calculada localmente para fijar descargas posteriores."
+}

@@ -39,3 +39,5 @@ select = ["E4", "E7", "E9", "F", "I"]
 DJANGO_SETTINGS_MODULE = "config.settings.test"
 pythonpath = ["backend"]
 testpaths = ["backend"]
+addopts = "-m 'not postgresql'"
+markers = ["postgresql: integración con el cluster privado de PostgreSQL del proyecto"]

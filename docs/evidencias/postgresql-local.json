@@ -1,0 +1,229 @@
+{
+  "fecha": "2026-11-02",
+  "tarea": "SP01-T04",
+  "resultado": "Preparado y comprobado con PostgreSQL real",
+  "runtime": {
+    "version": "17.11",
+    "build": 5,
+    "filename": "postgresql-17.11-5-windows-x64-binaries.zip",
+    "url": "https://get.enterprisedb.com/postgresql/postgresql-17.11-5-windows-x64-binaries.zip",
+    "bytes": 381531864,
+    "sha256": "80379b2c04d51c30225532e0ae04509899141e9957ed096fe749d7fd9df8f82f",
+    "platform": "windows-x64",
+    "source": "https://www.enterprisedb.com/download-postgresql-binaries",
+    "initial_integrity": "HTTPS del distribuidor, tamaño y CRC ZIP; SHA256 calculada localmente para fijar descargas posteriores."
+  },
+  "servidor": {
+    "version": "17.11",
+    "host": "127.0.0.1",
+    "puerto": 55432,
+    "encoding": "UTF8",
+    "autenticacion": "scram-sha-256",
+    "locale_proveedor": "ICU",
+    "locale": "und",
+    "servicio_windows_creado": false,
+    "instalacion_preexistente": "No utilizada ni modificada"
+  },
+  "antes_de_migrar": {
+    "tablas_public": []
+  },
+  "despues_de_migrar": {
+    "migraciones": [
+      "auth.0001_initial",
+      "auth.0002_alter_permission_name_max_length",
+      "auth.0003_alter_user_email_max_length",
+      "auth.0004_alter_user_username_opts",
+      "auth.0005_alter_user_last_login_null",
+      "auth.0006_require_contenttypes_0002",
+      "auth.0007_alter_validators_add_error_messages",
+      "auth.0008_alter_user_username_max_length",
+      "auth.0009_alter_user_last_name_max_length",
+      "auth.0010_alter_group_name_max_length",
+      "auth.0011_update_proxy_permissions",
+      "auth.0012_alter_user_first_name_max_length",
+      "contenttypes.0001_initial",
+      "contenttypes.0002_remove_content_type_name",
+      "identity.0001_initial",
+      "sessions.0001_initial"
+    ],
+    "cantidad_migraciones": 16,
+    "tablas_public": [
+      "auth_group",
+      "auth_group_permissions",
+      "auth_permission",
+      "django_content_type",
+      "django_migrations",
+      "django_session",
+      "identity_account",
+      "identity_account_groups",
+      "identity_account_user_permissions"
+    ],
+    "columnas_cuenta": [
+      {
+        "column_name": "password",
+        "data_type": "character varying",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "last_login",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "id",
+        "data_type": "uuid",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()"
+      },
+      {
+        "column_name": "email",
+        "data_type": "character varying",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "is_active",
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "column_default": "true"
+      },
+      {
+        "column_name": "is_staff",
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "column_default": "false"
+      },
+      {
+        "column_name": "is_superuser",
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "column_default": "false"
+      },
+      {
+        "column_name": "date_joined",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "CURRENT_TIMESTAMP"
+      },
+      {
+        "column_name": "updated_at",
+        "data_type": "timestamp with time zone",
+        "is_nullable": "NO",
+        "column_default": "CURRENT_TIMESTAMP"
+      }
+    ],
+    "indices_cuenta": [
+      {
+        "indexname": "identity_account_pkey",
+        "indexdef": "CREATE UNIQUE INDEX identity_account_pkey ON public.identity_account USING btree (id)"
+      },
+      {
+        "indexname": "uq_t01_01",
+        "indexdef": "CREATE UNIQUE INDEX uq_t01_01 ON public.identity_account USING btree (lower((email)::text))"
+      }
+    ],
+    "restricciones_cuenta": [
+      {
+        "conname": "ck_t01_01",
+        "definicion": "CHECK ((length(TRIM(BOTH FROM email)) > 0))"
+      },
+      {
+        "conname": "ck_t01_02",
+        "definicion": "CHECK ((length(TRIM(BOTH FROM password)) > 0))"
+      },
+      {
+        "conname": "identity_account_pkey",
+        "definicion": "PRIMARY KEY (id)"
+      }
+    ],
+    "cuentas_sinteticas_residuales": 0
+  },
+  "bases_persistentes": [
+    {
+      "datname": "entrepares_development",
+      "propietario": "entrepares_dev"
+    },
+    {
+      "datname": "entrepares_test",
+      "propietario": "entrepares_test"
+    }
+  ],
+  "roles_aplicacion": [
+    {
+      "rolname": "entrepares_dev",
+      "rolsuper": false,
+      "rolcreatedb": false,
+      "rolcreaterole": false,
+      "rolreplication": false,
+      "rolbypassrls": false
+    },
+    {
+      "rolname": "entrepares_test",
+      "rolsuper": false,
+      "rolcreatedb": true,
+      "rolcreaterole": false,
+      "rolreplication": false,
+      "rolbypassrls": false
+    }
+  ],
+  "pruebas": {
+    "comando": "scripts/probar.ps1 -Modo todas -q",
+    "correctas": 47,
+    "unitarias": 35,
+    "integracion_postgresql": 12,
+    "fallidas": 0,
+    "omitidas": 0,
+    "duracion_reportada_segundos": 32.65,
+    "base_efimera": "test_entrepares",
+    "base_efimera_eliminada_al_final": true
+  },
+  "escenarios_integracion": [
+    "Esquema T01 real y sustitución de auth.User",
+    "Persistencia de UUID, hash, correo y fechas",
+    "Búsqueda por lower y rechazo de duplicado con rollback",
+    "Cuatro entradas vacías o con espacios rechazadas por CHECK en SQL",
+    "Valores predeterminados ejecutados sin ORM",
+    "updated_at en guardado parcial",
+    "Autenticación y deshabilitación técnica",
+    "Recuperación de cuenta UUID desde sesión de servidor",
+    "Privilegios y ausencia de acceso cruzado a bases"
+  ],
+  "proteccion_destino_pruebas": {
+    "destino_deliberadamente_incorrecto": "etiqueta de cluster distinta",
+    "rechazado": true,
+    "antes_y_despues_iguales": true,
+    "base_efimera_no_creada": true,
+    "migraciones_desarrollo": 16,
+    "cuentas_desarrollo": 0
+  },
+  "ciclo_de_vida": {
+    "repeticion_preparar": "conserva .env, secretos, esquema y datos",
+    "parada_controlada_comprobada": true,
+    "reinicio_comprobado": true,
+    "persistencia_esquema_y_datos": true,
+    "migraciones": 16,
+    "cuentas": 0
+  },
+  "otros_controles": {
+    "django_check_database": "Sin incidencias activas; auth.W004 silenciado con control identity.E001",
+    "makemigrations_check_dry_run": "Sin cambios",
+    "segunda_migracion": "Sin migraciones pendientes"
+  },
+  "artefactos_sha256": {
+    "scripts/postgresql-runtime.json": "d586c9767107c4506056dcb21fc8d9f2b01f64283ae4527207fa47bc6330e869",
+    "scripts/descargar_postgresql.py": "58295a82365f9d6b91c7ef4708709b1c89d1ea1045c0bbca59767ec63be48c1e",
+    "scripts/postgresql_local.py": "bb357c7c1a6c8ebd547cfc407eb125bf668b3e4da3941a344608f5fc929dfb69",
+    "backend/conftest.py": "e2033ef0d1969e734b1fcb62b10c43b4fc337226a64b30f5bead68a364894fae",
+    "backend/modules/identity/tests/test_account_postgresql.py": "4d6f9c95b29562893b6a81dbdae9247075a7c912573593799ecfb8165b040eed",
+    "backend/modules/identity/migrations/0001_initial.py": "942b9b7bd319394b194fd166a0c74f3ef5a0f7dbd986235eddda1d5fcc4a14b2"
+  },
+  "limites": [
+    "Entorno Windows local, sin ensayo de despliegue del piloto",
+    "Una tabla de negocio T01 y la infraestructura Django disponible; no las 37 tablas",
+    "Sin evaluación de endpoints de producto, capacidades M08 ni piloto",
+    "Sin pruebas de rendimiento, concurrencia del producto, copia o restauración de bases",
+    "El SHA256 del runtime se calculó sobre la descarga inicial; no es una firma del distribuidor"
+  ]
+}

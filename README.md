@@ -6,7 +6,7 @@ El producto contempla una bolsa de perfiles con acceso autorizado, oportunidades
 
 ## Estado
 
-Repositorio local de SP01 con estructura modular, dependencias fijadas, configuración Django y usuario propio. Se han preparado SP01-T01 a SP01-T03. La migración inicial de `identity.Account` está generada; el siguiente trabajo prepara PostgreSQL de desarrollo y prueba antes de aplicarla. Las funciones y pantallas del producto se incorporan en los incrementos posteriores.
+Repositorio local de SP01 con estructura modular, dependencias fijadas, configuración Django, usuario propio y PostgreSQL de desarrollo y pruebas. Se han preparado SP01-T01 a SP01-T04. La migración inicial de `identity.Account` está aplicada sobre una base del proyecto y cuenta con pruebas de integración. Las funciones y pantallas del producto se incorporan en los incrementos posteriores.
 
 La investigación sigue DSRM y el desarrollo utiliza OpenUP adaptado. La base de diseño establece Vue 3 y TypeScript para la interfaz, Django y Django REST Framework para el servidor y PostgreSQL para los datos, organizados como un monolito modular.
 
@@ -30,7 +30,17 @@ La referencia inicial DRF 3.16 se actualiza a 3.18.3 por correcciones de segurid
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-La configuración local se guarda en `.env`, excluido de Git, con una clave aleatoria que el script no sobrescribe. Los ajustes se separan en desarrollo, pruebas y producción. Las pruebas de este incremento no necesitan una base ni ejecutan migraciones. Consulta [Configuración y cuenta](docs/configuracion-y-cuenta.md) antes de preparar las conexiones de PostgreSQL.
+La configuración local se guarda en `.env`, excluido de Git, con una clave aleatoria que el script no sobrescribe. Los ajustes se separan en desarrollo, pruebas y producción. La invocación directa de pytest selecciona las pruebas sin base. Consulta [Configuración y cuenta](docs/configuracion-y-cuenta.md) para el modelo y los ajustes.
+
+## Preparar PostgreSQL y comprobar la integración
+
+```powershell
+.\.venv\Scripts\python.exe scripts\postgresql_local.py preparar
+.\scripts\django.ps1 migrate --noinput
+.\scripts\probar.ps1 -Modo todas -q
+```
+
+Se prepara PostgreSQL 17.11 dentro de `.tools`, en un puerto local propio, con bases y credenciales separadas para desarrollo y pruebas. No utiliza el servicio PostgreSQL que pudiera existir en el equipo. Consulta [PostgreSQL local](docs/postgresql-local.md) para los privilegios, la protección de las pruebas y los comandos de arranque y parada.
 
 ## Estructura
 

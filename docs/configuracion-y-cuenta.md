@@ -1,6 +1,6 @@
 # Configuración Django y cuenta de acceso
 
-SP01-T03, 2 de noviembre de 2026. Se implementan los ajustes del servidor y T01 Cuenta, con migración inicial generada. La preparación y aplicación sobre PostgreSQL corresponden a SP01-T04.
+SP01-T03, 2 de noviembre de 2026. Se implementan los ajustes del servidor y T01 Cuenta, con migración inicial generada. La preparación y aplicación posterior de SP01-T04 se documentan en [PostgreSQL local](postgresql-local.md); el alcance y las comprobaciones originales de T03 se conservan a continuación.
 
 ## Configuración local
 
