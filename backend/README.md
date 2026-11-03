@@ -10,4 +10,4 @@ Las dependencias se declaran en el `pyproject.toml` de la raíz y se fijan en `u
 - `modules`: diez responsabilidades propietarias de sus registros.
 - `core`: reloj, identificadores y tipos técnicos mínimos.
 
-`modules/identity` define `Account` sobre `identity_account`, su gestor y su primera migración. Los contratos internos, comandos y modelos restantes se incorporarán en sus trabajos. La configuración ya selecciona `AUTH_USER_MODEL = identity.Account` antes de aplicar cualquier migración de autenticación. La base se prepara en SP01-T04.
+`modules/identity` define `Account` sobre `identity_account`, su gestor y su primera migración, aplicada en SP01-T04. Sus interfaces `commands` y `selectors` devuelven `contracts.AccountState`, un estado técnico mínimo. Los diez módulos tienen sus paquetes de interfaz; las funciones restantes se incorporarán en sus incrementos. `core` aporta reloj inyectable, UUID y correlación explícita. Consulta [Contratos internos y reloj](../docs/contratos-y-reloj.md).

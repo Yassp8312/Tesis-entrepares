@@ -1,0 +1,124 @@
+{
+  "fecha": "2026-11-03",
+  "fecha_pruebas": "2026-11-02",
+  "tarea": "SP01-T05",
+  "resultado": "Interfaces iniciales y utilidades técnicas implementadas y comprobadas",
+  "trazabilidad": {
+    "WI": [
+      "WI06",
+      "WI08"
+    ],
+    "decisiones": [
+      "DA01",
+      "DA05",
+      "DA12"
+    ],
+    "reglas": [
+      "DL18",
+      "DL20"
+    ],
+    "AT01": "Evidencia parcial de importaciones estáticas; no acredita todas las escrituras",
+    "AT09": "Reloj preparado; prueba de oportunidades todavía no ejecutada",
+    "fuentes_de_diseno_verificadas": 7,
+    "fuentes_y_sha256": {
+      "DSRM/03 - Diseno y desarrollo/07 - Arquitectura de la solucion/Registro de arquitectura.json": "c45eb8f21ad084f72996287688c3c29b2a375a77e553c7f69017dd3cfa125f4b",
+      "DSRM/03 - Diseno y desarrollo/08 - Modelo logico de datos/Diccionario logico de datos.json": "94ce2f274e5b2ebe38b95941a839e102800833cb357d5e2b08d1949ebef59132",
+      "DSRM/03 - Diseno y desarrollo/09 - Contratos de API/Registro de contratos API.json": "aefa4713471fda3aeab7befd0149b79f6a18f96b3ceda78054abded32a948b05",
+      "DSRM/03 - Diseno y desarrollo/09 - Contratos de API/openapi.json": "aab95f98cbdc4451e003280021bf23938790fc20d7793ce0a3fa43670a10494d",
+      "DSRM/03 - Diseno y desarrollo/04 - Matriz de permisos/Matriz de permisos para revision.json": "66edb90ce00fc19c815775afb2e93d6c2766a62ba2ced3f77196099ec907411e",
+      "DSRM/03 - Diseno y desarrollo/06 - Validacion de requisitos/Registro de validacion de requisitos.json": "6fd181ba6d623883c1e7ae59a29d38bdd9f9d903c26abc4a307dc33bef441467",
+      "DSRM/03 - Diseno y desarrollo/05 - Planificacion de iteraciones/Desglose por sprints/Plan de sprints y tareas.json": "3b3252ba77bcf64621b290cb1f4387b029e2b28b6f1959c38ae627376b562d9a"
+    }
+  },
+  "interfaces": {
+    "propietarios": 10,
+    "paquetes": 30,
+    "superficies": [
+      "commands",
+      "selectors",
+      "contracts"
+    ],
+    "M01": {
+      "escritura": "create_account(*, email, password) -> AccountState",
+      "lectura": "get_account_state(*, account_id) -> AccountState | None",
+      "DTO_inmutable": [
+        "account_id: UUID",
+        "is_active: bool"
+      ],
+      "alcance": "Primitiva T01; registro completo, autorización, auditoría y envío se coordinan en futuros casos"
+    },
+    "M02_a_M10": "Paquetes delimitados; funciones de negocio pendientes de sus incrementos"
+  },
+  "core": {
+    "dependencias": "Biblioteca estándar y utilidades propias",
+    "reloj": "Clock.now(), SystemClock y FixedClock; normalización UTC y rechazo de instantes sin zona",
+    "correlacion": "OperationContext inmutable, UUID nuevo desde el servidor y reloj explícito; now() vuelve a consultarlo",
+    "identificadores": "UUID v4; no conceden permisos ni sustituyen tokens",
+    "politicas_temporales": "Sin resolver Q03/Q08 ni implementar calendario del propietario"
+  },
+  "pruebas": {
+    "comando": "scripts/probar.ps1 -Modo todas -q",
+    "correctas": 81,
+    "sin_base": 64,
+    "integracion_postgresql": 17,
+    "fallidas": 0,
+    "errores": 0,
+    "omitidas": 0,
+    "duracion_reportada_segundos": 49.24,
+    "incorporadas_en_T05": {
+      "reloj_y_correlacion": 11,
+      "estructura_y_ejemplos_de_importacion": 18,
+      "integracion_interfaces_M01": 5
+    }
+  },
+  "comprobaciones_nuevas": [
+    "UTC conserva instante y microsegundos con tres desplazamientos",
+    "Rechazo de datetimes sin zona, desplazamiento indefinido y cadena",
+    "Reloj de sistema consciente de UTC",
+    "UUID v4 independientes",
+    "El contexto vuelve a consultar el reloj y conserva la correlación",
+    "Contextos y relojes fijos inmutables e independientes",
+    "Rechazo de correlación sin tipo UUID y reloj que devuelve un instante sin zona",
+    "Interfaces completas en estructura para diez propietarios",
+    "Análisis AST del código actual de core y propietarios",
+    "Diez ejemplos de importación prohibida y seis permitidos, incluidas relativas y CLI",
+    "Creación de cuenta ordinaria con hash y DTO mínimo inmutable",
+    "Selector de estado actual en una consulta, cuenta inexistente y ausencia de escritura",
+    "Rechazo de contraseña ausente o débil sin filas nuevas",
+    "Unicidad funcional y rollback de creación cuando falla el coordinador"
+  ],
+  "otros_controles": {
+    "ruff_check": "Correcto",
+    "ruff_format_check": "81 archivos Python con formato correcto",
+    "django_check_database": "Sin incidencias activas; auth.W004 continúa sustituido por identity.E001",
+    "makemigrations_check_dry_run": "Sin cambios",
+    "tablas_public_desarrollo": 9,
+    "migraciones_desarrollo": 16,
+    "cuentas_desarrollo": 0,
+    "bases_persistentes": [
+      "entrepares_development",
+      "entrepares_test"
+    ],
+    "base_efimera_eliminada": true
+  },
+  "artefactos_sha256": {
+    "backend/core/clock.py": "0355a202e42e18991899ef6f5bfd74e1d4e25e73694d674cbbaf5f74f7bf3b06",
+    "backend/core/identifiers.py": "f33e323a9ca07fd6df10cd4102de9779a4af7859f56da56e31b3de39bedcfff4",
+    "backend/core/correlation.py": "d609abf1e202b59efd2006f8b9866a4245ca0adb0d88616df4607d60014c30c4",
+    "backend/modules/identity/contracts/__init__.py": "d89440759bafcd857022746dc2b67dfbe07cb850f3502712344485f76bab64e1",
+    "backend/modules/identity/commands/__init__.py": "3b581975315277c6608128dd84fa293c22a7d9117416a5b6efff5f70a9ab695d",
+    "backend/modules/identity/selectors/__init__.py": "1784b716511f9d8e3af6a9044557417f9bf243f60a7944d4477768a3560b2023",
+    "backend/core/tests/test_clock_and_correlation.py": "6eec56c2c1f4d973c86068bfa6681e44920c8620b27434d340a2e669e9bd0bfc",
+    "backend/modules/identity/tests/test_interfaces_postgresql.py": "6eaf1d52e38f1a57e7097ab98b86fde6784857625fedd28d5bdd0b04270055ff",
+    "backend/tests/test_module_boundaries.py": "e6695023b7f7f4ada9e2372a7b58d79186ac3ffe6e225a61cfc16bb9d090fa5b"
+  },
+  "limites": [
+    "Sin cambios de esquema o dependencias",
+    "Sin adaptación HTTP de correlación, rutas ni errores nuevos; corresponde a SP01-T06",
+    "Sin implementación funcional de M02 a M10",
+    "Sin evaluación de permisos temporales, oportunidades, auditoría ni casos multímódulo",
+    "El control AST no demuestra importaciones dinámicas ni todas las escrituras SQL",
+    "Sin análisis estático de tipos Python ni ensayo de piloto"
+  ],
+  "decision_tecnica": "DA05-E01"
+}

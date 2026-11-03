@@ -6,7 +6,7 @@ El producto contempla una bolsa de perfiles con acceso autorizado, oportunidades
 
 ## Estado
 
-Repositorio local de SP01 con estructura modular, dependencias fijadas, configuración Django, usuario propio y PostgreSQL de desarrollo y pruebas. Se han preparado SP01-T01 a SP01-T04. La migración inicial de `identity.Account` está aplicada sobre una base del proyecto y cuenta con pruebas de integración. Las funciones y pantallas del producto se incorporan en los incrementos posteriores.
+Repositorio local de SP01 con estructura modular, dependencias fijadas, configuración Django, usuario propio y PostgreSQL de desarrollo y pruebas. Se han preparado SP01-T01 a SP01-T05, incluidas las interfaces propietarias iniciales, el reloj inyectable y la correlación técnica. La migración inicial de `identity.Account` está aplicada sobre una base del proyecto y cuenta con pruebas de integración. Las funciones y pantallas del producto se incorporan en los incrementos posteriores.
 
 La investigación sigue DSRM y el desarrollo utiliza OpenUP adaptado. La base de diseño establece Vue 3 y TypeScript para la interfaz, Django y Django REST Framework para el servidor y PostgreSQL para los datos, organizados como un monolito modular.
 
@@ -58,7 +58,7 @@ backend/
 docs/                    Arquitectura, referencias y seguimiento
 ```
 
-La distribución de responsabilidades está en [Arquitectura](docs/arquitectura.md). Las referencias a los documentos de tesis y sus huellas están en [Base documental](docs/base-documental.json). El trabajo realizado se registra en [Seguimiento](docs/seguimiento.md).
+La distribución de responsabilidades está en [Arquitectura](docs/arquitectura.md) y los límites de lectura, escritura y tiempo en [Contratos internos y reloj](docs/contratos-y-reloj.md). Las referencias a los documentos de tesis y sus huellas están en [Base documental](docs/base-documental.json). El trabajo realizado se registra en [Seguimiento](docs/seguimiento.md).
 
 ## Reglas iniciales
 

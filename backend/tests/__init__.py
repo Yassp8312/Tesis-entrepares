@@ -1,0 +1,1 @@
+"""Comprobaciones transversales del monolito."""
