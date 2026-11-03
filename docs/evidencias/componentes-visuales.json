@@ -1,0 +1,221 @@
+{
+  "fecha": "2026-11-03",
+  "tarea": "SP01-T08",
+  "resultado": "Componentes comunes integrados con identidad v1",
+  "trazabilidad": {
+    "WI": [
+      "WI06",
+      "WI30"
+    ],
+    "DV": [
+      "DV03",
+      "DV06"
+    ],
+    "RNF": [
+      "RNF07",
+      "RNF08",
+      "RNF11"
+    ],
+    "AT16": "Parcial técnico; U01–U08 y evaluación con usuarios pendientes"
+  },
+  "componentes": [
+    "BaseButton",
+    "ActionLink",
+    "FormField",
+    "TextField",
+    "TextAreaField",
+    "SelectField",
+    "StatusBadge",
+    "InlineNotice",
+    "ModalDialog",
+    "BrandIcon"
+  ],
+  "integracion": {
+    "inicio_y_404": "ActionLink",
+    "presentacion": "InlineNotice estático",
+    "iconos_tipados": 24,
+    "pie": "https://jorge-coffee.onrender.com/",
+    "funciones_negocio_agregadas": false,
+    "dependencias_nuevas": false
+  },
+  "pruebas": {
+    "correctas": 67,
+    "fallidas": 0,
+    "omitidas": 0,
+    "existentes": 37,
+    "estructura_componentes_ssr": 15,
+    "contraste": 15,
+    "herramienta": "Node test; Vue server-renderer mediante Vite",
+    "tipos": "vue-tsc --noEmit correcto",
+    "compilacion": "npm run build correcto, 47 módulos",
+    "backend": "Sin cambios; 153 pruebas anteriores de T06 no repetidas"
+  },
+  "contraste": [
+    {
+      "frente": "ink",
+      "fondo": "paper",
+      "razon": 12.7413,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "ink",
+      "fondo": "white",
+      "razon": 14.1098,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "muted",
+      "fondo": "paper",
+      "razon": 5.6508,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "muted",
+      "fondo": "white",
+      "razon": 6.2578,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "white",
+      "fondo": "terra",
+      "razon": 6.0989,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "white",
+      "fondo": "terra-hover",
+      "razon": 8.3551,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "white",
+      "fondo": "danger",
+      "razon": 7.2916,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "ink",
+      "fondo": "soft",
+      "razon": 11.4729,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "info",
+      "fondo": "info-bg",
+      "razon": 6.4686,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "success",
+      "fondo": "success-bg",
+      "razon": 6.5666,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "warning",
+      "fondo": "warning-bg",
+      "razon": 6.0561,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "danger",
+      "fondo": "danger-bg",
+      "razon": 6.3981,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "danger",
+      "fondo": "white",
+      "razon": 7.2916,
+      "minimo": 4.5,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "control",
+      "fondo": "white",
+      "razon": 3.7006,
+      "minimo": 3,
+      "decision": "Aprobada con valor sin redondear"
+    },
+    {
+      "frente": "control",
+      "fondo": "paper",
+      "razon": 3.3417,
+      "minimo": 3,
+      "decision": "Aprobada con valor sin redondear"
+    }
+  ],
+  "revision_navegador": {
+    "herramienta": "CUA, navegador interno",
+    "anchos": [
+      1280,
+      390,
+      320
+    ],
+    "desbordamiento_horizontal": false,
+    "campos_y_botones_regulares_min_alto_px": 48,
+    "cierres_min_alto_px": 44,
+    "interacciones": [
+      "activación",
+      "carga y deshabilitación",
+      "edición y selección nativas",
+      "error asociado y foco",
+      "cierre de aviso",
+      "apertura modal y foco de título",
+      "Tab y Mayús+Tab en extremos",
+      "Escape y devolución de foco",
+      "botón de cierre",
+      "confirmación",
+      "cierre desde el padre",
+      "desmontaje con disparador conectado"
+    ],
+    "correccion": "Contención explícita de Tab tras detectar salida de foco en la primera revisión; recorrido repetido correcto",
+    "compilacion": "Enlaces de inicio/404 y aviso de presentación verificados con Vite preview",
+    "fuentes": "Lora y Source Sans 3 cargadas; recursos locales",
+    "errores_o_advertencias_observados": 0,
+    "viewport": "Restablecido"
+  },
+  "entrega": {
+    "fuentes_de_diseno_sin_cambios": 7,
+    "recursos_marca_sin_cambios": 12,
+    "licencias_en_dist": 3,
+    "banco_sintetico": "tests/fixtures; sin HTTP de negocio, fuera del router y dist",
+    "secretos_conocidos_detectados": false,
+    "bloqueos_y_backend": "Sin cambios",
+    "servidores_http_revision": "Vite 5173 y preview 4173 cerrados tras verificar procesos propios",
+    "postgresql_privado": "Conservado activo; no intervenido"
+  },
+  "artefactos_locales": {
+    "carpeta": ".cache/componentes",
+    "junit_sha256": "bf298a77e010d541aea24c3f6edd4ba599493700a3d2d9d9fe5234c961506e92",
+    "capturas": {
+      "componentes-escritorio.jpg": "18faa6e072b62b752c8439a937936a44dc93b61d5b8c7b364248bc65fe8d8557",
+      "componentes-movil.jpg": "2fd5f4ecb315c7c508ff2197bdc43453227a653ffd6dcf98c11a098ff81e7849",
+      "componentes-320.jpg": "c93041936225d21d71034217cb6dfc08c4d46d14adee60dd63237e6720e71e01",
+      "dialogo-escritorio.jpg": "4477aad0e1725cb473d823842ab1aba5bf21b928fe4036ea1318457e07f07542",
+      "dialogo-movil.jpg": "593f5ec91a640c9f0660b01c4b402255f63df9f5622763239f76358baabf3d94",
+      "inicio-compilado.jpg": "3478cd9769d6f5714ba877812a7731987584fb70496cfc867ad791a701f9d99b"
+    },
+    "versionados": false
+  },
+  "limites": [
+    "No es conformidad WCAG completa",
+    "Lectores de pantalla y todos los navegadores pendientes",
+    "No contiene pruebas con participantes ni resultados del piloto",
+    "No implementa formularios de negocio ni autorización",
+    "WI06, WI30 y SP01 abiertos"
+  ],
+  "siguiente": "SP01-T09: compilación, collectstatic y retorno Django excluyendo /api/, /admin/ y /static/"
+}

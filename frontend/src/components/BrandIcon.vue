@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import sprite from '../assets/brand/icons.svg';
-defineProps<{ name: 'flecha' | 'menu' | 'cerrar' | 'personas' | 'proyecto' | 'calendario' | 'externo' }>();
+import type { IconName } from './types.ts';
+defineProps<{ name: IconName }>();
 </script>
 
 <template>

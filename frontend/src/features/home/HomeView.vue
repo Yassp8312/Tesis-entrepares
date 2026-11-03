@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
 import BrandIcon from '../../components/BrandIcon.vue';
+import ActionLink from '../../components/ActionLink.vue';
 import symbol from '../../assets/brand/symbol.svg';
 </script>
 
@@ -11,7 +12,7 @@ import symbol from '../../assets/brand/symbol.svg';
         <p class="eyebrow">COLABORACIÓN ACADÉMICA Y PROFESIONAL · CUBA</p>
         <h1 id="hero-title">Tu proyecto necesita <em>otras disciplinas.</em></h1>
         <p class="lead">Las buenas ideas crecen cuando encuentran con quién. Estamos construyendo un espacio para conectar personas con conocimientos complementarios y proyectos que necesitan distintas miradas.</p>
-        <RouterLink class="button" to="/acerca-de">Conoce la propuesta <BrandIcon name="flecha" /></RouterLink>
+        <ActionLink to="/acerca-de" label="Conoce la propuesta" icon="flecha" />
         <p class="availability">La comunidad se está preparando. El registro aún no está disponible.</p>
       </div>
       <div class="meeting-panel" aria-label="Un punto de encuentro entre disciplinas">

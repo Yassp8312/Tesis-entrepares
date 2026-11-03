@@ -64,6 +64,8 @@ La base HTTP se describe en [Entrada JSON y errores](docs/entrada-json.md). Por 
 
 Para la interfaz, iniciar Django con `scripts/django.ps1 runserver 127.0.0.1:8000 --noreload` y, en otra terminal dentro de `frontend`, ejecutar `npm run dev`. Abrir `http://127.0.0.1:5173/`. Los comandos, ciclo CSRF, recursos y pruebas están en [Cliente Vue](docs/cliente-vue.md).
 
+La biblioteca de botones, campos, estados, avisos y diálogo se describe en [Componentes visuales](docs/componentes-visuales.md), con un banco local de pruebas separado de la navegación pública. La aplicación requiere HTTP; abrir `frontend/index.html` directamente como archivo no inicia Vue.
+
 ## Reglas iniciales
 
 - Mantener la propiedad de datos de cada módulo y coordinar las operaciones entre módulos desde `application`.
