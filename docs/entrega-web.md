@@ -2,6 +2,8 @@
 
 SP01-T09, 3 de noviembre de 2026. Django sirve el documento Vue compilado y WhiteNoise entrega sus recursos en el mismo origen que `/api/v1/`. La identidad y el enlace «Apoyar a Jorge» se conservan.
 
+Para instalar desde una copia nueva, seguir primero [Instalación y arranque](instalacion-y-arranque.md), verificada en SP01-T11. Esta guía amplía la etapa de entrega y mantiene la evidencia de T09.
+
 ## Preparar y abrir
 
 Con el entorno local y `.env` ya preparados, desde la raíz del repositorio y con el proceso web detenido:

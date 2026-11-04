@@ -42,6 +42,8 @@ No se requiere una instalación global adicional de Python ni activar `.venv`. E
 
 Desde SP01-T10, `npm ci` utiliza la caché propia `.tools/npm-cache`. El flujo común posterior es `scripts/comprobar.ps1`, descrito en [Comprobaciones reproducibles](comprobaciones.md); no necesita `.env` para su modalidad sin base.
 
+La secuencia actual completa, incluido PostgreSQL, migraciones, build y apertura de la aplicación, está en [Instalación y arranque](instalacion-y-arranque.md). Su reproducción con otro cluster se comprobó en SP01-T11; los resultados de preparación de T02 que siguen conservan su alcance histórico.
+
 ## Repetir las comprobaciones
 
 Con el entorno preparado, desde la raíz:

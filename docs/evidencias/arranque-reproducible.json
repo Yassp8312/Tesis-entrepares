@@ -1,0 +1,150 @@
+{
+  "fecha": "2026-11-04",
+  "tarea": "SP01-T11",
+  "resultado": "Instalación, arranque y reinicio reproducidos en otra copia; guía consolidada",
+  "trazabilidad": {
+    "WI": [
+      "WI06"
+    ],
+    "sprint": "SP01",
+    "alcance": "Entorno y esqueleto; no valida los WI globales ni el piloto"
+  },
+  "version_de_runtime": "2e562ed804d15b4156a5e5b7f90e23622844d358",
+  "cambio": "Documentación y comentarios de .env.example; código y dependencias intactos",
+  "entorno": {
+    "platform": "Windows-11-10.0.22631-SP0",
+    "machine": "AMD64",
+    "python": "3.13.17",
+    "django": "5.2.18",
+    "postgresql": "17.11"
+  },
+  "herramientas": {
+    "powershell": "7.6.5",
+    "node": "24.18.0",
+    "npm": "11.16.0",
+    "uv": "0.13.6"
+  },
+  "copia": {
+    "ubicacion_relativa": ".cache\\arranque\\instalacion limpia-73528bb8",
+    "carpeta_con_espacios": true,
+    "inventario_inicial": {
+      "env": false,
+      "venv": false,
+      "node_modules": false,
+      "tools": false
+    },
+    "archivos_de_fuente_iguales_a_exportacion": 199,
+    "configuracion": "Generada en la copia; clave Django y tres credenciales PostgreSQL distintas del principal",
+    "cache_postgresql": {
+      "cache": "Solo ZIP de distribución; sin configuración, datos ni credenciales",
+      "sha256": "80379b2c04d51c30225532e0ae04509899141e9957ed096fe749d7fd9df8f82f",
+      "bytes": 381531864
+    },
+    "binarios_y_cluster": "Extraídos e inicializados en la copia; no transferidos desde otro cluster",
+    "puerto": 55433,
+    "tablas": 9,
+    "migraciones": 16,
+    "cuentas": 0,
+    "bases_persistentes": 2,
+    "base_efimera": "Eliminada al terminar las pruebas",
+    "no_internet": "No acreditado; se utilizaron descargas y cachés"
+  },
+  "verificaciones": {
+    "pruebas": {
+      "python": {
+        "tests": 176,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 19,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "backend_total": 195,
+    "arquitectura_dependencias_formato": "Correctos",
+    "tipos_y_build": "Correctos, 47 módulos",
+    "check_y_coleccion": "Correctos",
+    "check_con_base": "Sin problemas; un chequeo genérico sustituido y silenciado desde T03",
+    "informe_comun": ".cache\\arranque\\instalacion limpia-73528bb8\\.cache\\comprobaciones\\20261104T051137Z-a99f662c\\informe.json",
+    "informe_sha256": "b3ff72173aefb7106ef467a5b0cc70d3e921bdd10a68b054515980737d0d83ff"
+  },
+  "http": {
+    "compiled_route": 200,
+    "compiled_revalidation": 304,
+    "versioned_assets_compared": 13,
+    "api_compiled": 404,
+    "api_proxy": 404,
+    "api_format": "JSON con correlación incluso Accept HTML",
+    "development_route": 200,
+    "development_module": 200,
+    "missing_static": 404,
+    "document_sha256": "e0ff57b5c460f2f055cff1f00593e337ccb18cba35c214828dfff69695037660",
+    "etag": "\"e0ff57b5c460f2f055cff1f00593e337ccb18cba35c214828dfff69695037660\""
+  },
+  "navegador": {
+    "herramienta": "CUA navegador interno",
+    "compilado": "Navegación y recarga en 8000 correctas",
+    "desarrollo": "Navegación y recarga en 5173 correctas",
+    "reinicio": "Reapertura y regreso a inicio correctos",
+    "recursos": "Lora, Source Sans 3, imágenes y enlace Apoyar a Jorge",
+    "recorridos_estables": "Sin errores o advertencias observados antes de cerrar los servidores",
+    "capturas": {
+      "copia-compilada.jpg": "3c7c5f9e953c46116a11c37cb95063c3df965006dabb20885009197b5f090e2f",
+      "copia-desarrollo.jpg": "3c7c5f9e953c46116a11c37cb95063c3df965006dabb20885009197b5f090e2f",
+      "copia-reiniciada.jpg": "73fa1edb53adaca34228549bdc8832eb0e3d5be86e12991638794245c92e7da8"
+    }
+  },
+  "repeticion": {
+    "generador_configuracion": "Conserva .env existente",
+    "parada_y_arranque": "PostgreSQL y Django comprobados",
+    "configuracion_esquema_datos_identidad": "Conservados",
+    "migraciones_segunda_ejecucion": "No migrations to apply",
+    "documento": "Conserva contenido y ETag"
+  },
+  "fallos_controlados": {
+    "missing_env_exit": 1,
+    "missing_env_message": "Primero prepara la configuración local.",
+    "existing_cluster_port_change_exit": 1,
+    "existing_cluster_port_change": "Rechazado antes de reconfigurar",
+    "configuration_restored_unchanged": true
+  },
+  "conservacion": {
+    "principal": {
+      "puerto": 55432,
+      "tablas": 9,
+      "migraciones": 16,
+      "cuentas": 0,
+      "activo": true
+    },
+    "servicio_global": "No intervenido",
+    "cluster_de_revision": "Detenido al terminar, datos conservados",
+    "servidores_http": "Cerrados tras verificar los procesos propios",
+    "fuentes_historicas": 7,
+    "recursos_marca": 12,
+    "secretos_en_ejemplo": "Vacíos; mismos valores que antes",
+    "secretos_conocidos_en_cambio_o_build": false
+  },
+  "criterios_SP01": {
+    "copia_limpia": "Fuentes exportadas, entornos nuevos y cluster nuevo",
+    "cliente_y_servidor": "Vue compilado y Vite con Django, ambos revisados",
+    "ruta_json": "404 real de API inexistente; no es una operación funcional",
+    "estaticos": "Build, collectstatic y 13 recursos comparados por HTTP",
+    "usuario_propio": "Modelo T01 definido antes de migrate; pruebas de migración y PostgreSQL correctas",
+    "limites_paquetes": "50 archivos sin infracciones y pruebas de estructura correctas",
+    "resultado": "Demostración técnica del sprint completada"
+  },
+  "limites": [
+    "No despliega en Linux ni verifica TLS real",
+    "No implementa registro, API001 u otros casos de negocio",
+    "No cierra por inferencia WI06/WI09",
+    "No son resultados del piloto"
+  ],
+  "siguiente": "SP02-T01 Migrar T02 y T03 para comprobaciones y recuperación"
+}
