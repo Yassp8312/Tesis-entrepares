@@ -1,0 +1,223 @@
+{
+  "fecha": "2026-11-04",
+  "tarea": "SP02-T02",
+  "resultado": "Catálogos y ámbitos T08–T11 implementados, probados y aplicados a desarrollo",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI05"
+    ],
+    "modulos": [
+      "M03"
+    ],
+    "tablas": [
+      "T08",
+      "T09",
+      "T10",
+      "T11"
+    ],
+    "DL": [
+      "DL05",
+      "DL20"
+    ],
+    "RNF": [
+      "RNF12"
+    ],
+    "VD": [
+      "VD18: comparación parcial de datos implementados"
+    ]
+  },
+  "modelo": {
+    "modelos": [
+      "Institution",
+      "AcademicScope",
+      "Discipline",
+      "InstitutionalDomain"
+    ],
+    "columnas": 29,
+    "checks": 12,
+    "foreign_keys": [
+      "fk_t08_01",
+      "fk_t09_01",
+      "fk_t09_02",
+      "fk_t10_01",
+      "fk_t11_01",
+      "fk_t11_02"
+    ],
+    "on_delete": "RESTRICT en PostgreSQL y Django",
+    "foreign_keys_diferibles": false,
+    "claves_unicas": [
+      "uq_t09_key01 (id, institution_id)",
+      "uq_t11_key01 (domain_ascii)"
+    ],
+    "indices": [
+      "ix_t08_01",
+      "ix_t08_02",
+      "ix_t09_01",
+      "ix_t09_02",
+      "ix_t10_01",
+      "ix_t10_02",
+      "ix_t11_01",
+      "ix_t11_02"
+    ],
+    "modelo_abstracto": "AcademicRecord: sin tabla adicional",
+    "homonimos": "Permitidos para instituciones y disciplinas"
+  },
+  "migracion": {
+    "nombre": "academics/0001_catalogs_and_scopes",
+    "dependencia": "swappable_dependency(settings.AUTH_USER_MODEL), identidad inicial",
+    "tecnica": "Operaciones Django y SeparateDatabaseAndState con seis FK SQL nombradas y reversibles",
+    "relaciones_simples": "Cinco relaciones con db_constraint=True en el estado final",
+    "padre_compuesto": "parent usa db_constraint=False en ORM; fk_t09_02 (parent_id, institution_id) referencia (id, institution_id) en SQL",
+    "diferencias_entre_modelos_y_migraciones": 0,
+    "reversion": "A cero y reaplicación en test_entrepares, preservando una cuenta sintética y comprobando las FK restauradas"
+  },
+  "pruebas_nuevas": {
+    "archivo": "backend/modules/academics/tests/test_catalogs_postgresql.py",
+    "correctas": 63,
+    "fallidas": 0,
+    "omitidas": 0,
+    "comando": "scripts/probar.ps1 -Modo integracion backend/modules/academics/tests/test_catalogs_postgresql.py -q",
+    "junit_privado": ".cache/sprint02/t02-integracion.xml",
+    "escenarios": [
+      "Esquema físico, columnas, tipos, nulabilidad y restricciones reales",
+      "Doce CHECK, dos claves únicas, ocho índices y seis FK con RESTRICT",
+      "Valores predeterminados SQL y actualización parcial de fechas en cuatro modelos",
+      "Homónimos y variantes de escritura admitidos",
+      "Dominio exacto único entre instituciones y subdominio distinto",
+      "Reconocer o retirar exige revisor, fecha y evidencia privada",
+      "Padre de otra institución rechazado en inserción y actualización",
+      "Cambio de institución de padre con hijos rechazado",
+      "Borrado restringido desde SQL y ORM en las seis relaciones",
+      "Rollback conjunto y reversión/reaplicación de la migración"
+    ]
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261104T181712Z-7c5cd7d1/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 176,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 124,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 300,
+    "resultado": "Todos los pasos correctos"
+  },
+  "desarrollo": {
+    "antes": {
+      "postgresql": "17.11",
+      "tables": [
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request"
+      ],
+      "table_count": 11,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0
+      },
+      "migration_count": 17,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "despues": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_scope",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request"
+      ],
+      "table_count": 15,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0
+      },
+      "migration_count": 18,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes"
+      ],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "django_check": "Sin incidencias activas; auth.W004 sustituido por identity.E001",
+    "migrate_check": "Sin migraciones pendientes"
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/config/settings/base.py": "4a47f5faf827f6d9672b805acd88e4588f10be5a07f4e948d7169eeed55a7e1f",
+      "backend/modules/academics/apps.py": "1bb07557a9bc8475582884a5a650c39fac07c14ea2022561c60441fc314838c7",
+      "backend/modules/academics/models.py": "fb9e13dc6cf7dbacb54a6a8ba14e5123b12a473753a816a20383d56ddf0c9990",
+      "backend/modules/academics/migrations/0001_catalogs_and_scopes.py": "079b69f390a620ecd4d2e4015beff333e71e2c48b8436b3f849a881453b00091",
+      "backend/modules/academics/tests/test_catalogs_postgresql.py": "ad7cc5d61c0308bd0be0c7b8cfe3a5d3d967c025704b6456c936bdc8b7e26028"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en los archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue en curso: dos de 17 tareas completadas",
+    "Catálogos y estados persistidos no conceden capacidades, verificación personal ni representación",
+    "La FK protege institución del padre y el CHECK impide autorreferencia; los ciclos de varios ámbitos se controlarán en SP05-T02",
+    "Normalización ASCII y sintaxis DNS se implementarán en el flujo funcional correspondiente",
+    "PB03 mantiene pendiente la autoridad y el respaldo para dominios y gobierno académico",
+    "SP02-T12 debe conservar esta FK al consolidar las restantes compuestas y vistas",
+    "No se implementan API020/API021 ni otros endpoints en esta tarea de datos",
+    "Pruebas técnicas sintéticas locales; no son resultados del piloto"
+  ],
+  "siguiente": "SP02-T03: migrar organizaciones y representación T15–T17"
+}

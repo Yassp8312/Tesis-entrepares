@@ -2,7 +2,7 @@
 
 ## Estado actual: 4 de noviembre de 2026
 
-SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **SP02-T01 completada de sus 17 tareas**. El siguiente trabajo es **SP02-T02: migrar catálogos y ámbitos T08–T11**, conservando la jerarquía y la correspondencia de institución. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
+SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01 y T02 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T03: migrar organizaciones y representación T15–T17**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
 
 ## 30 de octubre de 2026
 
@@ -147,3 +147,17 @@ El flujo completo pasó **237 pruebas de servidor —176 sin base y 61 con Postg
 T02 conserva únicamente metadatos del enlace; no se guardan tokens utilizables ni claves. T03 no acredita identidad ni habilita revisores al persistir una alegación. El flujo de firma y consumo concurrente, restauración de acceso, procedimientos PB02/Q13 y proyecciones de auditoría mantienen sus tareas posteriores. Este cierre aporta a WI05, DL04/DL18, RNF12 y la comparación parcial VD18; no cierra el esquema completo ni SP02.
 
 La guía es [Comprobaciones y recuperación](comprobaciones-y-recuperacion.md) y la evidencia [comprobaciones-y-recuperacion.json](evidencias/comprobaciones-y-recuperacion.json). Los originales de diseño conservan sus huellas; los informes quedan en `.cache/comprobaciones/20261104T175622Z-07bc6d46`. El siguiente trabajo es **SP02-T02: catálogos y ámbitos**. Se conserva `SP01` como hito publicado y el nuevo avance se registra localmente para el cierre por sprint solicitado.
+
+### Catálogos y ámbitos académicos: SP02-T02
+
+Cierre el 4 de noviembre de 2026. Se incorporó M03 a las aplicaciones Django y se implementaron `Institution`, `AcademicScope`, `Discipline` e `InstitutionalDomain`, con la migración inicial `academics/0001_catalogs_and_scopes`. Conservan las 29 columnas T08–T11, doce CHECK, dos claves únicas, ocho índices y seis FK con `ON DELETE RESTRICT` real.
+
+La FK compuesta del padre de ámbito exige coincidencia de institución y rechaza también el cambio unilateral de institución de un padre con hijos. En el estado ORM se conserva la relación navegable `parent` con `db_constraint=False`; la migración mantiene explícitamente su restricción compuesta SQL. Las cinco FK simples quedan sincronizadas con `db_constraint=True`. No se creó otra tabla para el modelo abstracto que comparte UUID y fechas.
+
+Pasaron **63 pruebas nuevas de integración** sobre esquema, restricciones mediante SQL directo, homónimos admitidos, dominios exactos y sus decisiones, integridad del padre, borrado restringido desde SQL y ORM, valores predeterminados, guardado parcial y rollback. La migración se revirtió a cero y reaplicó en la base efímera, conservando identidad y restaurando sus seis FK.
+
+El flujo general pasó **300 pruebas del servidor —176 sin base y 124 con PostgreSQL— y 68 del cliente**, sin fallos ni omisiones. Arquitectura, dependencias y bloqueos, Ruff/formato, tipos, build, Django check, colección y correspondencia de migraciones pasaron. La base de desarrollo quedó con quince tablas, 18 migraciones y cero filas en las siete tablas de negocio implementadas; se conservan las dos bases persistentes y se eliminó la efímera.
+
+Crear un catálogo no concede verificación ni capacidades. El control de ciclos de varios ámbitos pertenece a SP05-T02, conforme a DL20; la normalización ASCII y los flujos de reconocimiento de dominio siguen pendientes de sus operaciones y PB03. Este avance no cierra WI05, DL05/DL20, VD18 completo ni SP02. La FK compuesta ya implementada debe conservarse al consolidar las restantes en SP02-T12.
+
+La guía es [Catálogos y ámbitos](catalogos-y-ambitos.md) y la evidencia [catalogos-y-ambitos.json](evidencias/catalogos-y-ambitos.json). Informe privado `.cache/comprobaciones/20261104T181712Z-7c5cd7d1/informe.json`; las siete fuentes históricas conservan sus huellas. El avance se guarda localmente para la publicación por sprint. El siguiente trabajo es **SP02-T03: organizaciones y representación T15–T17**.
