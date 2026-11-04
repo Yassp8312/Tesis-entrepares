@@ -18,3 +18,5 @@ DATABASES["default"].update(  # noqa: F405
 )
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
+# Los ensayos web proporcionan su propio build temporal; no requieren compilar Vue.
+STATICFILES_DIRS = []

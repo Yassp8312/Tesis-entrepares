@@ -13,7 +13,7 @@
     "build": "vue-tsc --noEmit && vite build",
     "typecheck": "vue-tsc --noEmit",
     "test": "node --test tests/*.test.ts",
-    "preview": "vite preview",
+    "preview": "pwsh -NoProfile -File ../scripts/django.ps1 runserver 127.0.0.1:8000 --noreload --nostatic",
     "check:deps": "node scripts/check-dependencies.mjs"
   },
   "dependencies": {

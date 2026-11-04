@@ -3,6 +3,7 @@
 from pathlib import Path
 
 from config.environment import database_port, env_list, env_string
+from config.frontend import frontend_static_headers, immutable_frontend_file
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 REPO_DIR = BASE_DIR.parent
@@ -98,4 +99,15 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 STATIC_URL = "/static/"
 STATIC_ROOT = REPO_DIR / ".cache" / "staticfiles"
+FRONTEND_INDEX = REPO_DIR / ".cache" / "web" / "index.html"
+FRONTEND_ASSET_MANIFEST = REPO_DIR / ".cache" / "web" / "versioned-assets.json"
+STATICFILES_DIRS = [("entrepares", REPO_DIR / ".cache" / "web" / "static" / "entrepares")]
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+}
+WHITENOISE_USE_FINDERS = False
+WHITENOISE_ALLOW_ALL_ORIGINS = False
+WHITENOISE_IMMUTABLE_FILE_TEST = immutable_frontend_file
+WHITENOISE_ADD_HEADERS_FUNCTION = frontend_static_headers
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"

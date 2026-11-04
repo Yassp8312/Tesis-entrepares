@@ -1,0 +1,140 @@
+{
+  "fecha": "2026-11-03",
+  "tarea": "SP01-T09",
+  "resultado": "Documento Vue y estáticos integrados con Django en origen común",
+  "trazabilidad": {
+    "WI": [
+      "WI06",
+      "WI09"
+    ],
+    "RNF": [
+      "RNF14"
+    ],
+    "AT14": "Parcial local; despliegue Linux y HTTPS/cookies del piloto pendientes",
+    "decision": "DA02 E02"
+  },
+  "entrega": {
+    "html": "Vista Django GET/HEAD, ETag SHA256, no-cache, max-age=0, must-revalidate, Vary Accept",
+    "estaticos": "WhiteNoise CompressedStaticFilesStorage; bytes y nombres de Vite conservados",
+    "versionados": "Lista privada derivada del manifiesto Vite; public, max-age=31536000, immutable",
+    "sin_version": "Revalidación obligatoria",
+    "espacio": "/static/entrepares/",
+    "privados": "HTML y manifiestos fuera de collectstatic",
+    "retorno": "Excluye api/admin/static, archivos y segmentos privados",
+    "api_ausente": "404 JSON, UUID y no-store incluso Accept HTML",
+    "sin_build": "503 controlado",
+    "ruta_vue_desconocida": "Documento 200, vista no encontrada de Vue",
+    "preparacion": "Proceso web detenido; preparar-web.ps1 y reinicio",
+    "desarrollo": "Vite / y proxy originales",
+    "preview": "npm run preview inicia Django por PowerShell 7"
+  },
+  "artefactos": {
+    "publicos_entrepares": 17,
+    "versionados": 13,
+    "coleccion_inicial": 44,
+    "variantes_comprimidas": 35,
+    "preparacion_repetida": "Correcta; conserva recursos antiguos",
+    "documento_sha256": "e0ff57b5c460f2f055cff1f00593e337ccb18cba35c214828dfff69695037660"
+  },
+  "pruebas": {
+    "backend": {
+      "correctas": 188,
+      "sin_base": 169,
+      "postgresql": 19,
+      "nuevas": 35,
+      "fallidas": 0,
+      "omitidas": 0,
+      "segundos": 37.66
+    },
+    "frontend": {
+      "correctas": 68,
+      "nuevas": 1,
+      "fallidas": 0,
+      "omitidas": 0
+    },
+    "ruff": "Correcto",
+    "formato_python": "96 archivos correctos",
+    "tipos": "Correctos",
+    "build": "47 módulos; correcto",
+    "django_check": "Sin problemas, un chequeo genérico sustituido y silenciado desde T03",
+    "migraciones": "Sin cambios",
+    "pipeline_completo": "Ejecutado; preparación repetida correcta",
+    "comando_preview": "Ejecutado y respuesta HTTP 200 comprobada"
+  },
+  "http_real": {
+    "documento": 200,
+    "revalidacion_documento": 304,
+    "head": 200,
+    "recursos_comparados": 13,
+    "bytes_recursos": "Iguales a Vite",
+    "recursos_condicionales": 304,
+    "gzip_css": true,
+    "api_ausente": 404,
+    "api_ausente_formato": "JSON incluso Accept HTML",
+    "reservados_y_privados": 404,
+    "documento_sha256": "e0ff57b5c460f2f055cff1f00593e337ccb18cba35c214828dfff69695037660"
+  },
+  "ajustes_produccion_wsgi": {
+    "ajustes": "config.settings.production",
+    "debug": false,
+    "http_a_https": 301,
+    "html_https_simulado": 200,
+    "revalidacion": 304,
+    "api_ausente": 404,
+    "recurso_versionado": 200,
+    "hsts": true,
+    "conexion_db_abierta": false,
+    "alcance": "Cliente WSGI de Django; no es TLS ni despliegue real"
+  },
+  "revision_navegador": {
+    "herramienta": "CUA navegador interno",
+    "servidor": "Django 127.0.0.1:8000, DEBUG false durante el recorrido",
+    "anchos": [
+      1280,
+      390
+    ],
+    "recorridos": [
+      "entrada y recarga de acerca-de",
+      "inicio y anclas",
+      "recarga de ruta desconocida",
+      "regreso a inicio",
+      "menú móvil",
+      "imágenes, tipografías y enlace de apoyo"
+    ],
+    "desbordamiento_horizontal": false,
+    "errores_advertencias_observados": 0,
+    "viewport": "Restablecido"
+  },
+  "conservacion": {
+    "fuentes_diseno": 7,
+    "recursos_marca": 12,
+    "licencias": 3,
+    "tablas": 9,
+    "migraciones": 16,
+    "cuentas_sinteticas_desarrollo": 0,
+    "bases_persistentes": 2,
+    "base_efimera": "Eliminada por pytest",
+    "dependencias_y_bloqueos": "Sin cambios; solo script preview en package.json",
+    "secretos_conocidos_detectados": false,
+    "http_revision": "Procesos propios cerrados",
+    "postgresql_privado": "Conservado activo"
+  },
+  "registros_locales": {
+    "carpeta": ".cache/entrega-web",
+    "junit_backend_sha256": "63fdb1896bb6b4c895936b1fd01cceb00b9d454bb01e0f26933b0caabbdbe7dc",
+    "junit_frontend_sha256": "7ce4d01be5074326eb37b590523e10119a6f5110c6679e4f795867c1fac69059",
+    "capturas": {
+      "inicio-django.jpg": "ff6e73470dde90b86f25ba74875a4f129a42cb55096feb3a3982bc8d6762961d",
+      "presentacion-django-movil.jpg": "95b94ccd87e162b977e3c68f6ae572b2830b349ca0fe5cdf71e72662efe3ecf1"
+    },
+    "versionados": false
+  },
+  "limites": [
+    "No despliega en Linux ni establece TLS real",
+    "No evalúa cookies HTTPS del piloto",
+    "No implementa las operaciones de negocio",
+    "No implementa releases en caliente ni limpieza de recursos antiguos",
+    "SP01, WI06 y WI09 abiertos"
+  ],
+  "siguiente": "SP01-T10 Automatizar comprobaciones de estructura y reproducción desde copia limpia"
+}

@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import type { UserConfig } from 'vite';
 
 export function apiTarget(value = 'http://127.0.0.1:8000'): string {
   let url: URL;
@@ -13,19 +14,25 @@ export function apiTarget(value = 'http://127.0.0.1:8000'): string {
   return url.origin;
 }
 
-export default defineConfig({
-  plugins: [vue()],
-  envDir: false,
-  envPrefix: [],
-  server: {
-    host: '127.0.0.1', port: 5173, strictPort: true,
-    proxy: {
-      '^/(?:api|admin|static)(?:/|$)': {
-        target: apiTarget(process.env.ENTREPARES_API_TARGET),
-        // Conservar Host y Origin permite comprobar CSRF bajo el origen del navegador.
-        changeOrigin: false,
+export function frontendConfig(command: 'build' | 'serve'): UserConfig {
+  return {
+    plugins: [vue()],
+    base: command === 'build' ? '/static/entrepares/' : '/',
+    build: { manifest: true },
+    envDir: false,
+    envPrefix: [],
+    server: {
+      host: '127.0.0.1', port: 5173, strictPort: true,
+      proxy: {
+        '^/(?:api|admin|static)(?:/|$)': {
+          target: apiTarget(process.env.ENTREPARES_API_TARGET),
+          // Conservar Host y Origin permite comprobar CSRF bajo el origen del navegador.
+          changeOrigin: false,
+        },
       },
     },
-  },
-  preview: { host: '127.0.0.1', port: 4173, strictPort: true },
-});
+    preview: { host: '127.0.0.1', port: 4173, strictPort: true },
+  };
+}
+
+export default defineConfig(({ command }) => frontendConfig(command));

@@ -37,10 +37,6 @@ if env_bool("DJANGO_TRUST_PROXY_SSL_HEADER", False):
     # Activar solo cuando el proxy de despliegue sobrescriba este encabezado.
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-STORAGES = {
-    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
-}
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env_string("EMAIL_HOST")
 EMAIL_PORT = 587

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createMemoryHistory } from 'vue-router';
 import { createAppRouter } from '../src/router.ts';
-import config, { apiTarget } from '../vite.config.ts';
+import { frontendConfig, apiTarget } from '../vite.config.ts';
 
 test('el router resuelve inicio, presentación, anclas y una página inexistente', () => {
   const router = createAppRouter(createMemoryHistory());
@@ -13,7 +13,7 @@ test('el router resuelve inicio, presentación, anclas y una página inexistente
 });
 
 test('el proxy es local, mantiene el origen y excluye espacios del servidor del fallback Vue', () => {
-  const options = config as Exclude<typeof config, Function | Promise<unknown>>;
+  const options = frontendConfig('serve');
   assert.equal(options.envDir, false);
   assert.deepEqual(options.envPrefix, []);
   assert.equal(options.server?.host, '127.0.0.1');
@@ -22,6 +22,12 @@ test('el proxy es local, mantiene el origen y excluye espacios del servidor del 
   for (const route of ['/api', '/api/v1/x/', '/admin/', '/static/x.css']) assert.ok(matcher.test(route));
   assert.equal(matcher.test('/apiary'), false);
   assert.equal((proxy as { changeOrigin: boolean }).changeOrigin, false);
+});
+
+test('la compilación usa el espacio estático y conserva la navegación de desarrollo en la raíz', () => {
+  assert.equal(frontendConfig('serve').base, '/');
+  assert.equal(frontendConfig('build').base, '/static/entrepares/');
+  assert.equal(frontendConfig('build').build?.manifest, true);
 });
 
 for (const input of ['https://ajeno.example', 'http://user:secret@127.0.0.1:8000', 'file:///tmp/x', 'http://127.0.0.1/x', 'http://127.0.0.1/?token=x', 'inválido']) {

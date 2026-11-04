@@ -66,6 +66,8 @@ Para la interfaz, iniciar Django con `scripts/django.ps1 runserver 127.0.0.1:800
 
 La biblioteca de botones, campos, estados, avisos y diálogo se describe en [Componentes visuales](docs/componentes-visuales.md), con un banco local de pruebas separado de la navegación pública. La aplicación requiere HTTP; abrir `frontend/index.html` directamente como archivo no inicia Vue.
 
+Para abrir la interfaz compilada desde Django, con el proceso web detenido, ejecutar `scripts/preparar-web.ps1` y después `scripts/django.ps1 runserver 127.0.0.1:8000 --noreload --nostatic`. Abrir `http://127.0.0.1:8000/`. La separación del HTML, `collectstatic`, caché y recarga de rutas se explican en [Entrega web](docs/entrega-web.md).
+
 ## Reglas iniciales
 
 - Mantener la propiedad de datos de cada módulo y coordinar las operaciones entre módulos desde `application`.

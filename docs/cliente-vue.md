@@ -69,6 +69,8 @@ Los resultados están en [cliente-vue.json](evidencias/cliente-vue.json). Son ev
 
 Actualización posterior: SP01-T08 completa los componentes comunes descritos en [Componentes visuales](componentes-visuales.md). Los resultados de T07 anteriores conservan su fecha y alcance; la evidencia del nuevo incremento se registra por separado.
 
+SP01-T09 incorpora la [entrega compilada con Django](entrega-web.md), el manifiesto de Vite y los recursos bajo `/static/entrepares/`. `npm run preview` inicia ahora Django después de preparar los artefactos; Vite de desarrollo conserva su base `/` y el proxy local.
+
 - Plan SP01-T07, arquitectura y contratos identificados en [Base documental](base-documental.json).
 - [Proxy y opciones de servidor de Vite](https://vite.dev/config/server-options#server-proxy).
 - [Navegación HTML5 de Vue Router](https://router.vuejs.org/guide/essentials/history-mode.html).

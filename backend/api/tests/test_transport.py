@@ -200,9 +200,12 @@ def test_correlation_is_generated_per_request_and_does_not_trust_client(browser)
 
 
 @pytest.mark.parametrize("url", ["/otra-ruta/", "/apiary/"])
-def test_non_api_urls_remain_outside_json_boundary(browser, url):
+def test_non_api_urls_remain_outside_json_boundary(browser, url, settings, tmp_path):
+    index = tmp_path / "documento-vue.html"
+    index.write_text('<html lang="es"><div id="app"></div></html>', encoding="utf-8")
+    settings.FRONTEND_INDEX = index
     response = browser.get(url)
-    assert response.status_code == 404 and response["Content-Type"].startswith("text/html")
+    assert response.status_code == 200 and response["Content-Type"].startswith("text/html")
     assert "X-Request-ID" not in response
 
 
