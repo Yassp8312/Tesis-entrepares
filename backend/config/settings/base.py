@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "modules.identity.apps.IdentityConfig",
     "modules.academics.apps.AcademicsConfig",
+    "modules.organizations.apps.OrganizationsConfig",
 ]
 MIDDLEWARE = [
     "api.middleware.ApiBoundaryMiddleware",

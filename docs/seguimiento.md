@@ -2,7 +2,7 @@
 
 ## Estado actual: 4 de noviembre de 2026
 
-SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01 y T02 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T03: migrar organizaciones y representación T15–T17**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
+SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T03 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T04: migrar perfiles y formación T04–T07**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
 
 ## 30 de octubre de 2026
 
@@ -161,3 +161,17 @@ El flujo general pasó **300 pruebas del servidor —176 sin base y 124 con Post
 Crear un catálogo no concede verificación ni capacidades. El control de ciclos de varios ámbitos pertenece a SP05-T02, conforme a DL20; la normalización ASCII y los flujos de reconocimiento de dominio siguen pendientes de sus operaciones y PB03. Este avance no cierra WI05, DL05/DL20, VD18 completo ni SP02. La FK compuesta ya implementada debe conservarse al consolidar las restantes en SP02-T12.
 
 La guía es [Catálogos y ámbitos](catalogos-y-ambitos.md) y la evidencia [catalogos-y-ambitos.json](evidencias/catalogos-y-ambitos.json). Informe privado `.cache/comprobaciones/20261104T181712Z-7c5cd7d1/informe.json`; las siete fuentes históricas conservan sus huellas. El avance se guarda localmente para la publicación por sprint. El siguiente trabajo es **SP02-T03: organizaciones y representación T15–T17**.
+
+### Organizaciones y representación: SP02-T03
+
+Cierre el 4 de noviembre de 2026. Se incorporó M04 a Django y se implementaron `Organization`, `OrganizationVerification` y `Representation`, con la migración inicial `organizations/0001_organizations_and_representation`. Conservan las 27 columnas T15–T17, siete CHECK, diez índices ordinarios, dos índices únicos parciales y nueve FK con `ON DELETE RESTRICT` real y nombres de referencia.
+
+Los índices parciales impiden dos solicitudes pendientes por organización o dos representaciones sin revocar de la misma pareja cuenta/entidad. Se conserva el historial resuelto y revocado, la posibilidad de una nueva autorización y las iguales facultades de representantes, sin añadir rangos ni verificación personal. El vínculo de catálogo y el creador de entidad no conceden verificación o representación por sí solos.
+
+Pasaron **69 pruebas nuevas de PostgreSQL** sobre esquema, CHECK, índices, referencias, borrado SQL y ORM, decisiones completas, historial, defaults, guardado parcial y rollback. Dos pruebas con conexiones independientes y comienzo sincronizado demostraron que cada índice parcial deja confirmar una inserción y rechaza la otra por duplicado. La migración se revirtió a cero y reaplicó en la base efímera, conservando cuenta e institución y restaurando restricciones. La prueba de reversión de M03 se ajustó para restaurar también sus módulos dependientes y comprobar que no quede un plan de migración pendiente.
+
+El flujo general pasó **369 pruebas del servidor —176 sin base y 193 con PostgreSQL— y 68 del cliente**, sin fallos ni omisiones. Arquitectura, dependencias/bloqueos, Ruff/formato, tipos, build, Django check, colección y correspondencia de migraciones pasaron. Tras aplicar la migración a desarrollo, quedan dieciocho tablas, 19 migraciones y cero filas en las diez tablas de negocio implementadas; se mantienen las dos bases persistentes y se eliminó la efímera.
+
+Los procedimientos de revisión, gobierno inicial, primer/último representante, acceso efectivo y revocación frente a publicación mantienen sus tareas y condiciones posteriores. Este incremento aporta la integridad de T15–T17 a WI05, DL07/DL19, RNF12 y VD18 parcial; no acredita los casos de autorización, auditoría o piloto ni cierra SP02.
+
+La guía es [Organizaciones y representación](organizaciones-y-representacion.md) y la evidencia [organizaciones-y-representacion.json](evidencias/organizaciones-y-representacion.json). Informe privado `.cache/comprobaciones/20261104T182958Z-1509b7a6/informe.json`; las siete fuentes históricas conservan sus huellas. El avance se guarda localmente para la publicación por sprint. El siguiente trabajo es **SP02-T04: perfiles y formación T04–T07**.

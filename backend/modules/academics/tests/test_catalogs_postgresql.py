@@ -446,12 +446,15 @@ def test_catalog_changes_are_rolled_back_together(catalogs):
 def test_academics_migration_reverses_and_reapplies_preserving_identity():
     assert connection.settings_dict["NAME"] == "test_entrepares"
     account = Account.objects.create_user("migracion-academica@example.org")
+    targets = MigrationExecutor(connection).loader.graph.leaf_nodes()
     try:
         MigrationExecutor(connection).migrate([("academics", None)])
         assert not (set(SCHEMA) & set(connection.introspection.table_names()))
         assert Account.objects.filter(pk=account.pk).exists()
     finally:
-        MigrationExecutor(connection).migrate([("academics", "0001_catalogs_and_scopes")])
+        # Restituir también los módulos que ahora dependen de los catálogos.
+        MigrationExecutor(connection).migrate(targets)
     assert set(SCHEMA) <= set(connection.introspection.table_names())
     test_six_foreign_keys_are_validated_restrict_and_preserve_composite_parent()
     assert Account.objects.filter(pk=account.pk).exists()
+    assert not MigrationExecutor(connection).migration_plan(targets)

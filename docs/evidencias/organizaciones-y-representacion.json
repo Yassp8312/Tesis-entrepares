@@ -1,0 +1,216 @@
+{
+  "fecha": "2026-11-04",
+  "tarea": "SP02-T03",
+  "resultado": "Organizaciones, verificación y representación T15–T17 implementadas, probadas y aplicadas a desarrollo",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI05"
+    ],
+    "modulos": [
+      "M04"
+    ],
+    "tablas": [
+      "T15",
+      "T16",
+      "T17"
+    ],
+    "DL": [
+      "DL07",
+      "DL19"
+    ],
+    "RNF": [
+      "RNF12"
+    ],
+    "VD": [
+      "VD18: comparación parcial de datos implementados"
+    ]
+  },
+  "modelo": {
+    "modelos": [
+      "Organization",
+      "OrganizationVerification",
+      "Representation"
+    ],
+    "columnas": 27,
+    "checks": 7,
+    "foreign_keys": [
+      "fk_t15_01",
+      "fk_t15_02",
+      "fk_t16_01",
+      "fk_t16_02",
+      "fk_t16_03",
+      "fk_t17_01",
+      "fk_t17_02",
+      "fk_t17_03",
+      "fk_t17_04"
+    ],
+    "on_delete": "RESTRICT en PostgreSQL y Django",
+    "foreign_keys_diferibles": false,
+    "indices_ordinarios": 10,
+    "indices_unicos_parciales": {
+      "uq_t16_01": "organization_id WHERE status = 'pending'",
+      "uq_t17_01": "organization_id, account_id WHERE revoked_at IS NULL"
+    },
+    "modelo_abstracto": "OrganizationRecord: sin tabla adicional",
+    "rangos_entre_representantes": false,
+    "verificacion_personal": "No se almacena ni concede en T15–T17"
+  },
+  "migracion": {
+    "nombre": "organizations/0001_organizations_and_representation",
+    "dependencias": [
+      "academics/0001_catalogs_and_scopes",
+      "swappable_dependency(settings.AUTH_USER_MODEL)"
+    ],
+    "tecnica": "Operaciones Django y SeparateDatabaseAndState con nueve FK SQL nombradas y reversibles",
+    "relaciones": "Nueve relaciones con db_constraint=True en el estado final",
+    "diferencias_modelos_migraciones": 0,
+    "reversion": "A cero y reaplicación del grafo completo en test_entrepares, conservando cuenta e institución sintéticas",
+    "ajuste_prueba_M03": "Al revertir el catálogo se restauran todas las hojas del grafo, incluidos sus módulos dependientes"
+  },
+  "pruebas_nuevas": {
+    "archivo": "backend/modules/organizations/tests/test_organizations_postgresql.py",
+    "correctas": 69,
+    "fallidas": 0,
+    "omitidas": 0,
+    "comando": "scripts/probar.ps1 -Modo integracion backend/modules/organizations/tests/test_organizations_postgresql.py -q",
+    "junit_privado": ".cache/sprint02/t03-integracion.xml",
+    "escenarios": [
+      "Esquema real, nulabilidad, tipos, defaults y guardado parcial de fechas",
+      "Siete CHECK, diez índices ordinarios y dos índices únicos parciales con predicados exactos",
+      "Nueve FK con RESTRICT, referencias ausentes y borrado desde SQL y ORM",
+      "Decisiones completas e historial resuelto, con nueva solicitud pendiente permitida",
+      "Representación única por pareja, revocaciones históricas y nueva concesión",
+      "Restauración de estado pendiente o representación vigente rechazada si el puesto ya está ocupado",
+      "Dos organizaciones para una cuenta y varias cuentas para una organización",
+      "Homónimos y vínculo de catálogo sin verificación ni representación automática",
+      "Rollback conjunto y reversión/reaplicación de la migración"
+    ]
+  },
+  "concurrencia": {
+    "pruebas": 2,
+    "base": "test_entrepares",
+    "metodo": "Dos conexiones Django independientes por hilo; PID PostgreSQL distintos comprobados; barrera antes del INSERT y transacciones independientes",
+    "resultado": "En ambos casos una transacción confirma y la otra se rechaza por el índice parcial esperado; queda una fila",
+    "limites_espera": "5 s para bloqueo y barrera, 10 s por sentencia y 20 s para recoger resultados; conexiones cerradas en finally",
+    "limite_alcance": "Carreras de inserción; no prueba todavía revocación frente a publicación"
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261104T182958Z-1509b7a6/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 176,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 193,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 369,
+    "resultado": "Todos los pasos correctos"
+  },
+  "desarrollo": {
+    "antes": {
+      "tablas": 15,
+      "migraciones": 18,
+      "filas_negocio": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0
+      }
+    },
+    "despues": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_scope",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification"
+      ],
+      "table_count": 18,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0
+      },
+      "migration_count": 19,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "django_check": "Sin incidencias activas; auth.W004 sustituido por identity.E001",
+    "migrate_check": "Sin migraciones pendientes"
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/config/settings/base.py": "dce847f78d7567f042444658acf3449c4f165031ffd1fdee84ca1154b5401cda",
+      "backend/modules/organizations/apps.py": "82ae920dfe191bdb465859702cb7f68e21af0e7bda7e75e1f005c26355857416",
+      "backend/modules/organizations/models.py": "06321b1e03bf54b5556d41befc0acc27b8a9d309e73e09a54c606ba975d19298",
+      "backend/modules/organizations/migrations/0001_organizations_and_representation.py": "cc03b546d27b4c787909403be231cd66b84efa69f8073e79e3c48037f652828d",
+      "backend/modules/organizations/tests/test_organizations_postgresql.py": "1d65b579beeb5b1b63aa34357f9b62f064a7b68d86319c81341126da5bd69cb0",
+      "backend/modules/academics/tests/test_catalogs_postgresql.py": "1ad583afa7d0812d4e41233320358203c40baf464aacda446a7ac0505a6a5020"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en los archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue en curso: tres de 17 tareas completadas",
+    "Persistir entidad, expediente o representación no concede por sí solo verificación personal o capacidades",
+    "Los procedimientos de revisión, state_other, retirada de respaldo y PB04 mantienen sus condiciones posteriores",
+    "No se implementan endpoints, control funcional de acceso, vistas derivadas ni auditoría en esta tarea de datos",
+    "Revocación frente a publicación y conservación de contenidos se probarán en los incrementos funcionales",
+    "Las transiciones y la exigencia procedimental de evidencia o motivo conservan sus reglas de aplicación",
+    "Pruebas locales con datos sintéticos; no son resultados del piloto"
+  ],
+  "siguiente": "SP02-T04: migrar perfiles y formación T04–T07"
+}
