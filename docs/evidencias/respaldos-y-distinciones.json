@@ -1,0 +1,309 @@
+{
+  "fecha": "2026-11-04",
+  "tarea": "SP02-T05",
+  "resultado": "Respaldos y distinciones T12–T14 implementados, probados y aplicados a desarrollo",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI05"
+    ],
+    "modulos": [
+      "M03"
+    ],
+    "tablas": [
+      "T12",
+      "T13",
+      "T14"
+    ],
+    "DL": [
+      "DL04",
+      "DL05",
+      "DL06"
+    ],
+    "RNF": [
+      "RNF12"
+    ],
+    "VD": [
+      "VD18: comparación parcial del esquema implementado"
+    ]
+  },
+  "modelo": {
+    "modelos": [
+      "PersonalVerification",
+      "ResearcherRequest",
+      "ResearcherAward"
+    ],
+    "columnas": 34,
+    "checks": 11,
+    "foreign_keys": [
+      "fk_t12_01",
+      "fk_t12_02",
+      "fk_t12_03",
+      "fk_t12_04",
+      "fk_t12_05",
+      "fk_t13_01",
+      "fk_t13_02",
+      "fk_t13_03",
+      "fk_t13_04",
+      "fk_t14_01",
+      "fk_t14_02",
+      "fk_t14_03",
+      "fk_t14_04",
+      "fk_t14_05"
+    ],
+    "on_delete": "RESTRICT en PostgreSQL y Django",
+    "foreign_keys_diferibles": false,
+    "compuestas": {
+      "fk_t12_02": "(challenge_id, account_id) -> identity_email_challenge (id, account_id)",
+      "fk_t14_05": "(source_request_id, account_id, academic_scope_id) -> academics_researcher_request (id, account_id, academic_scope_id)"
+    },
+    "indices_ordinarios": 14,
+    "claves_unicas_completas": {
+      "uq_t13_key01": "id, account_id, academic_scope_id",
+      "uq_t14_key01": "source_request_id; NULL distintos para concesión directa"
+    },
+    "indices_unicos_parciales": {
+      "uq_t12_01": "challenge_id WHERE challenge_id IS NOT NULL",
+      "uq_t12_02": "account_id WHERE method = 'manual' AND status = 'pending'",
+      "uq_t14_01": "account_id, academic_scope_id WHERE ended_at IS NULL"
+    }
+  },
+  "migracion": {
+    "nombre": "academics/0002_personal_verifications_and_researcher_awards",
+    "dependencias": [
+      "academics/0001_catalogs_and_scopes",
+      "identity/0002_email_challenge_and_recovery_request",
+      "swappable_dependency(settings.AUTH_USER_MODEL)"
+    ],
+    "tecnica": "Operaciones Django y SeparateDatabaseAndState con catorce FK SQL nombradas y reversibles",
+    "relaciones_simples": "Doce con db_constraint=True en el estado final",
+    "relaciones_compuestas": "challenge y source_request conservan db_constraint=False en ORM; FK compuestas explícitas en PostgreSQL",
+    "diferencias_modelos_migraciones": 0,
+    "reversion": "A academics/0001 y reaplicación del grafo completo en test_entrepares, conservando cuenta, comprobación y ámbito",
+    "ajuste_identidad": "Su prueba de reversión restaura ahora todas las hojas y el conjunto de tablas, incluidos los dependientes de identity/0002"
+  },
+  "pruebas_nuevas": {
+    "archivo": "backend/modules/academics/tests/test_backing_postgresql.py",
+    "correctas": 115,
+    "fallidas": 0,
+    "omitidas": 0,
+    "comando": "scripts/probar.ps1 -Modo integracion backend/modules/academics/tests/test_backing_postgresql.py -q",
+    "junit_privado": ".cache/sprint02/t05-integracion.xml",
+    "escenarios": [
+      "Esquema exacto, nulabilidad, tipos, once CHECK, catorce FK y diecinueve claves/índices",
+      "Vías manual y correo excluyentes, con referencias obligatorias por método",
+      "Estados, decisiones completas y aprobación de correo sin decisor humano",
+      "Comprobación y cuenta compatibles; cambio de cuenta de origen rechazado si rompe la referencia",
+      "Solicitud y concesión coinciden en persona/ámbito; cambios incompatibles de origen rechazados",
+      "Petición manual pendiente única y comprobación no reutilizable",
+      "Concesión directa con NULL distinto y solicitud de origen única incluso en historial",
+      "Una concesión vigente por persona/ámbito, con historial y nueva concesión",
+      "Borrado restringido desde SQL y ORM para las catorce referencias",
+      "Cambio de correo o retirada de dominio no borra el respaldo persistido",
+      "Rollback conjunto y reversión/reaplicación de la migración"
+    ]
+  },
+  "concurrencia": {
+    "pruebas": 4,
+    "base": "test_entrepares",
+    "metodo": "Parejas de conexiones Django independientes por hilo, PID PostgreSQL distintos y barrera antes de insertar",
+    "claves": [
+      "uq_t12_02",
+      "uq_t12_01",
+      "uq_t14_01",
+      "uq_t14_key01"
+    ],
+    "resultado": "En cada pareja se confirma una inserción y la otra se rechaza por la clave esperada; queda una fila",
+    "limites_espera": "5 s para bloqueo y barrera, 10 s por sentencia y 20 s para recoger resultados; conexiones cerradas en finally",
+    "limite_alcance": "Inserciones; consumo firmado, autoridad y resolución funcional concurrente quedan para sus incrementos"
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261104T185832Z-fb3f6629/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 176,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 372,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 548,
+    "resultado": "Todos los pasos correctos",
+    "avisos_integracion": {
+      "cantidad": 10,
+      "tipo": "PytestWarning de limpieza rm_rf de antiguos temporales externos en Windows",
+      "tratamiento": "Registrados; no se modificaron esos directorios"
+    }
+  },
+  "desarrollo": {
+    "antes": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_scope",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile"
+      ],
+      "table_count": 22,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0
+      },
+      "migration_count": 20,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education"
+      ],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "despues": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile"
+      ],
+      "table_count": 25,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0
+      },
+      "migration_count": 21,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education"
+      ],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "django_check": "Sin incidencias activas; auth.W004 sustituido por identity.E001",
+    "migrate_check": "Sin migraciones pendientes"
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/modules/academics/models.py": "be55390242fc3fdf02cb96b5f96aa55850a06e8584b39279f8da4a697557c05f",
+      "backend/modules/academics/migrations/0002_personal_verifications_and_researcher_awards.py": "fd922ad1bfbdfbae53bc1cf85fc04fce54f066aca631b6df0fe246298cdd25a3",
+      "backend/modules/academics/tests/test_backing_postgresql.py": "519e830e561cd88f74c9a382b533be158412e1c399159706034bab40429fe93c",
+      "backend/modules/identity/tests/test_recovery_metadata_postgresql.py": "9b6df7fbd4568b15e2b09939b7ec34936498738e5cb3eba36a4509dab1a7ea50"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en los archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue en curso: cinco de 17 tareas completadas",
+    "La FK de correo garantiza persona coincidente; firma, finalidad, destinatario, dominio vigente y consumo atómico son reglas funcionales posteriores",
+    "La FK de concesión garantiza persona y ámbito coincidentes; autoridad y solicitud aprobada se comprobarán en el caso de aplicación",
+    "No hay nuevos endpoints, permisos efectivos, proyecciones privadas ni auditoría en esta tarea de datos",
+    "La conservación del acceso efectivo de DL06 y los cambios de formación requieren sus selectores y casos funcionales",
+    "PB03/Q02/Q05 y RF59 conservan sus condiciones; no se aprueban por inferencia",
+    "SP02-T12 debe conservar las dos FK compuestas instaladas aquí",
+    "Pruebas locales sintéticas; no son resultados del piloto"
+  ],
+  "siguiente": "SP02-T06: migrar capacidades y delegaciones T32–T33"
+}

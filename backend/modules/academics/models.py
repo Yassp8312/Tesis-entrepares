@@ -1,4 +1,4 @@
-"""T08–T11: catálogos y ámbitos; declarar una entrada no concede respaldo ni acceso."""
+"""T08–T14: catálogos, ámbitos, respaldo personal y distinción de investigador."""
 
 import uuid
 
@@ -219,4 +219,274 @@ class InstitutionalDomain(AcademicRecord):
         indexes = [
             models.Index(fields=["institution"], name="ix_t11_01"),
             models.Index(fields=["decided_by"], name="ix_t11_02"),
+        ]
+
+
+class PersonalVerification(AcademicRecord):
+    """T12: expediente y respaldo; su creación no comprueba identidad o autoridad."""
+
+    class Method(models.TextChoices):
+        INSTITUTIONAL_EMAIL = "institutional_email", "Correo institucional"
+        MANUAL = "manual", "Revisión manual"
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pendiente"
+        APPROVED = "approved", "Aprobada"
+        REJECTED = "rejected", "Rechazada"
+        WITHDRAWN = "withdrawn", "Retirada"
+
+    account = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.RESTRICT,
+        related_name="personal_verifications",
+        db_index=False,
+    )
+    method = models.CharField(max_length=24, choices=Method.choices)
+    status = models.CharField(
+        max_length=16, choices=Status.choices, default=Status.PENDING, db_default="pending"
+    )
+    challenge = models.ForeignKey(
+        "identity.EmailChallenge",
+        on_delete=models.RESTRICT,
+        related_name="personal_verifications",
+        null=True,
+        blank=True,
+        db_index=False,
+        db_constraint=False,
+    )
+    domain = models.ForeignKey(
+        InstitutionalDomain,
+        on_delete=models.RESTRICT,
+        related_name="personal_verifications",
+        null=True,
+        blank=True,
+        db_index=False,
+    )
+    academic_scope = models.ForeignKey(
+        AcademicScope,
+        on_delete=models.RESTRICT,
+        related_name="personal_verifications",
+        null=True,
+        blank=True,
+        db_index=False,
+    )
+    evidence_reference = models.TextField(null=True, blank=True)
+    decided_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        db_column="decided_by",
+        on_delete=models.RESTRICT,
+        related_name="personal_verification_decisions",
+        null=True,
+        blank=True,
+        db_index=False,
+    )
+    decided_at = models.DateTimeField(null=True, blank=True)
+    decision_reason = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "academics_personal_verification"
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(method__in=["institutional_email", "manual"]), name="ck_t12_01"
+            ),
+            models.CheckConstraint(
+                condition=models.Q(status__in=["pending", "approved", "rejected", "withdrawn"]),
+                name="ck_t12_02",
+            ),
+            models.CheckConstraint(
+                condition=(
+                    models.Q(status="pending", decided_at__isnull=True, decided_by__isnull=True)
+                    | (~models.Q(status="pending") & models.Q(decided_at__isnull=False))
+                ),
+                name="ck_t12_03",
+            ),
+            models.CheckConstraint(
+                condition=(
+                    models.Q(
+                        method="institutional_email",
+                        challenge__isnull=False,
+                        domain__isnull=False,
+                        academic_scope__isnull=True,
+                    )
+                    | models.Q(
+                        method="manual",
+                        challenge__isnull=True,
+                        domain__isnull=True,
+                        academic_scope__isnull=False,
+                    )
+                ),
+                name="ck_t12_04",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(status="pending")
+                | (
+                    models.Q(decision_reason__isnull=False)
+                    & GreaterThan(Length(Trim("decision_reason")), models.Value(0))
+                ),
+                name="ck_t12_05",
+            ),
+            models.CheckConstraint(
+                condition=~models.Q(method="manual")
+                | models.Q(status="pending")
+                | models.Q(decided_by__isnull=False),
+                name="ck_t12_06",
+            ),
+            models.UniqueConstraint(
+                fields=["challenge"], condition=models.Q(challenge__isnull=False), name="uq_t12_01"
+            ),
+            models.UniqueConstraint(
+                fields=["account"],
+                condition=models.Q(method="manual", status="pending"),
+                name="uq_t12_02",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["account", "status"], name="ix_t12_03"),
+            models.Index(fields=["challenge", "account"], name="ix_t12_04"),
+            models.Index(fields=["domain"], name="ix_t12_05"),
+            models.Index(fields=["academic_scope"], name="ix_t12_06"),
+            models.Index(fields=["decided_by"], name="ix_t12_07"),
+        ]
+
+
+class ResearcherRequest(AcademicRecord):
+    """T13: proponer o resolver una solicitud no crea por sí solo una concesión T14."""
+
+    class Decision(models.TextChoices):
+        PENDING = "pending", "Pendiente"
+        APPROVED = "approved", "Aprobada"
+        REJECTED = "rejected", "Rechazada"
+
+    account = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.RESTRICT,
+        related_name="researcher_requests",
+        db_index=False,
+    )
+    academic_scope = models.ForeignKey(
+        AcademicScope, on_delete=models.RESTRICT, related_name="researcher_requests", db_index=False
+    )
+    requested_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        db_column="requested_by",
+        on_delete=models.RESTRICT,
+        related_name="proposed_researcher_requests",
+        db_index=False,
+    )
+    justification = models.TextField()
+    decision = models.CharField(
+        max_length=16, choices=Decision.choices, default=Decision.PENDING, db_default="pending"
+    )
+    decided_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        db_column="decided_by",
+        on_delete=models.RESTRICT,
+        related_name="researcher_request_decisions",
+        null=True,
+        blank=True,
+        db_index=False,
+    )
+    decided_at = models.DateTimeField(null=True, blank=True)
+    decision_reason = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "academics_researcher_request"
+        constraints = [
+            models.CheckConstraint(
+                condition=GreaterThan(Length(Trim("justification")), models.Value(0)),
+                name="ck_t13_01",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(decision__in=["pending", "approved", "rejected"]),
+                name="ck_t13_02",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(decision="pending")
+                | (
+                    models.Q(
+                        decided_by__isnull=False,
+                        decided_at__isnull=False,
+                        decision_reason__isnull=False,
+                    )
+                    & GreaterThan(Length(Trim("decision_reason")), models.Value(0))
+                ),
+                name="ck_t13_03",
+            ),
+            models.UniqueConstraint(
+                fields=["id", "account", "academic_scope"], name="uq_t13_key01"
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["account"], name="ix_t13_01"),
+            models.Index(fields=["requested_by"], name="ix_t13_02"),
+            models.Index(fields=["decided_by"], name="ix_t13_03"),
+            models.Index(fields=["academic_scope"], name="ix_t13_04"),
+        ]
+
+
+class ResearcherAward(AcademicRecord):
+    """T14: concesión directa o procedente de una solicitud de la misma persona y ámbito."""
+
+    account = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.RESTRICT,
+        related_name="researcher_awards",
+        db_index=False,
+    )
+    academic_scope = models.ForeignKey(
+        AcademicScope, on_delete=models.RESTRICT, related_name="researcher_awards", db_index=False
+    )
+    source_request = models.ForeignKey(
+        ResearcherRequest,
+        on_delete=models.RESTRICT,
+        related_name="awards",
+        null=True,
+        blank=True,
+        db_index=False,
+        db_constraint=False,
+    )
+    awarded_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        db_column="awarded_by",
+        on_delete=models.RESTRICT,
+        related_name="granted_researcher_awards",
+        db_index=False,
+    )
+    justification = models.TextField()
+    ended_at = models.DateTimeField(null=True, blank=True)
+    ended_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        db_column="ended_by",
+        on_delete=models.RESTRICT,
+        related_name="ended_researcher_awards",
+        null=True,
+        blank=True,
+        db_index=False,
+    )
+
+    class Meta:
+        db_table = "academics_researcher_award"
+        constraints = [
+            models.UniqueConstraint(fields=["source_request"], name="uq_t14_key01"),
+            models.CheckConstraint(
+                condition=GreaterThan(Length(Trim("justification")), models.Value(0)),
+                name="ck_t14_01",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(ended_at__isnull=True, ended_by__isnull=True)
+                | models.Q(ended_at__isnull=False, ended_by__isnull=False),
+                name="ck_t14_02",
+            ),
+            models.UniqueConstraint(
+                fields=["account", "academic_scope"],
+                condition=models.Q(ended_at__isnull=True),
+                name="uq_t14_01",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["account"], name="ix_t14_02"),
+            models.Index(fields=["awarded_by"], name="ix_t14_03"),
+            models.Index(fields=["ended_by"], name="ix_t14_04"),
+            models.Index(fields=["academic_scope"], name="ix_t14_05"),
+            models.Index(fields=["source_request", "account", "academic_scope"], name="ix_t14_06"),
         ]

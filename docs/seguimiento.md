@@ -2,7 +2,7 @@
 
 ## Estado actual: 4 de noviembre de 2026
 
-SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T04 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T05: migrar respaldos y distinciones T12–T14**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
+SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T05 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T06: migrar capacidades y delegaciones T32–T33**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
 
 ## 30 de octubre de 2026
 
@@ -189,3 +189,17 @@ El flujo general pasó **433 pruebas del servidor —176 sin base y 257 con Post
 La completitud, validación del conjunto, al menos un contacto visible, formatos de medios externos y proyecciones autorizadas pertenecen a SP04 y al incremento de bolsa; se admite persistencia incompleta en esta preparación. Cambiar formación no concede ni retira respaldo por esta tarea. T12 sigue pendiente y su conservación funcional deberá comprobarse al implementarla. Este avance aporta a WI05, DL02/DL03/DL06, RNF12 y VD18 parcial; no cierra SP02 ni acredita el piloto.
 
 La guía es [Perfiles y formación](perfiles-y-formacion.md) y la evidencia [perfiles-y-formacion.json](evidencias/perfiles-y-formacion.json). Informe privado `.cache/comprobaciones/20261104T184341Z-332682c3/informe.json`; las siete fuentes históricas conservan sus huellas. El avance se guarda localmente para la publicación por sprint. El siguiente trabajo es **SP02-T05: respaldos y distinciones T12–T14**.
+
+### Respaldos y distinciones: SP02-T05
+
+Cierre el 4 de noviembre de 2026. M03 incorpora `PersonalVerification`, `ResearcherRequest` y `ResearcherAward`, con la migración `academics/0002_personal_verifications_and_researcher_awards`. Se conservan las 34 columnas T12–T14, once CHECK, catorce índices ordinarios, dos claves únicas completas, tres índices únicos parciales y catorce FK con `ON DELETE RESTRICT` real.
+
+Las FK compuestas hacen coincidir comprobación y cuenta, y solicitud de origen, persona y ámbito. También impiden alterar las filas referenciadas de forma que rompan esas correspondencias. Las dos relaciones ORM correspondientes conservan `db_constraint=False`, gestionándose las FK compuestas explícitamente en SQL reversible; las doce simples quedan sincronizadas con `db_constraint=True`. La concesión directa conserva origen NULL y la misma persona puede tener distinciones en ámbitos distintos.
+
+Pasaron **115 pruebas nuevas de PostgreSQL** sobre esquema, vías manual/correo, decisiones, referencias, borrado SQL/ORM, historial y concesión directa, unicidad y compatibilidad de claves, valores predeterminados, guardado parcial y rollback. Cuatro pruebas con conexiones independientes sincronizadas rechazaron duplicados de petición manual, comprobación, concesión vigente y solicitud de origen. Se comprobó además que cambiar correo o retirar dominio no elimina la fila de respaldo almacenada. La migración se revirtió y reaplicó en la base efímera conservando datos anteriores; la prueba de reversión de identidad se ajustó para restituir todo el grafo y sus tablas dependientes.
+
+El flujo general pasó **548 pruebas del servidor —176 sin base y 372 con PostgreSQL— y 68 del cliente**, sin fallos ni omisiones. Arquitectura, dependencias/bloqueos, Ruff/formato, tipos, build, Django check, colección y correspondencia de migraciones pasaron. La integración registró diez avisos de pytest al limpiar antiguos temporales externos de Windows; constan en el registro privado, sin modificar esos directorios. Tras aplicar a desarrollo, quedan veinticinco tablas, 21 migraciones y cero filas en las diecisiete tablas de negocio implementadas; se conservan las dos bases persistentes y se eliminó la efímera.
+
+La validación de firma/finalidad/destinatario/dominio/consumo, la autoridad vigente del revisor, la resolución atómica con concesión, el acceso efectivo y la auditoría pertenecen a sus incrementos funcionales. PB03/Q02/Q05 y RF59 mantienen sus condiciones. Este avance aporta integridad a WI05, DL04/DL05/DL06, RNF12 y VD18 parcial; no cierra SP02 ni acredita el piloto. SP02-T12 deberá conservar las dos FK compuestas ya instaladas.
+
+La guía es [Respaldos y distinciones](respaldos-y-distinciones.md) y la evidencia [respaldos-y-distinciones.json](evidencias/respaldos-y-distinciones.json). Informe privado `.cache/comprobaciones/20261104T185832Z-fb3f6629/informe.json`; las siete fuentes históricas conservan sus huellas. El avance se guarda localmente para la publicación por sprint. El siguiente trabajo es **SP02-T06: capacidades y delegaciones T32–T33**.

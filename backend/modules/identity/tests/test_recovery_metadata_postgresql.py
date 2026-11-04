@@ -360,7 +360,8 @@ def test_migration_can_reverse_and_reapply_in_ephemeral_database():
     assert connection.settings_dict["NAME"] == "test_entrepares"
     account = Account.objects.create_user("migracion@example.org")
     previous = [("identity", "0001_initial")]
-    current = [("identity", "0002_email_challenge_and_recovery_request")]
+    current = MigrationExecutor(connection).loader.graph.leaf_nodes()
+    original_tables = set(connection.introspection.table_names())
     try:
         MigrationExecutor(connection).migrate(previous)
         tables = connection.introspection.table_names()
@@ -370,5 +371,7 @@ def test_migration_can_reverse_and_reapply_in_ephemeral_database():
     finally:
         MigrationExecutor(connection).migrate(current)
     test_schema_preserves_columns_types_nullability_constraints_and_indexes()
+    assert set(connection.introspection.table_names()) == original_tables
+    assert not MigrationExecutor(connection).migration_plan(current)
     assert Account.objects.filter(pk=account.pk).exists()
     assert EmailChallenge.objects.count() == RecoveryRequest.objects.count() == 0
