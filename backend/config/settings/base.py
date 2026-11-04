@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "modules.identity.apps.IdentityConfig",
+    "modules.profiles.apps.ProfilesConfig",
     "modules.academics.apps.AcademicsConfig",
     "modules.organizations.apps.OrganizationsConfig",
 ]

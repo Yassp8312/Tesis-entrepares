@@ -1,0 +1,279 @@
+{
+  "fecha": "2026-11-04",
+  "tarea": "SP02-T04",
+  "resultado": "Perfiles, formación, contactos y méritos T04–T07 implementados, probados y aplicados a desarrollo",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI05"
+    ],
+    "modulos": [
+      "M02"
+    ],
+    "tablas": [
+      "T04",
+      "T05",
+      "T06",
+      "T07"
+    ],
+    "DL": [
+      "DL02",
+      "DL03",
+      "DL06"
+    ],
+    "RNF": [
+      "RNF12"
+    ],
+    "VD": [
+      "VD18: comparación parcial del esquema implementado"
+    ]
+  },
+  "modelo": {
+    "modelos": [
+      "Profile",
+      "Education",
+      "Contact",
+      "Merit"
+    ],
+    "columnas": 33,
+    "checks": 7,
+    "foreign_keys": [
+      "fk_t04_01",
+      "fk_t05_01",
+      "fk_t05_02",
+      "fk_t05_03",
+      "fk_t06_01",
+      "fk_t07_01"
+    ],
+    "on_delete": "RESTRICT en PostgreSQL y Django",
+    "foreign_keys_diferibles": false,
+    "indices_ordinarios": [
+      "ix_t05_02",
+      "ix_t05_03",
+      "ix_t05_04",
+      "ix_t07_01"
+    ],
+    "claves_unicas_completas": {
+      "uq_t04_key01": "account_id",
+      "uq_t06_01": "profile_id, kind, value"
+    },
+    "indice_unico_parcial": {
+      "uq_t05_01": "profile_id, discipline_id, institution_id, condition WHERE ended_at IS NULL"
+    },
+    "contacto": "El índice único de referencia se concreta como restricción UNIQUE con índice de soporte del mismo nombre y columnas, sin predicado",
+    "experiencia": "numeric(5,1), nullable, CHECK de referencia conservado",
+    "modelo_abstracto": "ProfileRecord: sin tabla adicional",
+    "banderas_editables_de_completitud_verificacion_o_aparicion": false
+  },
+  "migracion": {
+    "nombre": "profiles/0001_profiles_and_education",
+    "dependencias": [
+      "academics/0001_catalogs_and_scopes",
+      "swappable_dependency(settings.AUTH_USER_MODEL)"
+    ],
+    "tecnica": "Operaciones Django y SeparateDatabaseAndState con seis FK SQL nombradas y reversibles",
+    "relaciones": "Seis relaciones con db_constraint=True en el estado final",
+    "diferencias_modelos_migraciones": 0,
+    "reversion": "A cero y reaplicación del grafo completo en test_entrepares, conservando cuenta, institución y disciplina sintéticas"
+  },
+  "pruebas_nuevas": {
+    "archivo": "backend/modules/profiles/tests/test_profiles_postgresql.py",
+    "correctas": 64,
+    "fallidas": 0,
+    "omitidas": 0,
+    "comando": "scripts/probar.ps1 -Modo integracion backend/modules/profiles/tests/test_profiles_postgresql.py -q",
+    "junit_privado": ".cache/sprint02/t04-integracion.xml",
+    "escenarios": [
+      "Columnas, nulabilidad, tipos, siete CHECK, claves e índices con sus predicados",
+      "Seis FK con RESTRICT, referencias inexistentes y borrado desde SQL y ORM",
+      "UUID y fechas predeterminadas, contacto visible/orden cero y guardado parcial",
+      "Experiencia decimal opcional, cero, fracciones y límite físico almacenado",
+      "Un solo perfil por cuenta",
+      "Formación vigente única por cuatro dimensiones, historial y redeclaración",
+      "Transición sintética de estudiante a graduado conservando perfil y cuenta",
+      "Contactos únicos por perfil/tipo/valor, conservación al ocultar y medios compartidos",
+      "Méritos declarados con fecha opcional y títulos repetibles",
+      "Rollback de las cuatro tablas y reversión/reaplicación de migración"
+    ]
+  },
+  "concurrencia": {
+    "pruebas": 3,
+    "base": "test_entrepares",
+    "metodo": "Parejas de conexiones Django independientes por hilo, PID PostgreSQL distintos y barrera antes del INSERT",
+    "claves": [
+      "uq_t04_key01",
+      "uq_t05_01",
+      "uq_t06_01"
+    ],
+    "resultado": "Cada pareja confirma una inserción y rechaza la otra por la clave esperada, sin duplicado final",
+    "limites_espera": "5 s para bloqueo y barrera, 10 s por sentencia y 20 s para recoger resultados; conexiones cerradas en finally",
+    "limite_alcance": "Inserciones; la edición completa simultánea con expected_updated_at se comprobará en SP04"
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261104T184341Z-332682c3/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 176,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 257,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 433,
+    "resultado": "Todos los pasos correctos"
+  },
+  "desarrollo": {
+    "antes": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_scope",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification"
+      ],
+      "table_count": 18,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0
+      },
+      "migration_count": 19,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "despues": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_scope",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile"
+      ],
+      "table_count": 22,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0
+      },
+      "migration_count": 20,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education"
+      ],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "django_check": "Sin incidencias activas; auth.W004 sustituido por identity.E001",
+    "migrate_check": "Sin migraciones pendientes"
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/config/settings/base.py": "82fecd6233bfdfce232b8b6d59d10681227678524c60308f72ddf9ddcc9b85d3",
+      "backend/modules/profiles/apps.py": "4137104844d8e81eebb4da001d344854e5bc1a5fa341a48bd8db0cd497ecfe16",
+      "backend/modules/profiles/models.py": "38301a39c033a1ad122b95715ab67018d9e3dff6aadcde8bf48f827632841fdc",
+      "backend/modules/profiles/migrations/0001_profiles_and_education.py": "4bdc8f018547be16eb9868d2deea89938fa81b50a2eae7c1d44dc90619005a2f",
+      "backend/modules/profiles/tests/test_profiles_postgresql.py": "0cf401d662be33992b9718f40256e5d62071555a7ad7d60ca50313e2cf0fa604"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en los archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue en curso: cuatro de 17 tareas completadas",
+    "Se admite persistencia incompleta; la completitud y al menos un contacto visible son reglas funcionales de SP04",
+    "is_visible se refiere a la bolsa autorizada; la proyección y los permisos de lectura aún no se implementan aquí",
+    "La formación y los méritos declarados no conceden verificación ni distinción de investigador",
+    "T12 sigue pendiente; la conservación de respaldo al cambiar formación se probará con su flujo",
+    "Sin nuevas API, auditoría o funcionalidades de bolsa en esta tarea de datos",
+    "Pruebas sintéticas locales; no son resultados del piloto"
+  ],
+  "siguiente": "SP02-T05: migrar respaldos y distinciones T12–T14"
+}

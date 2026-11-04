@@ -2,7 +2,7 @@
 
 ## Estado actual: 4 de noviembre de 2026
 
-SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T03 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T04: migrar perfiles y formación T04–T07**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
+SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T04 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T05: migrar respaldos y distinciones T12–T14**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
 
 ## 30 de octubre de 2026
 
@@ -175,3 +175,17 @@ El flujo general pasó **369 pruebas del servidor —176 sin base y 193 con Post
 Los procedimientos de revisión, gobierno inicial, primer/último representante, acceso efectivo y revocación frente a publicación mantienen sus tareas y condiciones posteriores. Este incremento aporta la integridad de T15–T17 a WI05, DL07/DL19, RNF12 y VD18 parcial; no acredita los casos de autorización, auditoría o piloto ni cierra SP02.
 
 La guía es [Organizaciones y representación](organizaciones-y-representacion.md) y la evidencia [organizaciones-y-representacion.json](evidencias/organizaciones-y-representacion.json). Informe privado `.cache/comprobaciones/20261104T182958Z-1509b7a6/informe.json`; las siete fuentes históricas conservan sus huellas. El avance se guarda localmente para la publicación por sprint. El siguiente trabajo es **SP02-T04: perfiles y formación T04–T07**.
+
+### Perfiles y formación: SP02-T04
+
+Cierre el 4 de noviembre de 2026. Se incorporó M02 a Django y se implementaron `Profile`, `Education`, `Contact` y `Merit`, con la migración inicial `profiles/0001_profiles_and_education`. Conservan las 33 columnas T04–T07, siete CHECK, cuatro índices ordinarios, dos claves únicas completas, un índice único parcial y seis FK nombradas con `ON DELETE RESTRICT` real. La unicidad de contacto se concreta como restricción UNIQUE e índice de soporte del mismo nombre, preservando las columnas y la ausencia de predicado del diseño.
+
+Se garantiza un perfil por cuenta, una sola declaración vigente de la misma combinación perfil/disciplina/institución/condición y contactos únicos por perfil/tipo/valor, incluso al ocultarlos. Se conservan formaciones finalizadas, varias formaciones distintas y méritos declarados. No se añadieron indicadores editables de completitud, verificación o aparición en la bolsa.
+
+Pasaron **64 pruebas nuevas de PostgreSQL** sobre esquema, restricciones SQL, referencias y borrado desde SQL/ORM, decimales, valores predeterminados, guardado parcial, formación histórica, contactos ocultos/compartidos, méritos y rollback conjunto. Tres pruebas con conexiones independientes sincronizadas confirmaron una inserción y rechazaron la duplicada para perfil, formación vigente y contacto. La migración se revirtió a cero y reaplicó en la base efímera, conservando identidad, institución y disciplina, con el grafo y las restricciones restaurados.
+
+El flujo general pasó **433 pruebas del servidor —176 sin base y 257 con PostgreSQL— y 68 del cliente**, sin fallos ni omisiones. Arquitectura, dependencias/bloqueos, Ruff/formato, tipos, build, Django check, colección y correspondencia de migraciones pasaron. Tras aplicar a desarrollo, quedan veintidós tablas, 20 migraciones y cero filas en las catorce tablas de negocio implementadas; se mantienen las dos bases persistentes y se eliminó la efímera.
+
+La completitud, validación del conjunto, al menos un contacto visible, formatos de medios externos y proyecciones autorizadas pertenecen a SP04 y al incremento de bolsa; se admite persistencia incompleta en esta preparación. Cambiar formación no concede ni retira respaldo por esta tarea. T12 sigue pendiente y su conservación funcional deberá comprobarse al implementarla. Este avance aporta a WI05, DL02/DL03/DL06, RNF12 y VD18 parcial; no cierra SP02 ni acredita el piloto.
+
+La guía es [Perfiles y formación](perfiles-y-formacion.md) y la evidencia [perfiles-y-formacion.json](evidencias/perfiles-y-formacion.json). Informe privado `.cache/comprobaciones/20261104T184341Z-332682c3/informe.json`; las siete fuentes históricas conservan sus huellas. El avance se guarda localmente para la publicación por sprint. El siguiente trabajo es **SP02-T05: respaldos y distinciones T12–T14**.

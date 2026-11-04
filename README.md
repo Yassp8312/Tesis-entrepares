@@ -8,7 +8,7 @@ El producto contempla una bolsa de perfiles con acceso autorizado, oportunidades
 
 SP01 completado en su alcance de entorno y esqueleto: estructura modular, dependencias fijadas, configuración Django, usuario propio, PostgreSQL, cliente Vue, componentes comunes y entrega compilada. La instalación, pruebas y arranque se reprodujeron en otra copia con credenciales y cluster propios. Las operaciones de negocio y sus pantallas se incorporan en los incrementos posteriores; el cierre de este sprint no acredita el piloto ni termina los trabajos transversales de infraestructura.
 
-SP02 está en curso, con T01–T03 completadas. Incorpora [comprobaciones y recuperación](docs/comprobaciones-y-recuperacion.md), [catálogos y ámbitos académicos](docs/catalogos-y-ambitos.md) y [organizaciones y representación](docs/organizaciones-y-representacion.md), con restricciones e integridad referencial comprobadas en PostgreSQL. El siguiente trabajo es migrar perfiles y formación (SP02-T04).
+SP02 está en curso, con T01–T04 completadas. Incorpora [comprobaciones y recuperación](docs/comprobaciones-y-recuperacion.md), [catálogos y ámbitos académicos](docs/catalogos-y-ambitos.md), [organizaciones y representación](docs/organizaciones-y-representacion.md) y [perfiles y formación](docs/perfiles-y-formacion.md), con restricciones e integridad referencial comprobadas en PostgreSQL. El siguiente trabajo es migrar respaldos y distinciones (SP02-T05).
 
 La investigación sigue DSRM y el desarrollo utiliza OpenUP adaptado. La base de diseño establece Vue 3 y TypeScript para la interfaz, Django y Django REST Framework para el servidor y PostgreSQL para los datos, organizados como un monolito modular.
 
