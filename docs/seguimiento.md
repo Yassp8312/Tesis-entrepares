@@ -2,7 +2,7 @@
 
 ## Estado actual: 4 de noviembre de 2026
 
-SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T05 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T06: migrar capacidades y delegaciones T32–T33**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
+SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T06 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T07: migrar auditoría mínima T37**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
 
 ## 30 de octubre de 2026
 
@@ -203,3 +203,17 @@ El flujo general pasó **548 pruebas del servidor —176 sin base y 372 con Post
 La validación de firma/finalidad/destinatario/dominio/consumo, la autoridad vigente del revisor, la resolución atómica con concesión, el acceso efectivo y la auditoría pertenecen a sus incrementos funcionales. PB03/Q02/Q05 y RF59 mantienen sus condiciones. Este avance aporta integridad a WI05, DL04/DL05/DL06, RNF12 y VD18 parcial; no cierra SP02 ni acredita el piloto. SP02-T12 deberá conservar las dos FK compuestas ya instaladas.
 
 La guía es [Respaldos y distinciones](respaldos-y-distinciones.md) y la evidencia [respaldos-y-distinciones.json](evidencias/respaldos-y-distinciones.json). Informe privado `.cache/comprobaciones/20261104T185832Z-fb3f6629/informe.json`; las siete fuentes históricas conservan sus huellas. El avance se guarda localmente para la publicación por sprint. El siguiente trabajo es **SP02-T06: capacidades y delegaciones T32–T33**.
+
+### Capacidades y delegaciones: SP02-T06
+
+Cierre el 4 de noviembre de 2026. Se incorporó M08 a Django y se implementaron `Capability` y `Grant`, con `access/0001_capabilities_and_grants`. Conservan las 19 columnas T32/T33, nueve CHECK, siete índices ordinarios, clave completa de origen, índice único parcial con NULLS NOT DISTINCT y siete FK nombradas ON DELETE RESTRICT. Se registra además el índice técnico `varchar_pattern_ops` que Django crea para la PK textual del catálogo.
+
+La FK compuesta `(parent_grant_id, granted_by) → (id, account_id)` preserva que la fuente pertenezca al otorgante. Se comprueban cambios incompatibles de destinatario de la fuente u otorgante del hijo. La relación ORM `parent_grant` conserva `db_constraint=False` y SQL compuesto explícito; las seis simples quedan sincronizadas con `db_constraint=True`. El índice parcial impide duplicados abiertos aun con referencias de contexto vacías, incluidos los globales. Una concesión caducada ocupa su posición hasta registrar cierre, preservándose historial y sustitución.
+
+Pasaron **70 pruebas nuevas de PostgreSQL** sobre esquema, PK natural, claves e índices, CHECK, referencias, borrado SQL/ORM, ámbitos, intervalos, historial, defaults, guardado parcial y rollback. Tres parejas de conexiones sincronizadas confirmaron una inserción y rechazaron su duplicado para contexto global, académico y organizacional. La migración se revirtió a cero y reaplicó en la base efímera, conservando identidad, ámbito y organización y restaurando el grafo.
+
+El flujo general pasó **618 pruebas del servidor —176 sin base y 442 con PostgreSQL— y 68 del cliente**, sin fallos ni omisiones. Arquitectura, dependencias/bloqueos, Ruff/formato, tipos, build, Django check, colección y correspondencia de migraciones pasaron. El flujo de integración usa ahora `--basetemp` dentro de su informe; se verificó esa carpeta y la ejecución sin los avisos de limpieza externos de T05. No se modificaron los antiguos temporales ni la protección de la base de pruebas.
+
+Tras aplicar a desarrollo quedan veintisiete tablas, 22 migraciones y cero filas en las diecinueve tablas de negocio implementadas, incluidas capacidades y concesiones. Se mantienen las dos bases persistentes y se eliminó la efímera. Las reglas de delegabilidad, alcance contenido, vigencia de ancestros y ciclos de varios nodos corresponden a SP02-T13/SP05-T03; no se habilita acceso por poblar el catálogo ni se resuelven PB03/Q05/Q11 por inferencia.
+
+La guía es [Capacidades y delegaciones](capacidades-y-delegaciones.md) y la evidencia [capacidades-y-delegaciones.json](evidencias/capacidades-y-delegaciones.json). Informe privado `.cache/comprobaciones/20261104T191708Z-9095c5b6/informe.json`; las siete fuentes históricas conservan sus huellas. Aporte parcial a WI05, DL15/DL20, RNF12 y VD18; SP02 sigue abierto. El avance queda local para la publicación por sprint. El siguiente trabajo es **SP02-T07: auditoría mínima T37**.

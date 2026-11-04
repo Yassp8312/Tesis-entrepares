@@ -1,0 +1,310 @@
+{
+  "fecha": "2026-11-04",
+  "tarea": "SP02-T06",
+  "resultado": "Capacidades y concesiones T32/T33 implementadas, probadas y aplicadas a desarrollo",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI05"
+    ],
+    "modulos": [
+      "M08"
+    ],
+    "tablas": [
+      "T32",
+      "T33"
+    ],
+    "DL": [
+      "DL15",
+      "DL20"
+    ],
+    "RNF": [
+      "RNF12"
+    ],
+    "VD": [
+      "VD18: comparación parcial del esquema implementado"
+    ]
+  },
+  "modelo": {
+    "modelos": [
+      "Capability",
+      "Grant"
+    ],
+    "columnas": 19,
+    "checks": 9,
+    "pk_catalogo": "code varchar(80), sin UUID o fechas añadidas",
+    "foreign_keys": [
+      "fk_t33_01",
+      "fk_t33_02",
+      "fk_t33_03",
+      "fk_t33_04",
+      "fk_t33_05",
+      "fk_t33_06",
+      "fk_t33_07"
+    ],
+    "on_delete": "RESTRICT en PostgreSQL y Django",
+    "foreign_keys_diferibles": false,
+    "compuesta": "fk_t33_07 (parent_grant_id, granted_by) -> access_grant (id, account_id)",
+    "clave_completa": "uq_t33_key01 (id, account_id)",
+    "indice_unico_parcial": "uq_t33_01 (account_id, capability_code, scope_kind, academic_scope_id, organization_id) NULLS NOT DISTINCT WHERE ended_at IS NULL",
+    "indices_ordinarios": 7,
+    "indice_tecnico_adicional": {
+      "nombre": "access_capability_code_72401c64_like",
+      "clase": "varchar_pattern_ops",
+      "motivo": "Generado por Django para la PK CharField; no altera unicidad ni concede facultades"
+    }
+  },
+  "migracion": {
+    "nombre": "access/0001_capabilities_and_grants",
+    "dependencias": [
+      "academics/0002_personal_verifications_and_researcher_awards",
+      "organizations/0001_organizations_and_representation",
+      "swappable_dependency(settings.AUTH_USER_MODEL)"
+    ],
+    "tecnica": "Operaciones Django y SeparateDatabaseAndState con siete FK SQL nombradas y reversibles",
+    "relaciones_simples": "Seis con db_constraint=True en estado final",
+    "relacion_compuesta": "parent_grant con db_constraint=False en ORM y FK compuesta explícita en SQL",
+    "diferencias_modelos_migraciones": 0,
+    "reversion": "A cero y reaplicación del grafo en test_entrepares, conservando cuenta, ámbito y organización sintéticos"
+  },
+  "pruebas_nuevas": {
+    "archivo": "backend/modules/access/tests/test_grants_postgresql.py",
+    "correctas": 70,
+    "fallidas": 0,
+    "omitidas": 0,
+    "comando": "scripts/probar.ps1 -Modo integracion backend/modules/access/tests/test_grants_postgresql.py -q --basetemp=.cache/sprint02/t06-pytest-final",
+    "junit_privado": ".cache/sprint02/t06-integracion.xml",
+    "escenarios": [
+      "Esquema, PK natural, nueve CHECK, claves e índices incluida semántica NULLS NOT DISTINCT",
+      "Siete FK con RESTRICT, referencias inexistentes y borrado SQL/ORM",
+      "Catálogo sin concesión automática y delegabilidad falsa por defecto",
+      "Concesión y fechas predeterminadas y guardado parcial",
+      "Tres tipos de contexto con referencias exclusivas",
+      "Ventanas temporales estrictas, historial y sustitución de concesión caducada",
+      "Duplicados abiertos rechazados con NULL en los tres contextos",
+      "Fuente perteneciente al otorgante y cambios incompatibles rechazados",
+      "Rollback conjunto y reversión/reaplicación de migración"
+    ]
+  },
+  "concurrencia": {
+    "pruebas": 3,
+    "base": "test_entrepares",
+    "metodo": "Parejas de conexiones PostgreSQL independientes por hilo, PID distintos y barrera antes de insertar",
+    "contextos": [
+      "global",
+      "academic",
+      "organization"
+    ],
+    "clave": "uq_t33_01",
+    "resultado": "Una transacción confirma y otra se rechaza por la clave parcial en cada contexto, incluidos valores NULL",
+    "limites_espera": "5 s para bloqueo y barrera, 10 s por sentencia y 20 s para recoger resultados; conexiones cerradas en finally",
+    "limite_alcance": "Inserciones; autoridad, vigencia de ancestros y ausencia de ciclos de varios nodos son posteriores"
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261104T191708Z-9095c5b6/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 176,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 442,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 618,
+    "resultado": "Todos los pasos correctos",
+    "temporales_integracion": {
+      "argumento": "--basetemp=.cache/comprobaciones/20261104T191708Z-9095c5b6/pytest-postgresql",
+      "carpeta_creada": true,
+      "ubicacion_comprobada": "Dentro del informe propio bajo .cache/comprobaciones",
+      "avisos_de_limpieza_externa": 0,
+      "directorios_globales": "No modificados; se evita la limpieza automática de los anteriores al usar basetemp propio"
+    }
+  },
+  "desarrollo": {
+    "antes": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile"
+      ],
+      "table_count": 25,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0
+      },
+      "migration_count": 21,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education"
+      ],
+      "access_migrations": [],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "despues": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "access_capability",
+        "access_grant",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile"
+      ],
+      "table_count": 27,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0,
+        "access_capability": 0,
+        "access_grant": 0
+      },
+      "migration_count": 22,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education"
+      ],
+      "access_migrations": [
+        "0001_capabilities_and_grants"
+      ],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "django_check": "Sin incidencias activas; auth.W004 sustituido por identity.E001",
+    "migrate_check": "Sin migraciones pendientes"
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/config/settings/base.py": "571e9b768bf2354baf82b68fe8641ca5ebefcc962b892be61b1b216d21c38f90",
+      "backend/modules/access/apps.py": "9893719e5ee71049b0454b39f38b2224c0459fe997588f9aaf6be3cc9e249f6a",
+      "backend/modules/access/models.py": "28b67218a115df09a1e1a70d093728228907ffa4495974cb31df8cd2721dece8",
+      "backend/modules/access/migrations/0001_capabilities_and_grants.py": "fdfdbc31d8950f7b2874f3eac36720e6e44a8cbb49a2359f33b59b34251137f0",
+      "backend/modules/access/tests/test_grants_postgresql.py": "94572247087ca493654d70717dbddba1861f7421ea4113680cc45884a10fd1ef",
+      "scripts/comprobar_proyecto.py": "3585d8f3f30bce131c88ed825a17db41642057e4733cc4e602a450967bb7f330"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en los archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue en curso: seis de 17 tareas completadas",
+    "La cadena conserva correspondencia de otorgante; delegabilidad, contención de ámbito, ancestros vigentes y ciclos largos se evalúan en SP02-T13/SP05-T03",
+    "Los instantes se persisten sin CHECK dependiente de ahora; una concesión caducada mantiene posición hasta cerrar",
+    "El catálogo no concede acceso ni sustituye verificación personal, representación o restricciones",
+    "PB03/Q05/Q11 y SYS03 conservan sus condiciones; no se activa habilitación inicial o API089–API091 aquí",
+    "SP02-T12 debe conservar la FK compuesta de origen instalada",
+    "Pruebas locales sintéticas; no son resultados del piloto"
+  ],
+  "siguiente": "SP02-T07: migrar auditoría mínima T37"
+}

@@ -222,6 +222,7 @@ def main():
                     "integracion",
                     "-q",
                     "--junitxml=" + (output / "postgresql.xml").relative_to(ROOT).as_posix(),
+                    "--basetemp=" + (output / "pytest-postgresql").relative_to(ROOT).as_posix(),
                 ],
             )
             report["tests"]["postgresql"] = test_counts(output / "postgresql.xml")

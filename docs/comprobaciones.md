@@ -20,6 +20,8 @@ Para añadir las pruebas contra el cluster privado ya preparado y comprobar migr
 
 Esta opción llama a `scripts/probar.ps1 integracion`, que reconoce el cluster mediante su identificación y los destinos previstos antes de crear o eliminar la base efímera. Requiere `.env` y el PostgreSQL local del proyecto. No prepara otro cluster ni sustituye su configuración. Las pruebas sin base no se repiten al añadir la integración.
 
+Desde SP02-T06, el flujo pasa también a la integración una carpeta temporal propia, `pytest-postgresql`, dentro de su directorio de informe. Así evita la limpieza automática de antiguos temporales externos que produjo avisos en Windows durante T05. Cada informe tiene un identificador nuevo; no se borran directorios globales ni se modifican las comprobaciones de destino de PostgreSQL. Las invocaciones independientes de `probar.ps1` conservan sus argumentos habituales y admiten `--basetemp` de pytest.
+
 La implementación es `scripts/comprobar_proyecto.py`; el acceso PowerShell utiliza el Python de `.venv`. Las versiones de Node, npm y uv se verifican antes de continuar. El flujo se detiene al fallar una etapa y devuelve un código distinto de cero; no presenta un informe incompleto como correcto.
 
 ## Etapas e informes

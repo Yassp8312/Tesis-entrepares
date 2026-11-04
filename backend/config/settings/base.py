@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "modules.profiles.apps.ProfilesConfig",
     "modules.academics.apps.AcademicsConfig",
     "modules.organizations.apps.OrganizationsConfig",
+    "modules.access.apps.AccessConfig",
 ]
 MIDDLEWARE = [
     "api.middleware.ApiBoundaryMiddleware",
