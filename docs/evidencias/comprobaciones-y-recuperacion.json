@@ -1,0 +1,166 @@
+{
+  "fecha": "2026-11-04",
+  "tarea": "SP02-T01",
+  "resultado": "Modelos y migración T02/T03 implementados, probados y aplicados a desarrollo",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI05"
+    ],
+    "modulos": [
+      "M01"
+    ],
+    "tablas": [
+      "T02",
+      "T03"
+    ],
+    "DL": [
+      "DL04",
+      "DL18"
+    ],
+    "RNF": [
+      "RNF12"
+    ],
+    "prueba_planificada": "VD18: comparación parcial del esquema, no cierre de las 37 tablas"
+  },
+  "modelo": {
+    "columnas_nuevas": 20,
+    "checks": [
+      "ck_t02_01",
+      "ck_t02_02",
+      "ck_t02_03",
+      "ck_t02_04",
+      "ck_t02_05",
+      "ck_t03_01",
+      "ck_t03_02",
+      "ck_t03_03",
+      "ck_t03_04",
+      "ck_t03_05"
+    ],
+    "foreign_keys": [
+      "fk_t02_01",
+      "fk_t03_01",
+      "fk_t03_02"
+    ],
+    "on_delete": "RESTRICT en SQL y ORM",
+    "foreign_keys_diferibles": false,
+    "unique": "uq_t02_key01 (id, account_id)",
+    "indexes": [
+      "ix_t02_01",
+      "ix_t03_01",
+      "ix_t03_02"
+    ],
+    "tokens_utilizables_o_claves": "Sin columnas de token, contraseña o clave de firma en T02/T03"
+  },
+  "migracion": {
+    "nombre": "identity/0002_email_challenge_and_recovery_request",
+    "tecnica": "CreateModel y SeparateDatabaseAndState con tres FK SQL nombradas y operaciones inversas",
+    "aplicacion_base_vacia": "Suite PostgreSQL crea test_entrepares desde cero y aplica el grafo completo",
+    "reversion_y_reaplicacion": "Comprobadas exclusivamente en test_entrepares, conservando una cuenta sintética",
+    "diferencias_modelos_migraciones": 0
+  },
+  "pruebas_nuevas": {
+    "archivo": "backend/modules/identity/tests/test_recovery_metadata_postgresql.py",
+    "correctas": 42,
+    "fallidas": 0,
+    "omitidas": 0,
+    "escenarios": [
+      "Esquema real, nulabilidad, tipos, restricciones, índices y valores predeterminados",
+      "CHECK y referencias rechazados con SQL directo",
+      "Borrado de cuentas referenciadas rechazado por SQL y ORM",
+      "Referencia compuesta sintética rechaza otra cuenta; tabla de sonda retirada por rollback",
+      "Dirección de entrega conservada tras cambio del correo actual",
+      "Estados terminales excluyentes y decisiones completas",
+      "Guardado parcial actualiza fecha y fallo externo revierte T02/T03",
+      "Reversión de 0002 a 0001 y reaplicación restaura el esquema"
+    ]
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261104T175622Z-07bc6d46/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 176,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 61,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 237,
+    "resultado": "Todos los pasos correctos",
+    "logs_y_junit": "Dentro del directorio del informe, excluido de Git"
+  },
+  "desarrollo": {
+    "antes": {
+      "tablas": 9,
+      "migraciones": 16,
+      "cuentas": 0
+    },
+    "despues": {
+      "postgresql": "17.11",
+      "tables": [
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request"
+      ],
+      "table_count": 11,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0
+      },
+      "migration_count": 17,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "django_check": "Sin incidencias activas; auth.W004 sustituido por identity.E001",
+    "migrate_check": "Sin migraciones pendientes"
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/modules/identity/models.py": "d501381fd5d5aa46a15b48068ee8251be16c79a9b03fc01949462db1d84b3502",
+      "backend/modules/identity/migrations/0002_email_challenge_and_recovery_request.py": "768e3997a45522512092383cd49418629af30a5ceae35b9cbc35615675f03a83",
+      "backend/modules/identity/tests/test_recovery_metadata_postgresql.py": "7903464199e8044bf007d2a76308bba3d570ccaf807a78aeffac3c51a060f077"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "revision_secretos_conocidos": "Sin coincidencias en los archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue en curso: primera de 17 tareas completada",
+    "No se implementan API, firma, consumo concurrente, envíos ni restauración de acceso en esta tarea de datos",
+    "T12 y su FK real se incorporan en SP02-T05; la sonda de clave compuesta no sustituye esa integración",
+    "T37 y sus proyecciones siguen pendientes; no se acredita auditoría funcional",
+    "PB02 y Q13 conservan su condición para recuperación sin correo",
+    "La coherencia por fila no autoriza revisores ni verifica identidad",
+    "Pruebas técnicas locales con datos sintéticos; no son resultados de piloto"
+  ],
+  "siguiente": "SP02-T02: migrar catálogos y ámbitos T08–T11"
+}

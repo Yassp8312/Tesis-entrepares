@@ -1,5 +1,9 @@
 # Seguimiento de implementación
 
+## Estado actual: 4 de noviembre de 2026
+
+SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **SP02-T01 completada de sus 17 tareas**. El siguiente trabajo es **SP02-T02: migrar catálogos y ámbitos T08–T11**, conservando la jerarquía y la correspondencia de institución. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
+
 ## 30 de octubre de 2026
 
 SP01-T01 prepara el repositorio y sus ubicaciones iniciales: cliente, servidor, documentación, configuración y diez módulos internos con responsabilidad identificada. Se incorporan exclusiones de secretos y datos locales, convenciones de formato y reglas de arquitectura.
@@ -131,3 +135,15 @@ El navegador verificó apertura, navegación y recarga tanto desde Django 8000 c
 La revisión se hizo en Windows 11 x64 y PowerShell 7.6.5, con las versiones fijadas. Los registros, metadatos y capturas quedan privados en `.cache/arranque`; la evidencia compacta es [arranque-reproducible.json](evidencias/arranque-reproducible.json). Se cerraron los procesos web y el cluster de revisión, conservando activo el PostgreSQL principal. Las siete fuentes históricas y doce recursos de marca mantienen sus huellas, y el principal conserva nueve tablas, 16 migraciones y cero cuentas.
 
 Con T01–T11 y esta demostración se completa **SP01 en su alcance de entorno y esqueleto**: arranque desde otra copia, cliente/servidor, respuesta JSON, build, cuenta propia y límites de paquetes comprobados. No se cierra por inferencia WI06/WI09 ni se valida el piloto. El siguiente sprint es **SP02: modelo físico y soportes transversales**; su primera tarea es **SP02-T01**, migrar las comprobaciones y la recuperación de identidad T02/T03 conforme al diseño. Registro, API001 y las demás operaciones funcionales conservan sus sprints posteriores.
+
+### Comprobaciones y recuperación de identidad: SP02-T01
+
+Cierre el 4 de noviembre de 2026. Se implementaron `EmailChallenge` y `RecoveryRequest` en M01 y la migración `0002_email_challenge_and_recovery_request`. Conservan las veinte columnas T02/T03, diez CHECK, tres FK, tres índices y la unicidad compuesta de referencia. Las FK usan `ON DELETE RESTRICT` real y sus nombres previstos mediante SQL reversible y estado Django sincronizado. No se añadieron dependencias ni se modificaron los contratos HTTP o la interfaz.
+
+Pasaron **42 pruebas nuevas de integración**: SQL directo para datos incompatibles, decisiones, expiración estructural, consumo e invalidación excluyentes, referencias, bloqueo del borrado desde SQL y ORM, clave compuesta, valores predeterminados, conservación del destinatario, guardado parcial y rollback. En la base efímera se revirtió y reaplicó la migración, conservando la cuenta sintética y restaurando las restricciones. Una sonda transaccional comprobó que la clave de T02 admite una FK compuesta y rechaza otra cuenta; T12 sigue pendiente de su tarea.
+
+El flujo completo pasó **237 pruebas de servidor —176 sin base y 61 con PostgreSQL— y 68 del cliente**, sin fallos ni omisiones. Pasaron arquitectura, dependencias, bloqueos, Ruff/formato, tipos, build, Django check, colección y ausencia de diferencias de migración. Se aplicó la nueva migración al desarrollo local comprobado: once tablas, 17 migraciones y cero filas en T01/T02/T03, con las dos bases persistentes y ninguna efímera al terminar.
+
+T02 conserva únicamente metadatos del enlace; no se guardan tokens utilizables ni claves. T03 no acredita identidad ni habilita revisores al persistir una alegación. El flujo de firma y consumo concurrente, restauración de acceso, procedimientos PB02/Q13 y proyecciones de auditoría mantienen sus tareas posteriores. Este cierre aporta a WI05, DL04/DL18, RNF12 y la comparación parcial VD18; no cierra el esquema completo ni SP02.
+
+La guía es [Comprobaciones y recuperación](comprobaciones-y-recuperacion.md) y la evidencia [comprobaciones-y-recuperacion.json](evidencias/comprobaciones-y-recuperacion.json). Los originales de diseño conservan sus huellas; los informes quedan en `.cache/comprobaciones/20261104T175622Z-07bc6d46`. El siguiente trabajo es **SP02-T02: catálogos y ámbitos**. Se conserva `SP01` como hito publicado y el nuevo avance se registra localmente para el cierre por sprint solicitado.
