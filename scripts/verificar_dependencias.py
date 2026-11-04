@@ -21,7 +21,7 @@ if platform.python_version() != expected_python:
 
 manifest = tomllib.loads(ROOT.joinpath("pyproject.toml").read_text(encoding="utf-8"))
 versions = {}
-for specification in manifest["project"]["dependencies"]:
+for specification in [*manifest["project"]["dependencies"], *manifest["dependency-groups"]["dev"]]:
     requirement, _, marker = specification.partition(";")
     if marker and sys.platform == "win32":
         continue

@@ -83,6 +83,8 @@ La ejecución completa incluye PostgreSQL, datos sintéticos y la base efímera 
 
 ## Referencias
 
+Actualización posterior: SP01-T10 reutiliza estas reglas desde un comprobador independiente y el flujo común. Su alcance y prueba en una copia limpia están en [Comprobaciones reproducibles](comprobaciones.md) y [DA05 E02](decisiones/DA05-E02-control-de-estructura.md); la evidencia histórica de T05 conserva su alcance.
+
 - Base local: registro de arquitectura v1, diccionario lógico v1 y plan SP01-T05, identificados en [Base documental](base-documental.json).
 - [Instantes conscientes de zona y UTC en Python 3.13](https://docs.python.org/3.13/library/datetime.html#aware-and-naive-objects).
 - [Protocolos y anotaciones de tipos de Python](https://docs.python.org/3.13/library/typing.html#typing.Protocol). Las anotaciones no sustituyen la validación de las entradas ni acreditan por sí mismas un análisis de tipos.

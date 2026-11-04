@@ -78,7 +78,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Falló la comprobación de dependencias Python.' }
     Push-Location (Join-Path $repoPath 'frontend')
     try {
-        & $npmCommand ci --no-fund --no-audit
+        & $npmCommand ci --no-fund --no-audit --cache (Join-Path $repoPath '.tools/npm-cache')
         if ($LASTEXITCODE -ne 0) { throw 'Falló npm ci.' }
         & $npmCommand run check:deps
         if ($LASTEXITCODE -ne 0) { throw 'Falló la comprobación del compilador de la interfaz.' }

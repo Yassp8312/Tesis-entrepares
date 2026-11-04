@@ -40,6 +40,8 @@ El script descarga la distribución Windows x64 de uv 0.13.6 desde PyPI y verifi
 
 No se requiere una instalación global adicional de Python ni activar `.venv`. El script instala a partir de los bloqueos con `uv sync --locked` y `npm ci`. Si una descarga falla su comprobación de integridad, no se utiliza.
 
+Desde SP01-T10, `npm ci` utiliza la caché propia `.tools/npm-cache`. El flujo común posterior es `scripts/comprobar.ps1`, descrito en [Comprobaciones reproducibles](comprobaciones.md); no necesita `.env` para su modalidad sin base.
+
 ## Repetir las comprobaciones
 
 Con el entorno preparado, desde la raíz:

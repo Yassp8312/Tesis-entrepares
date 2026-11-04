@@ -1,0 +1,161 @@
+{
+  "fecha": "2026-11-04",
+  "inicio": "2026-11-03",
+  "tarea": "SP01-T10",
+  "resultado": "Flujo de comprobaciones y control de estructura reproducidos en una copia independiente",
+  "trazabilidad": {
+    "WI": [
+      "WI06",
+      "WI09"
+    ],
+    "RNF": [
+      "RNF14"
+    ],
+    "AT01": "Parcial: dependencias estáticas, rechazo real y CLI autorizada; no acredita SQL ni imports dinámicos",
+    "AT18": "Parcial: aislamiento de configuración y fuentes sin secretos conocidos; resto de seguridad en sus escenarios"
+  },
+  "flujo": {
+    "comando": "scripts/comprobar.ps1",
+    "integracion_opcional": "-ConPostgreSQL",
+    "sin_base": "No lee .env; no prepara PostgreSQL; filtra variables heredadas",
+    "etapas_sin_base": 17,
+    "etapas_con_postgresql": 19,
+    "errores": "Detiene el flujo y devuelve código no cero; completed solo al terminar",
+    "salida": ".cache/comprobaciones/<UTC>-<id>/informe.json, registros y JUnit",
+    "correcciones_automaticas": false
+  },
+  "local": {
+    "completado": true,
+    "pruebas": {
+      "python": {
+        "tests": 176,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 19,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "backend_total": 195,
+    "informe": ".cache\\comprobaciones\\20261104T045017Z-0c722772\\informe.json",
+    "informe_sha256": "e9998f14d29a05d038ce794d54942573fe6b0ddc9f14e3f1dee3ca56996ed4e5",
+    "formato_python": "100 archivos correctos",
+    "tipos_y_build": "Correctos; 47 módulos",
+    "check_y_collectstatic": "Correctos con configuración sintética",
+    "migraciones": "Sin diferencias"
+  },
+  "copia_independiente": {
+    "inventario_inicial": {
+      "env": false,
+      "venv": false,
+      "node_modules": false,
+      "tools": false
+    },
+    "python": "3.13.17",
+    "paquetes_python_instalados": 16,
+    "paquetes_npm_instalados": 54,
+    "preparacion": "Script completo correcto después de usar caché npm local; entornos nuevos",
+    "cache_npm": ".tools/npm-cache",
+    "fallo_resuelto": "ENOSPC con caché del sistema en primera instalación; repetición con caché propia correcta",
+    "env_transferido": false,
+    "cluster_preparado": false,
+    "completado": true,
+    "pruebas": {
+      "python": {
+        "tests": 176,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "informe": ".cache\\automatizacion\\copia-limpia-78099bb2\\.cache\\comprobaciones\\20261104T045343Z-cadc0c14\\informe.json",
+    "informe_sha256": "e5df8855df41313f08e0522abd421512ee1568e62db7e18d421a0f7c76244b95",
+    "arbol_candidato_git": "df9313a546d715e6e255ed492b39671423b0a9a6",
+    "archivos_exportados_sin_cambios": 196,
+    "variables_sinteticas_probadas": [
+      "DJANGO_SECRET_KEY",
+      "POSTGRES_HOST",
+      "PYTEST_ADDOPTS",
+      "NODE_OPTIONS",
+      "ENTREPARES_API_TARGET"
+    ],
+    "sin_internet": "No acreditado; se utilizaron repositorios públicos y cachés disponibles"
+  },
+  "limites_reales": {
+    "prohibited_import": {
+      "file": "modules/profiles/commands/_qa_boundary.py",
+      "line": 1,
+      "target": "application",
+      "rule": "ARCH03: negocio no importa application fuera de una entrada CLI"
+    },
+    "guard_exit_code": 1,
+    "pipeline_exit_code": 1,
+    "pipeline_stopped_at": "arquitectura",
+    "pipeline_failure_report": ".cache\\automatizacion\\copia-limpia-78099bb2\\.cache\\comprobaciones\\20261104T045613Z-b32db314\\informe.json",
+    "authorized_cli_guard_exit": 0,
+    "authorized_cli_runtime_exit": 0,
+    "authorized_cli_result": "resultado-sintetico-de-application",
+    "database_connection_in_probe": false,
+    "synthetic_files_removed": true,
+    "guard_after_restore": 0,
+    "exported_files_unchanged": 196,
+    "copy_env_file": false,
+    "source_tree": "df9313a546d715e6e255ed492b39671423b0a9a6"
+  },
+  "codigo_de_runtime_verificado_sha256": {
+    "backend/config/architecture.py": "d8bf12abf7aa63aea49aceb945740e3ffb170f2fb03a928103faf25fd1bd9ec7",
+    "backend/config/settings/checks.py": "3b5d0c97b36f7c04a449ae6889fc1f795d4444b172f111865eecaea36ac5afdd",
+    "backend/tests/test_module_boundaries.py": "7ae67913b881f1379208e98d4dc1afc35ff1290eae72468e37d4d984d00d27d0",
+    "scripts/comprobar.ps1": "eeaa028d75e643b25873f07a2ba690b23e4c2155591d54048153e09680d08d11",
+    "scripts/comprobar_proyecto.py": "8f808f14aac4b3bbd7d5e501d23257289e8aeef90be8c2230b672edd35c5ce7b",
+    "scripts/preparar-entorno.ps1": "f85802ce286704e59e2d624cd8d02b87d5332cb0ec0d79f0782f50abc9ff120e",
+    "scripts/verificar_arquitectura.py": "76bc151bcc4335f4d129d0935a6001c57f62548e46f6a4190bc0d47b542cb34f",
+    "scripts/verificar_dependencias.py": "eae9b2ffc7cce5f1744c8dbfa417ace3aa9b7bcc27f1748c200bb1ce50cc7cbc"
+  },
+  "arquitectura": {
+    "herramienta": "config.architecture compartida por CLI y pytest",
+    "archivos_propietarios_y_core_examinados": 50,
+    "infracciones_repositorio": 0,
+    "pruebas_estructura": 25,
+    "casos_nuevos": 7,
+    "reglas": [
+      "ARCH01 core",
+      "ARCH02 HTTP",
+      "ARCH03 application y CLI",
+      "ARCH04 modelos ajenos",
+      "ARCH05 sintaxis"
+    ],
+    "ejecucion_del_codigo_examinado": false
+  },
+  "conservacion": {
+    "dependencias_y_bloqueos": "Sin cambios",
+    "fuentes_diseno": 7,
+    "recursos_marca": 12,
+    "tablas": 9,
+    "migraciones": 16,
+    "cuentas_sinteticas_desarrollo": 0,
+    "base_efimera": "Eliminada al terminar integración",
+    "servidores_http": "No iniciados en este incremento",
+    "postgresql_privado": "Conservado activo",
+    "secretos_conocidos_detectados": false
+  },
+  "limites": [
+    "Ejecutado en Windows x64 y PowerShell 7",
+    "No configura infraestructura remota de CI",
+    "No demuestra autorización ni todas las escrituras SQL",
+    "No acredita arranque Linux, despliegue o piloto",
+    "SP01, WI06 y WI09 siguen abiertos"
+  ],
+  "siguiente": "SP01-T11 Cerrar el arranque reproducible y su documentación"
+}

@@ -6,7 +6,7 @@ El producto contempla una bolsa de perfiles con acceso autorizado, oportunidades
 
 ## Estado
 
-Repositorio local de SP01 con estructura modular, dependencias fijadas, configuración Django, usuario propio y PostgreSQL de desarrollo y pruebas. Se han preparado SP01-T01 a SP01-T07, con entrada JSON de API y un cliente Vue navegable con presentación inicial de Entrepares y transporte HTTP común. La migración inicial de `identity.Account` está aplicada sobre una base del proyecto y cuenta con pruebas de integración. Las operaciones de negocio y sus pantallas se incorporan en los incrementos posteriores.
+Repositorio local de SP01 con estructura modular, dependencias fijadas, configuración Django, usuario propio y PostgreSQL de desarrollo y pruebas. Se han completado SP01-T01 a SP01-T10: entrada JSON, cliente Vue, componentes comunes, entrega compilada con Django y comprobaciones automatizadas reproducidas en una copia independiente. La migración inicial de `identity.Account` está aplicada sobre una base del proyecto y cuenta con pruebas de integración. Las operaciones de negocio y sus pantallas se incorporan en los incrementos posteriores.
 
 La investigación sigue DSRM y el desarrollo utiliza OpenUP adaptado. La base de diseño establece Vue 3 y TypeScript para la interfaz, Django y Django REST Framework para el servidor y PostgreSQL para los datos, organizados como un monolito modular.
 
@@ -21,6 +21,10 @@ Con Node 24.18.0 y npm 11.16.0 disponibles, desde PowerShell en la raíz del rep
 El script prepara uv y Python dentro de `.tools`, sincroniza `.venv` y `frontend/node_modules` desde sus archivos de bloqueo y ejecuta las comprobaciones técnicas de dependencias. No requiere activar el entorno virtual. Consulta [Entorno de desarrollo](docs/entorno.md) para versiones, comandos de verificación y alcance de los ensayos.
 
 La referencia inicial DRF 3.16 se actualiza a 3.18.3 por correcciones de seguridad, según [DA03 E01](docs/decisiones/DA03-E01-dependencias.md).
+
+## Comprobaciones del proyecto
+
+Con el entorno preparado, `scripts/comprobar.ps1` ejecuta arquitectura, dependencias, formato Python, pruebas, tipos Vue/TypeScript, compilación y colección de estáticos sin necesitar `.env` ni una base. `scripts/comprobar.ps1 -ConPostgreSQL` añade la integración en el cluster privado ya configurado y la comprobación de migraciones. Ejecutar con el proceso web detenido; el informe y los registros quedan en `.cache/comprobaciones`. Consulta [Comprobaciones reproducibles](docs/comprobaciones.md) para los comandos, reglas y resultados de la copia independiente.
 
 ## Configurar Django
 
