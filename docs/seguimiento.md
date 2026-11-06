@@ -1,8 +1,8 @@
 # Seguimiento de implementación
 
-## Estado actual: 4 de noviembre de 2026
+## Estado actual: 6 de noviembre de 2026
 
-SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T06 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T07: migrar auditoría mínima T37**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
+SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T07 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T08: migrar oportunidades y financiación T18–T22**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
 
 ## 30 de octubre de 2026
 
@@ -217,3 +217,17 @@ El flujo general pasó **618 pruebas del servidor —176 sin base y 442 con Post
 Tras aplicar a desarrollo quedan veintisiete tablas, 22 migraciones y cero filas en las diecinueve tablas de negocio implementadas, incluidas capacidades y concesiones. Se mantienen las dos bases persistentes y se eliminó la efímera. Las reglas de delegabilidad, alcance contenido, vigencia de ancestros y ciclos de varios nodos corresponden a SP02-T13/SP05-T03; no se habilita acceso por poblar el catálogo ni se resuelven PB03/Q05/Q11 por inferencia.
 
 La guía es [Capacidades y delegaciones](capacidades-y-delegaciones.md) y la evidencia [capacidades-y-delegaciones.json](evidencias/capacidades-y-delegaciones.json). Informe privado `.cache/comprobaciones/20261104T191708Z-9095c5b6/informe.json`; las siete fuentes históricas conservan sus huellas. Aporte parcial a WI05, DL15/DL20, RNF12 y VD18; SP02 sigue abierto. El avance queda local para la publicación por sprint. El siguiente trabajo es **SP02-T07: auditoría mínima T37**.
+
+### Auditoría mínima: SP02-T07
+
+Cierre el 6 de noviembre de 2026. Se incorporó M10 a Django y se implementó `AuditEvent`, con `audit/0001_audit_events`. Conserva las catorce columnas T37, ocho CHECK, cinco índices y tres FK nombradas ON DELETE RESTRICT. La referencia de recurso es histórica, sin FK genérica; la correlación admite varios eventos de una operación. Las FK usan SQL reversible y estado ORM sincronizado.
+
+La interfaz propietaria `append_event` recibe DTO inmutables y contexto técnico explícito. Usa su reloj y correlación y participa en la transacción del llamador, sin confirmar por separado ni generar efectos externos. Solo añade eventos. No ofrece comandos de edición o borrado, sin afirmar inviolabilidad frente al administrador de base o al acceso directo con privilegios.
+
+La proyección inicial permite exclusivamente estado técnico, UUID relacionado y revisión entera; el motivo es un código de catálogo cerrado. Se rechazan diccionarios arbitrarios, texto libre como motivo y campos sensibles antes de acceder a la base. Los relatos detallados y respaldos deben permanecer en sus registros privados de origen. Cada integración revisará la proyección específica necesaria; los códigos de acción y recurso deben ser constantes del servidor. Los CHECK JSON aseguran el tipo objeto, no su privacidad semántica.
+
+Pasaron **95 pruebas nuevas: 49 sin base y 46 con PostgreSQL**, sobre contratos cerrados y errores sin contenido privado, esquema, restricciones SQL, referencias, borrado SQL/ORM, valores predeterminados, JSON null frente a NULL SQL, escritura mínima, contexto inyectado, correlación compartida y rollback conjunto. La migración se revirtió y reaplicó solo en la base efímera, conservando datos sintéticos de cuenta, ámbito y organización y restaurando el grafo.
+
+El flujo general pasó **713 pruebas del servidor —225 sin base y 488 con PostgreSQL— y 68 del cliente**, sin fallos ni omisiones. Arquitectura, dependencias/bloqueos, Ruff/formato, tipos, build, Django check, colección y correspondencia de migraciones pasaron. Informe privado `.cache/comprobaciones/20261106T063713Z-92281430/informe.json`, con temporales propios y sin avisos de limpieza externos. Tras aplicar a desarrollo quedan veintiocho tablas, 23 migraciones y cero filas en las veinte tablas de negocio implementadas; se conservan las dos bases persistentes y se eliminó la efímera.
+
+La guía es [Auditoría mínima](auditoria-minima.md) y la evidencia [auditoria-minima.json](evidencias/auditoria-minima.json). Las siete fuentes históricas y los bloqueos conservan sus huellas. Aporte parcial a WI05, DL18, RNF12 y AT18/VD18. La coordinación de cambios, auditoría obligatoria y salida persistente corresponde a SP02-T14; la consulta API098/API099 con audit.read y filtros corresponde a SP14-T04. No se crean endpoints ni se acredita el piloto. El avance queda local para la publicación por sprint; SP02 sigue abierto con siete de 17 tareas. El siguiente trabajo es **SP02-T08: oportunidades y financiación T18–T22**.

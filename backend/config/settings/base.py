@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "modules.academics.apps.AcademicsConfig",
     "modules.organizations.apps.OrganizationsConfig",
     "modules.access.apps.AccessConfig",
+    "modules.audit.apps.AuditConfig",
 ]
 MIDDLEWARE = [
     "api.middleware.ApiBoundaryMiddleware",
