@@ -1,0 +1,425 @@
+{
+  "fecha": "2026-11-06",
+  "tarea": "SP02-T08",
+  "resultado": "T18-T22 implementadas, probadas y migradas a desarrollo; sin operaciones HTTP nuevas",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI05"
+    ],
+    "modulos": [
+      "M05"
+    ],
+    "tablas": [
+      "T18",
+      "T19",
+      "T20",
+      "T21",
+      "T22"
+    ],
+    "DL": [
+      "DL01",
+      "DL08",
+      "DL09",
+      "DL10",
+      "DL19"
+    ],
+    "RNF": [
+      "RNF12"
+    ],
+    "pruebas": [
+      "VD18: comparacion parcial del esquema implementado"
+    ]
+  },
+  "modelo": {
+    "modelos": [
+      "Opportunity",
+      "LifecycleEvent",
+      "Need",
+      "Funding",
+      "OpportunityContact"
+    ],
+    "columnas": 50,
+    "checks": 26,
+    "foreign_keys": [
+      "fk_t18_01",
+      "fk_t18_02",
+      "fk_t18_03",
+      "fk_t19_01",
+      "fk_t19_02",
+      "fk_t20_01",
+      "fk_t20_02",
+      "fk_t21_01",
+      "fk_t22_01"
+    ],
+    "on_delete": "RESTRICT en PostgreSQL y Django, nueve FK no diferibles",
+    "indices_no_unicos": 9,
+    "indice_parcial": "ix_t18_01 (expires_at) WHERE lifecycle = 'active'",
+    "indice_orden": "ix_t18_02 (published_at DESC, id)",
+    "indice_expresion": "ix_t18_03 lower(area)",
+    "unicidad_revision": "uq_t19_key01 (opportunity_id, validity_revision)",
+    "unicidad_contacto": "uq_t22_01 (opportunity_id, kind, value); restriccion UNIQUE e indice del mismo nombre, con semantica equivalente al indice unico de referencia",
+    "financiacion": "PK opportunity_id, sin id adicional ni booleano de financiada en T18",
+    "propiedad": "Titular cuenta u organizacion excluyentes, distinto del autor material",
+    "contactos": "Valores publicos propios, sin FK a profiles_contact",
+    "historial": "Revision, actor y estados, con fecha anterior y resultante; solo expire requiere actor NULL"
+  },
+  "migracion": {
+    "archivo": "backend/modules/opportunities/migrations/0001_opportunities_and_funding.py",
+    "dependencias": [
+      "academics/0002_personal_verifications_and_researcher_awards",
+      "organizations/0001_organizations_and_representation",
+      "identity/0001_initial mediante dependencia intercambiable"
+    ],
+    "metodo": "SQL reversible con nueve FK nombradas y SeparateDatabaseAndState; db_constraint=True en estado ORM",
+    "diferencias_modelos_migraciones": 0,
+    "reversion": "A cero y reaplicacion en test_entrepares conservando cuenta, organizacion y disciplina sinteticas; grafo restaurado"
+  },
+  "pruebas_nuevas": {
+    "archivo": "backend/modules/opportunities/tests/test_opportunities_postgresql.py",
+    "correctas": 126,
+    "fallidas": 0,
+    "omitidas": 0,
+    "comando": "scripts/probar.ps1 -Modo integracion backend/modules/opportunities/tests -q --basetemp=.cache/sprint02/t08-pytest-final --junitxml=.cache/sprint02/t08-pruebas-final.xml",
+    "junit_privado": ".cache/sprint02/t08-pruebas-final.xml",
+    "escenarios": [
+      "Cincuenta columnas, veintiseis CHECK, indices y nueve FK",
+      "Titularidad excluyente y autor material independiente",
+      "Rechazo SQL de textos vacios, estados, versiones y fechas incoherentes",
+      "Historial por revision y actor humano salvo vencimiento automatico",
+      "Financiacion opcional unica, decimales exactos y modalidades con detalle",
+      "Necesidades abiertas con disciplina opcional",
+      "Contactos propios independientes de los privados del perfil",
+      "Referencias inexistentes y borrado restringido desde SQL y ORM",
+      "Valores predeterminados y guardado parcial con updated_at",
+      "Revocacion de representacion conserva oportunidad organizacional y autoria",
+      "Rollback del agregado completo",
+      "Reversion y reaplicacion de migracion conservando otros propietarios"
+    ]
+  },
+  "concurrencia": {
+    "pruebas": 3,
+    "base": "test_entrepares",
+    "metodo": "Parejas de conexiones PostgreSQL con PID distintos y barrera antes de insertar",
+    "claves": [
+      "opportunities_funding_pkey",
+      "uq_t22_01",
+      "uq_t19_key01"
+    ],
+    "resultado": "Una transaccion confirma y otra se rechaza por duplicado en cada caso",
+    "limites_espera": "5 s para bloqueo y barrera, 10 s por sentencia, 20 s para recoger resultados; conexiones cerradas en finally",
+    "limite_alcance": "Unicidad de insercion; transiciones y actualizacion coordinada de oportunidad/aviso son posteriores"
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261106T065144Z-2d467b15/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 225,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 614,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 839,
+    "resultado": "Todos los pasos correctos",
+    "pasos": [
+      {
+        "nombre": "version-node",
+        "salida": 0
+      },
+      {
+        "nombre": "version-npm",
+        "salida": 0
+      },
+      {
+        "nombre": "version-uv",
+        "salida": 0
+      },
+      {
+        "nombre": "arquitectura",
+        "salida": 0
+      },
+      {
+        "nombre": "bloqueo-python",
+        "salida": 0
+      },
+      {
+        "nombre": "compatibilidad-python",
+        "salida": 0
+      },
+      {
+        "nombre": "dependencias-python",
+        "salida": 0
+      },
+      {
+        "nombre": "analisis-python",
+        "salida": 0
+      },
+      {
+        "nombre": "formato-python",
+        "salida": 0
+      },
+      {
+        "nombre": "pruebas-python",
+        "salida": 0
+      },
+      {
+        "nombre": "dependencias-node",
+        "salida": 0
+      },
+      {
+        "nombre": "muestra-vue",
+        "salida": 0
+      },
+      {
+        "nombre": "pruebas-vue",
+        "salida": 0
+      },
+      {
+        "nombre": "tipos-y-build-vue",
+        "salida": 0
+      },
+      {
+        "nombre": "preparar-web",
+        "salida": 0
+      },
+      {
+        "nombre": "django-check",
+        "salida": 0
+      },
+      {
+        "nombre": "collectstatic",
+        "salida": 0
+      },
+      {
+        "nombre": "integracion-postgresql",
+        "salida": 0
+      },
+      {
+        "nombre": "migraciones",
+        "salida": 0
+      }
+    ],
+    "avisos_limpieza_externa": 0
+  },
+  "desarrollo": {
+    "antes": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "access_capability",
+        "access_grant",
+        "audit_event",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile"
+      ],
+      "table_count": 28,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0,
+        "access_capability": 0,
+        "access_grant": 0,
+        "audit_event": 0
+      },
+      "migration_count": 23,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education"
+      ],
+      "access_migrations": [
+        "0001_capabilities_and_grants"
+      ],
+      "audit_migrations": [
+        "0001_audit_events"
+      ],
+      "opportunities_migrations": [],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "despues": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "access_capability",
+        "access_grant",
+        "audit_event",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "opportunities_contact",
+        "opportunities_funding",
+        "opportunities_lifecycle_event",
+        "opportunities_need",
+        "opportunities_opportunity",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile"
+      ],
+      "table_count": 33,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0,
+        "access_capability": 0,
+        "access_grant": 0,
+        "audit_event": 0,
+        "opportunities_opportunity": 0,
+        "opportunities_lifecycle_event": 0,
+        "opportunities_need": 0,
+        "opportunities_funding": 0,
+        "opportunities_contact": 0
+      },
+      "migration_count": 24,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education"
+      ],
+      "access_migrations": [
+        "0001_capabilities_and_grants"
+      ],
+      "audit_migrations": [
+        "0001_audit_events"
+      ],
+      "opportunities_migrations": [
+        "0001_opportunities_and_funding"
+      ],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "django_check": "Sin incidencias activas; auth.W004 sustituido por identity.E001",
+    "migrate_check": "Sin migraciones pendientes"
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/config/settings/base.py": "9fc644cbb98c25a5ac36a7b8afe49452d9db409ea74a10cd4c240431e8ea45f6",
+      "backend/modules/opportunities/apps.py": "1777699d673c91f998cba5c2e9a4aeab7141a9af928bfff89df66716e10f0bd0",
+      "backend/modules/opportunities/models.py": "a1f16426da4aca522998520badb2bdbf5ea7fec491d693369dfd7dd708310fc1",
+      "backend/modules/opportunities/migrations/0001_opportunities_and_funding.py": "9300b13a71a3d25f427e2d0c90b76f4fe4246cfffd445337b997a49dc222c878",
+      "backend/modules/opportunities/tests/test_opportunities_postgresql.py": "d8cf99b5cdc84768c35e6fde2a1d8e3e8347942913a45b1af28941917146367a",
+      "docs/oportunidades-y-financiacion.md": "dbc1eed863c4aff19558e6ad27dbebc44e28b0e66b2cda10eed5ae4d66d4b50f"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en los archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue abierto: ocho de 17 tareas completadas",
+    "El esquema no concede autoridad por titularidad o autoria; validacion vigente corresponde al caso de aplicacion",
+    "DL08 exige necesidad y contacto publico para publicar; la persistencia intermedia no comprueba el agregado por si sola",
+    "Lista permitida de monedas, importes finitos, formatos de contacto y validacion del conjunto se implementaran en SP09",
+    "SP09/SP10 incorporaran publicacion y gestion personal/organizacional; no hay endpoints nuevos",
+    "La actividad efectiva depende de reloj y visibilidad; el esquema no compara con ahora",
+    "Transiciones validas, revision/fecha actual, historial, auditoria y avisos requieren coordinacion transaccional en SP11",
+    "Q03/Q08 mantienen sus condiciones sobre duracion inicial, reactivacion y fin de mes",
+    "No se implementan pagos o suscripciones, ni un plazo general de borrado",
+    "Pruebas sinteticas locales, no resultados del piloto"
+  ],
+  "siguiente": "SP02-T09: migrar divulgacion y destacados T23-T25"
+}
