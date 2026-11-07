@@ -1,8 +1,8 @@
 # Seguimiento de implementación
 
-## Estado actual: 6 de noviembre de 2026
+## Estado actual: 7 de noviembre de 2026
 
-SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T10 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T11: migrar avisos y salida persistente T34–T36**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
+SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T11 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T12: trasladar y consolidar FK compuestas y vistas**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
 
 ## 30 de octubre de 2026
 
@@ -275,3 +275,15 @@ El flujo general pasó **1052 pruebas del servidor —225 sin base y 827 con Pos
 Se amplió a 900 segundos solo el límite de integración del ejecutor: el primer flujo alcanzó su límite anterior de 300 segundos aunque el proceso de pruebas terminó después con los 827 casos correctos. Se comprobó su finalización y eliminación de la base efímera antes de repetir. Las demás etapas mantienen 300 segundos; los informes registran timeout_seconds y los casos concurrentes conservan sus límites. La nueva ejecución general se completó, sin modificar guards de PostgreSQL ni los antiguos temporales externos.
 
 La guía es [Moderación y revisión](moderacion-y-revision.md) y la evidencia [moderacion-y-revision.json](evidencias/moderacion-y-revision.json). Las siete fuentes históricas y ambos bloqueos conservan sus huellas. Aporte parcial a WI05, DL12/DL13/DL14, RNF12 y VD18. SP14/SP15 implementarán los flujos autorizados; SP02-T12 conservará la FK compuesta. Sin endpoints o resultados de piloto añadidos. El avance queda local para la publicación por sprint; SP02 sigue abierto con diez de 17 tareas. El siguiente trabajo es **SP02-T11: avisos y salida persistente T34–T36**.
+
+### Avisos y salida persistente: SP02-T11
+
+Cierre el 7 de noviembre de 2026. M09 incorpora `Notice`, `OutboxMessage` y `DeliveryAttempt`, con `notifications/0001_notices_outbox_and_attempts`. Conserva las 33 columnas T34–T36, quince CHECK, seis índices no únicos, tres unicidades y cinco FK nombradas ON DELETE RESTRICT. Las cuatro relaciones simples terminan con db_constraint=True; la referencia compuesta del aviso se mantiene explícita en SQL reversible.
+
+`fk_t34_01 (opportunity_id, validity_revision) → opportunities_lifecycle_event(opportunity_id, validity_revision)` exige un evento de esa oportunidad y revisión, con apoyo en uq_t19_key01. La navegación ORM Notice.opportunity conserva db_constraint=False. La unicidad del aviso usa NULLS NOT DISTINCT también sin canal; cancelarlo mantiene su posición y una revisión nueva puede tener otro aviso. La intención exige un único origen aviso/comprobación, clave global de idempotencia y objeto JSON no NULL. Processing exige lease y sent equivale a sent_at informado. Los intentos tienen número único por mensaje y resultado coherente con su fin.
+
+Pasaron **80 pruebas nuevas PostgreSQL**, incluidas cuatro parejas de conexiones sincronizadas para aviso con canal NULL, aviso con canal informado, intención e intento. Cubren esquema, CHECK, índices/FK, revisión incompatible y cambios del evento, JSON null frente a NULL SQL, defaults independientes, estados y marcas temporales, referencias y borrado SQL/ORM, save parcial y rollback junto a un cambio de negocio. La migración se revirtió y reaplicó solo en la base efímera, conservando cuenta, comprobación, oportunidad y evento y restaurando el grafo.
+
+El flujo general pasó **1132 pruebas del servidor —225 sin base y 907 con PostgreSQL— y 68 del cliente**, sin fallos ni omisiones. Arquitectura, dependencias/bloqueos, Ruff/formato, tipos, build, Django check, colección y correspondencia de migraciones correctos. Informe privado `.cache/comprobaciones/20261107T050856Z-4c18541c/informe.json`, con límite de integración de 900 segundos y sin avisos de limpieza externos. Tras aplicar a desarrollo quedan cuarenta y cinco tablas, 27 migraciones y cero filas en las treinta y siete tablas de negocio implementadas; se mantienen las dos bases persistentes y se eliminó la efímera.
+
+La guía es [Avisos y salida persistente](avisos-y-salida-persistente.md) y la evidencia [avisos-y-salida-persistente.json](evidencias/avisos-y-salida-persistente.json). Las siete fuentes históricas y ambos bloqueos conservan sus huellas. Aporte parcial a WI05, DL17, RNF12 y VD18. La referencia histórica no revalida revisión vigente, destino o canal; esos casos, reclamación, firma, numeración bajo bloqueo y recuperación corresponden a sus incrementos funcionales. El CHECK de objeto JSON no acredita privacidad semántica del payload: no debe contener tokens utilizables o enlaces firmados. Q03/Q08 mantienen sus condiciones. Sin envío externo, adaptadores, endpoints o resultados de piloto añadidos. SP02-T12 conservará la FK compuesta. El avance queda local para la publicación por sprint; SP02 sigue abierto con once de 17 tareas. El siguiente trabajo es **SP02-T12: FK compuestas y vistas**.

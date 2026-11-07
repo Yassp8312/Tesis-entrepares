@@ -1,0 +1,502 @@
+{
+  "fecha": "2026-11-07",
+  "tarea": "SP02-T11",
+  "resultado": "T34-T36 implementadas, probadas y migradas a desarrollo; intencion persistente con referencias e historial de intentos",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI05"
+    ],
+    "modulos": [
+      "M09"
+    ],
+    "tablas": [
+      "T34",
+      "T35",
+      "T36"
+    ],
+    "DL": [
+      "DL17"
+    ],
+    "RNF": [
+      "RNF12"
+    ],
+    "pruebas": [
+      "VD18: comparacion parcial del esquema implementado"
+    ]
+  },
+  "modelo": {
+    "modelos": [
+      "Notice",
+      "OutboxMessage",
+      "DeliveryAttempt"
+    ],
+    "columnas": 33,
+    "checks": 15,
+    "foreign_keys": [
+      "fk_t34_01",
+      "fk_t35_01",
+      "fk_t35_02",
+      "fk_t35_03",
+      "fk_t36_01"
+    ],
+    "on_delete": "RESTRICT en PostgreSQL; cinco FK no diferibles",
+    "compuesta": "fk_t34_01 (opportunity_id,validity_revision) -> opportunities_lifecycle_event(opportunity_id,validity_revision)",
+    "indices_no_unicos": 6,
+    "indices_parciales_no_unicos": [
+      "ix_t34_02 scheduled_for WHERE cancelled_at IS NULL",
+      "ix_t35_01 available_at WHERE status IN ('pending','failed')",
+      "ix_t35_02 lease_until WHERE status='processing'"
+    ],
+    "unicidad_aviso": "uq_t34_01 (opportunity_id,validity_revision,kind,channel) NULLS NOT DISTINCT; restriccion UNIQUE con mismo indice de soporte y semantica del indice unico de referencia",
+    "unicidad_intencion": "uq_t35_key01 (idempotency_key)",
+    "unicidad_intento": "uq_t36_key01 (outbox_id,attempt_no)",
+    "payload": "jsonb objeto NOT NULL DEFAULT {}; default Python dict independiente por instancia",
+    "origen": "Exactly one notice_id/challenge_id; cuenta destinataria opcional",
+    "estados": "processing exige lease_until; sent equivale a sent_at no NULL; running equivale a finished_at NULL en intento"
+  },
+  "migracion": {
+    "archivo": "backend/modules/notifications/migrations/0001_notices_outbox_and_attempts.py",
+    "dependencias": [
+      "identity/0002_email_challenge_and_recovery_request",
+      "identity/0001_initial mediante dependencia intercambiable",
+      "opportunities/0001_opportunities_and_funding"
+    ],
+    "metodo": "SQL reversible y SeparateDatabaseAndState; cuatro FK simples con db_constraint=True, Notice.opportunity db_constraint=False y FK compuesta explicita",
+    "diferencias_modelos_migraciones": 0,
+    "reversion": "A cero y reaplicacion solo en test_entrepares conservando cuenta, comprobacion, oportunidad y evento; grafo restaurado"
+  },
+  "pruebas_nuevas": {
+    "archivo": "backend/modules/notifications/tests/test_notifications_postgresql.py",
+    "correctas": 80,
+    "fallidas": 0,
+    "omitidas": 0,
+    "comando": "scripts/probar.ps1 -Modo integracion backend/modules/notifications/tests -q --junitxml=.cache/sprint02/t11-pruebas-final.xml --basetemp=.cache/sprint02/t11-pytest-final",
+    "junit_privado": ".cache/sprint02/t11-pruebas-final.xml",
+    "escenarios": [
+      "Treinta y tres columnas, quince CHECK, seis indices no unicos, tres unicidades y cinco FK",
+      "Referencia compuesta impide revision inexistente, de otra oportunidad o cambios incompatibles del evento",
+      "Unicidad con canal NULL y canal informado, incluso tras cancelar; revisiones independientes",
+      "Origen exclusivo, idempotencia global y destinatario opcional",
+      "JSON objeto, JSON null y NULL SQL; defaults independientes",
+      "Estados de salida, lease y marca de envio coherentes",
+      "Numeracion y resultado de intento, fin no anterior al inicio",
+      "Referencias inexistentes y borrado SQL/ORM restringido; evento sin relacion navegable se protege por SQL",
+      "Defaults, save parcial y rollback de cambio de negocio junto a aviso/mensaje/intento",
+      "Reversion y reaplicacion de migracion conservando fuentes"
+    ]
+  },
+  "concurrencia": {
+    "pruebas": 4,
+    "base": "test_entrepares",
+    "metodo": "Parejas de conexiones PostgreSQL con PID distintos y barrera antes de insertar",
+    "claves": [
+      "uq_t34_01 canal NULL",
+      "uq_t34_01 canal informado",
+      "uq_t35_key01",
+      "uq_t36_key01"
+    ],
+    "resultado": "Una transaccion confirma y otra se rechaza por duplicado en cada caso",
+    "limites_espera": "5 s bloqueo/barrera, 10 s sentencia, 20 s recogida; conexiones cerradas en finally",
+    "alcance": "Unicidad de insercion; reclamacion, revalidacion y numeracion bajo bloqueo son de sus casos funcionales"
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261107T050856Z-4c18541c/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 225,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 907,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 1132,
+    "resultado": "Todos los pasos correctos",
+    "pasos": [
+      {
+        "nombre": "version-node",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "version-npm",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "version-uv",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "arquitectura",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "bloqueo-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "compatibilidad-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "dependencias-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "analisis-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "formato-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "pruebas-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "dependencias-node",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "muestra-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "pruebas-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "tipos-y-build-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "preparar-web",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "django-check",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "collectstatic",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "integracion-postgresql",
+        "salida": 0,
+        "limite_segundos": 900
+      },
+      {
+        "nombre": "migraciones",
+        "salida": 0,
+        "limite_segundos": 300
+      }
+    ],
+    "avisos_limpieza_externa": 0
+  },
+  "desarrollo": {
+    "antes": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "access_capability",
+        "access_grant",
+        "audit_event",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "moderation_decision",
+        "moderation_measure",
+        "moderation_report",
+        "moderation_restriction",
+        "moderation_review_decision",
+        "moderation_review_request",
+        "opportunities_contact",
+        "opportunities_funding",
+        "opportunities_lifecycle_event",
+        "opportunities_need",
+        "opportunities_opportunity",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile",
+        "publications_event_detail",
+        "publications_highlight",
+        "publications_publication"
+      ],
+      "table_count": 42,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0,
+        "access_capability": 0,
+        "access_grant": 0,
+        "audit_event": 0,
+        "opportunities_opportunity": 0,
+        "opportunities_lifecycle_event": 0,
+        "opportunities_need": 0,
+        "opportunities_funding": 0,
+        "opportunities_contact": 0,
+        "publications_publication": 0,
+        "publications_event_detail": 0,
+        "publications_highlight": 0,
+        "moderation_report": 0,
+        "moderation_decision": 0,
+        "moderation_measure": 0,
+        "moderation_restriction": 0,
+        "moderation_review_request": 0,
+        "moderation_review_decision": 0
+      },
+      "migration_count": 26,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education"
+      ],
+      "access_migrations": [
+        "0001_capabilities_and_grants"
+      ],
+      "audit_migrations": [
+        "0001_audit_events"
+      ],
+      "opportunities_migrations": [
+        "0001_opportunities_and_funding"
+      ],
+      "publications_migrations": [
+        "0001_publications_events_and_highlights"
+      ],
+      "moderation_migrations": [
+        "0001_moderation_and_review"
+      ],
+      "notifications_migrations": [],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "despues": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "access_capability",
+        "access_grant",
+        "audit_event",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "moderation_decision",
+        "moderation_measure",
+        "moderation_report",
+        "moderation_restriction",
+        "moderation_review_decision",
+        "moderation_review_request",
+        "notifications_delivery_attempt",
+        "notifications_notice",
+        "notifications_outbox",
+        "opportunities_contact",
+        "opportunities_funding",
+        "opportunities_lifecycle_event",
+        "opportunities_need",
+        "opportunities_opportunity",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile",
+        "publications_event_detail",
+        "publications_highlight",
+        "publications_publication"
+      ],
+      "table_count": 45,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0,
+        "access_capability": 0,
+        "access_grant": 0,
+        "audit_event": 0,
+        "opportunities_opportunity": 0,
+        "opportunities_lifecycle_event": 0,
+        "opportunities_need": 0,
+        "opportunities_funding": 0,
+        "opportunities_contact": 0,
+        "publications_publication": 0,
+        "publications_event_detail": 0,
+        "publications_highlight": 0,
+        "moderation_report": 0,
+        "moderation_decision": 0,
+        "moderation_measure": 0,
+        "moderation_restriction": 0,
+        "moderation_review_request": 0,
+        "moderation_review_decision": 0,
+        "notifications_notice": 0,
+        "notifications_outbox": 0,
+        "notifications_delivery_attempt": 0
+      },
+      "migration_count": 27,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education"
+      ],
+      "access_migrations": [
+        "0001_capabilities_and_grants"
+      ],
+      "audit_migrations": [
+        "0001_audit_events"
+      ],
+      "opportunities_migrations": [
+        "0001_opportunities_and_funding"
+      ],
+      "publications_migrations": [
+        "0001_publications_events_and_highlights"
+      ],
+      "moderation_migrations": [
+        "0001_moderation_and_review"
+      ],
+      "notifications_migrations": [
+        "0001_notices_outbox_and_attempts"
+      ],
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "django_check": "Sin incidencias activas; auth.W004 sustituido por identity.E001",
+    "migrate_check": "Sin migraciones pendientes"
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/config/settings/base.py": "6e15b0bf32bc561835590281fd02afe303ccde02ffe78bbdcde961f714e1f909",
+      "backend/modules/notifications/apps.py": "78dff24ac227863db492dc65293839e661a6f183fda990e428dfe0293ee6ea22",
+      "backend/modules/notifications/models.py": "bf02d7aa53426400d6ccf63c80d12a11ca3bfd7e4707a70879a857407002e864",
+      "backend/modules/notifications/migrations/0001_notices_outbox_and_attempts.py": "e2ab7ffefe9c8b13f0770dd88d653f2fdb6feb3d5ea48a57841ae180e2c160f4",
+      "backend/modules/notifications/tests/test_notifications_postgresql.py": "49051c86a5e9259c34f26274151b51f5982dbfe5d351dbc217403f3c4e7a0a38",
+      "docs/avisos-y-salida-persistente.md": "b112e52e9ca0803945f92041ddfc9ad5b1ebcf4079e790871218ec9730db4c09"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue abierto: once de 17 tareas completadas; SP02-T12 debe conservar la FK compuesta instalada",
+    "Unicidad de intencion no garantiza entrega externa exactamente una vez ni lectura del mensaje",
+    "El CHECK JSON valida tipo objeto, no privacidad semantica; interfaces y plantillas funcionales deben construir parametros minimos",
+    "Payload no debe guardar token utilizable, credencial o enlace firmado; firma y revalidacion de challenge corresponden al flujo de identidad al enviar",
+    "Canal, destinatarios organizacionales y calendario mantienen Q03/Q08; aviso sin canal no produce envio real",
+    "Revision vigente, invalidacion y revalidacion antes del envio requieren coordinacion con oportunidades",
+    "Reclamacion, lease, reintento y numeracion bajo bloqueo pertenecen a los casos funcionales; registrar intento no cambia solo el outbox",
+    "No se implementan adaptadores, envio externo, endpoints o resultados de piloto en la tarea de datos"
+  ],
+  "siguiente": "SP02-T12: trasladar FK compuestas y vistas"
+}

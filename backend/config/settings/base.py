@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "modules.opportunities.apps.OpportunitiesConfig",
     "modules.publications.apps.PublicationsConfig",
     "modules.moderation.apps.ModerationConfig",
+    "modules.notifications.apps.NotificationsConfig",
 ]
 MIDDLEWARE = [
     "api.middleware.ApiBoundaryMiddleware",
