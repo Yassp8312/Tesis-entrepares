@@ -1,0 +1,572 @@
+{
+  "fecha": "2026-11-07",
+  "tarea": "SP02-T12",
+  "resultado": "Cuatro vistas ordinarias y lecturas propietarias implementadas, probadas y migradas; siete FK compuestas conservadas",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI05"
+    ],
+    "modulos": [
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "M06",
+      "M07",
+      "M08",
+      "M09",
+      "M10"
+    ],
+    "DL": "DL01-DL20: integridad y hechos derivados, alcance parcial por operacion",
+    "RNF": [
+      "RNF12"
+    ],
+    "pruebas": [
+      "VD18: esquema y vistas identificadas",
+      "AT15: aporte parcial de reconstruccion por migraciones; restauracion desde copia posterior"
+    ]
+  },
+  "claves_compuestas": {
+    "cantidad": 7,
+    "definiciones": {
+      "fk_t09_02": "FOREIGN KEY (parent_id, institution_id) REFERENCES academics_scope(id, institution_id) ON DELETE RESTRICT",
+      "fk_t12_02": "FOREIGN KEY (challenge_id, account_id) REFERENCES identity_email_challenge(id, account_id) ON DELETE RESTRICT",
+      "fk_t14_05": "FOREIGN KEY (source_request_id, account_id, academic_scope_id) REFERENCES academics_researcher_request(id, account_id, academic_scope_id) ON DELETE RESTRICT",
+      "fk_t24_01": "FOREIGN KEY (publication_id, publication_kind) REFERENCES publications_publication(id, kind) ON DELETE RESTRICT",
+      "fk_t30_01": "FOREIGN KEY (measure_id, requested_by) REFERENCES moderation_measure(id, account_id) ON DELETE RESTRICT",
+      "fk_t33_07": "FOREIGN KEY (parent_grant_id, granted_by) REFERENCES access_grant(id, account_id) ON DELETE RESTRICT",
+      "fk_t34_01": "FOREIGN KEY (opportunity_id, validity_revision) REFERENCES opportunities_lifecycle_event(opportunity_id, validity_revision) ON DELETE RESTRICT"
+    },
+    "sin_modificar_o_duplicar": true,
+    "fk_de_sus_tablas_comprobadas": 22,
+    "estado_orm": "Ocho campos de relaciones gestionadas por SQL conservan db_constraint=False en modelos y estado historico; sin diferencias de migracion"
+  },
+  "vistas": [
+    {
+      "nombre": "model_profile_completeness",
+      "propietario": "M02",
+      "migracion": "backend/modules/profiles/migrations/0002_profile_completeness_view.py",
+      "columnas": [
+        "profile_id",
+        "account_id",
+        "is_complete"
+      ],
+      "selector": "profiles.selectors.get_profile_completeness",
+      "contrato": "ProfileCompletenessState",
+      "sql_igual_referencia": true
+    },
+    {
+      "nombre": "model_personal_verification",
+      "propietario": "M03",
+      "migracion": "backend/modules/academics/migrations/0003_personal_verification_view.py",
+      "columnas": [
+        "account_id",
+        "is_verified"
+      ],
+      "selector": "academics.selectors.get_personal_verification",
+      "contrato": "PersonalVerificationState",
+      "sql_igual_referencia": true
+    },
+    {
+      "nombre": "model_organization_verification",
+      "propietario": "M04",
+      "migracion": "backend/modules/organizations/migrations/0002_organization_verification_view.py",
+      "columnas": [
+        "organization_id",
+        "is_verified"
+      ],
+      "selector": "organizations.selectors.get_organization_verification",
+      "contrato": "OrganizationVerificationState",
+      "sql_igual_referencia": true
+    },
+    {
+      "nombre": "model_opportunity_funding",
+      "propietario": "M05",
+      "migracion": "backend/modules/opportunities/migrations/0002_opportunity_funding_view.py",
+      "columnas": [
+        "opportunity_id",
+        "is_funded"
+      ],
+      "selector": "opportunities.selectors.get_opportunity_funding",
+      "contrato": "OpportunityFundingState",
+      "sql_igual_referencia": true
+    }
+  ],
+  "interfaces": {
+    "lectura": "SQL fijo con parametro UUID enlazado, una consulta por identificador",
+    "retorno": "DTO minimo frozen/slots, o None para recurso ausente",
+    "privacidad": "Solo identificadores y booleanos; sin modelos ORM, contactos, motivos, importes ni contenido",
+    "limite": "Hechos internos; application autoriza el caso y define la salida API"
+  },
+  "migraciones": {
+    "nuevas": 4,
+    "operaciones": "RunSQL CREATE VIEW / DROP VIEW sin CASCADE, con dependencia de las tablas propietarias",
+    "estado": "Sin modelos de escritura para vistas o banderas duplicadas; SQL explicito y estado ORM de tablas preservado",
+    "diferencias_modelos_migraciones": 0
+  },
+  "pruebas_nuevas": {
+    "archivo": "backend/application/tests/test_derived_views_postgresql.py",
+    "correctas": 41,
+    "fallidas": 0,
+    "omitidas": 0,
+    "comando": "scripts/probar.ps1 -Modo integracion backend/application/tests/test_derived_views_postgresql.py -q --junitxml=.cache/sprint02/t12-pruebas.xml --basetemp=.cache/sprint02/t12-pytest",
+    "junit_privado": ".cache/sprint02/t12-pruebas.xml",
+    "escenarios": [
+      "Cuatro vistas normales, tipos y columnas minimas",
+      "Siete FK compuestas y veintidos FK de sus tablas, validadas/no diferibles/RESTRICT",
+      "Coherencia de campos ORM actuales e historicos para SQL compuesto",
+      "Nueve combinaciones de formacion vigente/finalizada/ausente y contacto visible/oculto/ausente",
+      "Multiples hijos no duplican perfil y cambios visibles sin refresco",
+      "Respaldo personal aprobado, multiples expedientes y cambios de formacion/correo/dominio",
+      "Separacion entre verificacion de persona, entidad y representacion",
+      "Financiacion por presencia, incluso cero, sin confundir visibilidad",
+      "DTO inmutables minimos, una consulta y None frente a falso",
+      "Rollback de hechos derivados y cuatro reversiones/reaplicaciones sin CASCADE o perdida de datos"
+    ]
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261107T052820Z-d9046cc3/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 225,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 948,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 1173,
+    "resultado": "Todos los pasos correctos",
+    "pasos": [
+      {
+        "nombre": "version-node",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "version-npm",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "version-uv",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "arquitectura",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "bloqueo-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "compatibilidad-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "dependencias-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "analisis-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "formato-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "pruebas-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "dependencias-node",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "muestra-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "pruebas-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "tipos-y-build-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "preparar-web",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "django-check",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "collectstatic",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "integracion-postgresql",
+        "salida": 0,
+        "limite_segundos": 900
+      },
+      {
+        "nombre": "migraciones",
+        "salida": 0,
+        "limite_segundos": 300
+      }
+    ],
+    "avisos_limpieza_externa": 0
+  },
+  "desarrollo": {
+    "antes": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "access_capability",
+        "access_grant",
+        "audit_event",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "moderation_decision",
+        "moderation_measure",
+        "moderation_report",
+        "moderation_restriction",
+        "moderation_review_decision",
+        "moderation_review_request",
+        "notifications_delivery_attempt",
+        "notifications_notice",
+        "notifications_outbox",
+        "opportunities_contact",
+        "opportunities_funding",
+        "opportunities_lifecycle_event",
+        "opportunities_need",
+        "opportunities_opportunity",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile",
+        "publications_event_detail",
+        "publications_highlight",
+        "publications_publication"
+      ],
+      "table_count": 45,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0,
+        "access_capability": 0,
+        "access_grant": 0,
+        "audit_event": 0,
+        "opportunities_opportunity": 0,
+        "opportunities_lifecycle_event": 0,
+        "opportunities_need": 0,
+        "opportunities_funding": 0,
+        "opportunities_contact": 0,
+        "publications_publication": 0,
+        "publications_event_detail": 0,
+        "publications_highlight": 0,
+        "moderation_report": 0,
+        "moderation_decision": 0,
+        "moderation_measure": 0,
+        "moderation_restriction": 0,
+        "moderation_review_request": 0,
+        "moderation_review_decision": 0,
+        "notifications_notice": 0,
+        "notifications_outbox": 0,
+        "notifications_delivery_attempt": 0
+      },
+      "migration_count": 27,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education"
+      ],
+      "access_migrations": [
+        "0001_capabilities_and_grants"
+      ],
+      "audit_migrations": [
+        "0001_audit_events"
+      ],
+      "opportunities_migrations": [
+        "0001_opportunities_and_funding"
+      ],
+      "publications_migrations": [
+        "0001_publications_events_and_highlights"
+      ],
+      "moderation_migrations": [
+        "0001_moderation_and_review"
+      ],
+      "notifications_migrations": [
+        "0001_notices_outbox_and_attempts"
+      ],
+      "views": [],
+      "composite_foreign_keys": {
+        "fk_t09_02": "FOREIGN KEY (parent_id, institution_id) REFERENCES academics_scope(id, institution_id) ON DELETE RESTRICT",
+        "fk_t12_02": "FOREIGN KEY (challenge_id, account_id) REFERENCES identity_email_challenge(id, account_id) ON DELETE RESTRICT",
+        "fk_t14_05": "FOREIGN KEY (source_request_id, account_id, academic_scope_id) REFERENCES academics_researcher_request(id, account_id, academic_scope_id) ON DELETE RESTRICT",
+        "fk_t24_01": "FOREIGN KEY (publication_id, publication_kind) REFERENCES publications_publication(id, kind) ON DELETE RESTRICT",
+        "fk_t30_01": "FOREIGN KEY (measure_id, requested_by) REFERENCES moderation_measure(id, account_id) ON DELETE RESTRICT",
+        "fk_t33_07": "FOREIGN KEY (parent_grant_id, granted_by) REFERENCES access_grant(id, account_id) ON DELETE RESTRICT",
+        "fk_t34_01": "FOREIGN KEY (opportunity_id, validity_revision) REFERENCES opportunities_lifecycle_event(opportunity_id, validity_revision) ON DELETE RESTRICT"
+      },
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "despues": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "access_capability",
+        "access_grant",
+        "audit_event",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "moderation_decision",
+        "moderation_measure",
+        "moderation_report",
+        "moderation_restriction",
+        "moderation_review_decision",
+        "moderation_review_request",
+        "notifications_delivery_attempt",
+        "notifications_notice",
+        "notifications_outbox",
+        "opportunities_contact",
+        "opportunities_funding",
+        "opportunities_lifecycle_event",
+        "opportunities_need",
+        "opportunities_opportunity",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile",
+        "publications_event_detail",
+        "publications_highlight",
+        "publications_publication"
+      ],
+      "table_count": 45,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0,
+        "access_capability": 0,
+        "access_grant": 0,
+        "audit_event": 0,
+        "opportunities_opportunity": 0,
+        "opportunities_lifecycle_event": 0,
+        "opportunities_need": 0,
+        "opportunities_funding": 0,
+        "opportunities_contact": 0,
+        "publications_publication": 0,
+        "publications_event_detail": 0,
+        "publications_highlight": 0,
+        "moderation_report": 0,
+        "moderation_decision": 0,
+        "moderation_measure": 0,
+        "moderation_restriction": 0,
+        "moderation_review_request": 0,
+        "moderation_review_decision": 0,
+        "notifications_notice": 0,
+        "notifications_outbox": 0,
+        "notifications_delivery_attempt": 0
+      },
+      "migration_count": 31,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards",
+        "0003_personal_verification_view"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation",
+        "0002_organization_verification_view"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education",
+        "0002_profile_completeness_view"
+      ],
+      "access_migrations": [
+        "0001_capabilities_and_grants"
+      ],
+      "audit_migrations": [
+        "0001_audit_events"
+      ],
+      "opportunities_migrations": [
+        "0001_opportunities_and_funding",
+        "0002_opportunity_funding_view"
+      ],
+      "publications_migrations": [
+        "0001_publications_events_and_highlights"
+      ],
+      "moderation_migrations": [
+        "0001_moderation_and_review"
+      ],
+      "notifications_migrations": [
+        "0001_notices_outbox_and_attempts"
+      ],
+      "views": [
+        "model_opportunity_funding",
+        "model_organization_verification",
+        "model_personal_verification",
+        "model_profile_completeness"
+      ],
+      "composite_foreign_keys": {
+        "fk_t09_02": "FOREIGN KEY (parent_id, institution_id) REFERENCES academics_scope(id, institution_id) ON DELETE RESTRICT",
+        "fk_t12_02": "FOREIGN KEY (challenge_id, account_id) REFERENCES identity_email_challenge(id, account_id) ON DELETE RESTRICT",
+        "fk_t14_05": "FOREIGN KEY (source_request_id, account_id, academic_scope_id) REFERENCES academics_researcher_request(id, account_id, academic_scope_id) ON DELETE RESTRICT",
+        "fk_t24_01": "FOREIGN KEY (publication_id, publication_kind) REFERENCES publications_publication(id, kind) ON DELETE RESTRICT",
+        "fk_t30_01": "FOREIGN KEY (measure_id, requested_by) REFERENCES moderation_measure(id, account_id) ON DELETE RESTRICT",
+        "fk_t33_07": "FOREIGN KEY (parent_grant_id, granted_by) REFERENCES access_grant(id, account_id) ON DELETE RESTRICT",
+        "fk_t34_01": "FOREIGN KEY (opportunity_id, validity_revision) REFERENCES opportunities_lifecycle_event(opportunity_id, validity_revision) ON DELETE RESTRICT"
+      },
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "django_check": "Sin incidencias activas; auth.W004 sustituido por identity.E001",
+    "migrate_check": "Sin migraciones pendientes"
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "sql_referencia_sha256": "2ae98fdeb8f6fdf0efeac37b7d9b93d10750ae86fb3d43528c1b40f4d466c585",
+    "artefactos_sha256": {
+      "backend/application/tests/test_derived_views_postgresql.py": "922c4dfe17adec9db4828b4d30bc7ee8ecb7ba99f550e9b369059452ab8f40f1",
+      "docs/fk-compuestas-y-vistas.md": "b318994f174a276024369a8793537da7dd9a27e93ca3eea97540bb94d036c34d",
+      "backend/modules/profiles/migrations/0002_profile_completeness_view.py": "30cf2e56c338924d059f88f1d7842d50a7eb9ba3a8dcff75e2177610c0f682d8",
+      "backend/modules/profiles/contracts/__init__.py": "65955a70905d8f6abf99ea45527ae55f8e76341ba52c08816ed27a5a00c2106d",
+      "backend/modules/profiles/selectors/__init__.py": "cb7b860be70956b3e4845fe7123252dcef2c26572d855905be9308db4b11dc66",
+      "backend/modules/academics/migrations/0003_personal_verification_view.py": "14600d168f6ed06845228b20b3821eeb29ff2d95f60102fedcf8fc023ae5d532",
+      "backend/modules/academics/contracts/__init__.py": "50f9a41e8a5d81c92b0f2ec31c91eb3826ad6ff7506c371f34ccfefa33f169f6",
+      "backend/modules/academics/selectors/__init__.py": "38ca5fcf0d3603fe9b32dae6c98a082ddf842d173070da773f378532aea0f470",
+      "backend/modules/organizations/migrations/0002_organization_verification_view.py": "2dd8594dc0d3fb3896afbfacd4599ca96a53ad90cfa924bdb8047ce17ce5bed4",
+      "backend/modules/organizations/contracts/__init__.py": "7384b71c34e632e1d750af35832f329cc7ec56a0186cda92e57991b06777976c",
+      "backend/modules/organizations/selectors/__init__.py": "222bd28054314ab80f90df67d024023f51ef0f581e85cd4917d6562de36e4ad1",
+      "backend/modules/opportunities/migrations/0002_opportunity_funding_view.py": "7104133cdd7d52553ecb64188430f266d294904a78890320ed6d06b41f9c94f3",
+      "backend/modules/opportunities/contracts/__init__.py": "913cc98d86a1306b91eb62e7bacd8152fdcd78c0389dff0fc9a5cdb8d736b77d",
+      "backend/modules/opportunities/selectors/__init__.py": "42cc5df2aff30f101011500bef31bf924438df4650be4ea589a617e5060547ba"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue abierto: doce de 17 tareas completadas",
+    "No se implementan endpoints o autorizacion efectiva por consultar un UUID",
+    "Las vistas y DTO no sustituyen comprobacion de actor/contexto/restricciones ni bloqueo y revalidacion transaccional",
+    "Vistas SQL no son mecanismo RLS ni garantia de solo lectura frente al rol propietario",
+    "Completitud, respaldo de cuenta, afiliacion declarada, entidad verificada y representacion conservan conceptos separados",
+    "Restauracion desde copia, politicas puras, coordinacion y piloto mantienen tareas posteriores"
+  ],
+  "siguiente": "SP02-T13: construir politicas de acceso puras"
+}
