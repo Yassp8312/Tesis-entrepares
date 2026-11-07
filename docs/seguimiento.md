@@ -2,7 +2,7 @@
 
 ## Estado actual: 6 de noviembre de 2026
 
-SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T08 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T09: migrar divulgación y destacados T23–T25**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
+SP01 está cerrado y publicado en GitHub mediante la etiqueta `SP01`, sobre `87f710a`. SP02 está en curso, con **T01–T09 completadas de sus 17 tareas**. El siguiente trabajo es **SP02-T10: migrar moderación y revisión T26–T31**. Los apartados siguientes registran el historial; el cierre más reciente se detalla al final.
 
 ## 30 de octubre de 2026
 
@@ -245,3 +245,17 @@ Pasaron **126 pruebas nuevas con PostgreSQL**, incluidas tres parejas de conexio
 El flujo general pasó **839 pruebas del servidor —225 sin base y 614 con PostgreSQL— y 68 del cliente**, sin fallos ni omisiones. Arquitectura, dependencias/bloqueos, Ruff/formato, tipos, build, Django check, colección y correspondencia de migraciones correctos. Informe privado `.cache/comprobaciones/20261106T065144Z-2d467b15/informe.json`. Tras aplicar a desarrollo quedan treinta y tres tablas, 24 migraciones y cero filas en las veinticinco tablas de negocio implementadas; se conservan las dos bases persistentes y se eliminó la efímera.
 
 La guía es [Oportunidades y financiación](oportunidades-y-financiacion.md) y la evidencia [oportunidades-y-financiacion.json](evidencias/oportunidades-y-financiacion.json). Las siete fuentes históricas y los bloqueos conservan sus huellas. Aporte parcial a WI05, DL01/DL08/DL09/DL10/DL19, RNF12 y VD18. SP09–SP11 incorporarán publicación, contactos públicos, validación del conjunto y financiación, gestión por organizaciones, vigencia y avisos. No se crean endpoints ni se acredita el piloto. El avance queda local para la publicación por sprint; SP02 sigue abierto con ocho de 17 tareas. El siguiente trabajo es **SP02-T09: divulgación y destacados T23–T25**.
+
+### Divulgación y destacados: SP02-T09
+
+Cierre el 6 de noviembre de 2026. M06 incorpora `Publication`, `EventDetail` y `Highlight`, con `publications/0001_publications_events_and_highlights`. Conservan las 36 columnas T23–T25, veinte CHECK, diez índices no únicos, una clave única completa, dos índices únicos parciales y nueve FK nombradas ON DELETE RESTRICT. T24 usa publication_id como PK sin añadir otro UUID.
+
+La FK compuesta `(publication_id, publication_kind) → publications_publication(id, kind)`, apoyada en `uq_t23_key01`, impide asociar detalle de evento a una novedad y cambiar unilateralmente el tipo del padre. `EventDetail.publication` conserva `db_constraint=False` en el ORM y SQL compuesto explícito; las ocho relaciones simples quedan sincronizadas con `db_constraint=True`. SP02-T12 deberá conservar esa FK al consolidar el esquema.
+
+La titularidad personal u organizacional es excluyente y se mantiene separada de la autoría material. Estado editorial y visibilidad son independientes. Los eventos conservan fecha, hora opcional y zona, sin inventar una hora; exigen modalidad y URL externa, contacto público propio o ambos. Los contactos privados del perfil permanecen independientes. Los destacados tienen destino excluyente, fuente opcional, intervalo coherente y retiro con responsable. Un plazo terminado no libera su posición de unicidad mientras no se registre retiro.
+
+Pasaron **107 pruebas nuevas PostgreSQL**, incluidas dos parejas de conexiones sincronizadas que rechazan destacados duplicados de oportunidad y publicación. Cubren esquema, CHECK, índices, FK y borrado SQL/ORM, estados, titularidad, integridad de tipo y reasignación del evento, modalidades/vías externas/hora opcional, contactos independientes, fuentes, retiro e historial, defaults, guardado parcial y rollback conjunto. La migración se revirtió y reaplicó solo en la base efímera, conservando cuenta, entidad, oportunidad y concesión sintéticas y restaurando el grafo.
+
+El flujo general pasó **946 pruebas del servidor —225 sin base y 721 con PostgreSQL— y 68 del cliente**, sin fallos ni omisiones. Arquitectura, dependencias/bloqueos, Ruff/formato, tipos, build, Django check, colección y correspondencia de migraciones correctos. Informe privado `.cache/comprobaciones/20261107T042714Z-78636888/informe.json`, con temporales propios y sin avisos de limpieza externos. Tras aplicar a desarrollo quedan treinta y seis tablas, 25 migraciones y cero filas en las veintiocho tablas de negocio implementadas; se mantienen las dos bases persistentes y se eliminó la efímera.
+
+La guía es [Divulgación y destacados](divulgacion-y-destacados.md) y la evidencia [divulgacion-y-destacados.json](evidencias/divulgacion-y-destacados.json). Las siete fuentes históricas y los bloqueos conservan sus huellas. Aporte parcial a WI05, DL01/DL11/DL12, RNF12 y VD18. SP12 implementará publicación y consulta; SP13-T03, destacados autorizados bajo Q11/PB06. RF45 mantiene su carácter propuesto para edición/retirada propia y no se decide por los estados técnicos. Sin endpoints nuevos ni resultados del piloto. El avance queda local para la publicación por sprint; SP02 sigue abierto con nueve de 17 tareas. El siguiente trabajo es **SP02-T10: moderación y revisión T26–T31**.

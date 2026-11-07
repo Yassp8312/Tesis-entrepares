@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "modules.access.apps.AccessConfig",
     "modules.audit.apps.AuditConfig",
     "modules.opportunities.apps.OpportunitiesConfig",
+    "modules.publications.apps.PublicationsConfig",
 ]
 MIDDLEWARE = [
     "api.middleware.ApiBoundaryMiddleware",
