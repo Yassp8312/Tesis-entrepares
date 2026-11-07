@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "modules.audit.apps.AuditConfig",
     "modules.opportunities.apps.OpportunitiesConfig",
     "modules.publications.apps.PublicationsConfig",
+    "modules.moderation.apps.ModerationConfig",
 ]
 MIDDLEWARE = [
     "api.middleware.ApiBoundaryMiddleware",

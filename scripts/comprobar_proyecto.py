@@ -104,7 +104,7 @@ def main():
             json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
 
-    def run(name, command, cwd=ROOT):
+    def run(name, command, cwd=ROOT, *, timeout=300):
         print(f"Comprobando {name}…", flush=True)
         started = time.monotonic()
         log = output / (name + ".log")
@@ -117,7 +117,7 @@ def main():
                     stdin=subprocess.DEVNULL,
                     stdout=stream,
                     stderr=subprocess.STDOUT,
-                    timeout=300,
+                    timeout=timeout,
                     check=False,
                 )
                 code = result.returncode
@@ -130,6 +130,7 @@ def main():
                 "command": list(map(str, command)),
                 "exit_code": code,
                 "seconds": round(time.monotonic() - started, 3),
+                "timeout_seconds": timeout,
                 "log": log.name,
             }
         )
@@ -224,6 +225,7 @@ def main():
                     "--junitxml=" + (output / "postgresql.xml").relative_to(ROOT).as_posix(),
                     "--basetemp=" + (output / "pytest-postgresql").relative_to(ROOT).as_posix(),
                 ],
+                timeout=900,
             )
             report["tests"]["postgresql"] = test_counts(output / "postgresql.xml")
             run(

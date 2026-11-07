@@ -24,6 +24,8 @@ Desde SP02-T06, el flujo pasa también a la integración una carpeta temporal pr
 
 La implementación es `scripts/comprobar_proyecto.py`; el acceso PowerShell utiliza el Python de `.venv`. Las versiones de Node, npm y uv se verifican antes de continuar. El flujo se detiene al fallar una etapa y devuelve un código distinto de cero; no presenta un informe incompleto como correcto.
 
+Desde SP02-T10, la integración PostgreSQL dispone de un límite de 900 segundos; las demás etapas conservan 300 segundos. La ampliación responde al crecimiento de la suite y de sus ensayos de reversión y reconstrucción de migraciones. Cada paso registra `timeout_seconds` junto con su duración efectiva. Se mantienen los límites de espera de los casos concurrentes y las comprobaciones de destino de la base.
+
 ## Etapas e informes
 
 | Etapa | Comprobación |
