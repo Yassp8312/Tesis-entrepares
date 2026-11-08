@@ -48,6 +48,7 @@ class AuditReason(StrEnum):
     REVOKED = "authorization_revoked"
     EXPIRED = "validity_expired"
     CLOSED = "record_closed"
+    CANCELLED = "record_cancelled"
     REACTIVATED = "record_reactivated"
     EXTENDED = "validity_extended"
     FAILED = "operation_failed"

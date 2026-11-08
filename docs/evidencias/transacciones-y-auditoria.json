@@ -1,0 +1,438 @@
+{
+  "fecha": "2026-11-07",
+  "tarea": "SP02-T14",
+  "resultado": "Dos casos internos de muestra coordinan cambio, auditoria requerida y salida pendiente con transaction.atomic e interfaces propietarias; rollback y bloqueos comprobados",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI08",
+      "WI09"
+    ],
+    "modulos_principales": [
+      "M08",
+      "M10"
+    ],
+    "propietarios_del_ejemplo": [
+      "M01",
+      "M07 (lectura)",
+      "M09"
+    ],
+    "DL": [
+      "DL16",
+      "DL18"
+    ],
+    "DA": [
+      "DA01",
+      "DA05",
+      "DA06",
+      "DA07",
+      "DA08",
+      "DA09",
+      "DA10"
+    ],
+    "RNF": [
+      "RNF01",
+      "RNF03",
+      "RNF06",
+      "RNF14"
+    ],
+    "pruebas": [
+      "AT01: coordinacion por contratos, parcial",
+      "AT07: atomicidad/orden/rollback de casos de muestra, parcial sin operaciones HTTP"
+    ]
+  },
+  "casos": [
+    {
+      "nombre": "prepare_confirmation_example",
+      "secuencia": [
+        "M01: cuenta bloqueada, estado y correo actuales",
+        "M07: hechos minimos de restricciones",
+        "M08: autoriza accion propia en contexto personal, con instante posterior al bloqueo",
+        "M01: crea metadatos T02 sample-only",
+        "M10: evidencia minima T37 y correlacion",
+        "M09: intencion T35 con plantilla de muestra y payload solo challenge_id"
+      ],
+      "limite": "Sin firma, token, enlace, consumo, respaldo, sesion o envio externo"
+    },
+    {
+      "nombre": "cancel_confirmation_example",
+      "secuencia": [
+        "Cuentas ordenadas y autorizacion inicial",
+        "Comprobacion de esa cuenta y salidas ordenadas",
+        "Reautorizacion con hechos/reloj actuales despues de las esperas",
+        "M01: revalida finalidad/version/vigencia/consumo/invalidacion y marca invalidacion",
+        "M10: evento minimo pending -> cancelled, motivo record_cancelled",
+        "M09: cancela lote pendiente de muestra o falla la operacion completa"
+      ],
+      "limite": "Conflicto si origen no corresponde, es operativo, ha vencido/consumido/invalidado o salida esta iniciada/incompatible"
+    }
+  ],
+  "transaccion": {
+    "mecanismo": "transaction.atomic en cada caso; errores se propagan fuera del bloque; sin commit manual o efectos externos",
+    "orden": "Cuentas UUID ascendentes -> comprobacion propia -> salidas UUID ascendentes -> revalidacion final -> escrituras y auditoria",
+    "anclas": "Futuros escritores de los hechos implicados deben compartir anclas y orden; no garantiza proteccion global frente a SQL o comandos que incumplan el contrato",
+    "exterior": "El recibo puede retornarse dentro de un savepoint; la transaccion exterior aun puede revertir todo",
+    "idempotencia": "Clave T35 unica por intencion de la comprobacion; no se acredita deduplicacion de la solicitud completa",
+    "propiedad": "Application no importa modelos ni usa ORM/SQL; M01/M09/M10 escriben solo registros propios, M07 solo proyecta sus restricciones"
+  },
+  "privacidad": {
+    "auditoria": "UUID, codigos tecnicos, estados cerrados y correlacion; sin correos, payload, notas o evidencias completas",
+    "salida": "Destino en columna privada, payload solo challenge_id; sin token/firma/URL utilizable",
+    "separacion": "Version sample-only y plantilla transaction_sample.email_confirmation reservadas al ejemplo, sin clave o transporte registrados"
+  },
+  "pruebas_nuevas": {
+    "unitarias_archivo": "backend/application/tests/test_transaction_examples.py",
+    "unitarias_propias": 12,
+    "ampliacion_matriz_T13": 4,
+    "unitarias_incremento": 16,
+    "integracion_archivo": "backend/application/tests/test_transaction_examples_postgresql.py",
+    "integracion_correctas": 38,
+    "fallidas_finales": 0,
+    "omitidas_finales": 0,
+    "comando_integracion": "scripts/probar.ps1 -Modo integracion backend/application/tests/test_transaction_examples_postgresql.py --junitxml=.cache/sprint02/t14-integracion-final.xml --basetemp=.cache/sprint02/t14-integracion-final-temp -q",
+    "junit_privado": ".cache/sprint02/t14-integracion-final.xml",
+    "escenarios": [
+      "Exito de dos casos, proyecciones minimas y referencias/correlacion correctas",
+      "Fallos despues de cada una de tres escrituras en ambos casos; rollback completo",
+      "Error real de unicidad T35: revierte tambien primer outbox, auditoria y origen",
+      "Rollback exterior tras retorno exitoso del caso",
+      "Cuenta activa/propia actual, superusuario sin facultad ajena y origen filtrado por cuenta",
+      "Vencimiento/finalidad/version/consumo/invalidacion del origen",
+      "Salida processing/sent/failed, plantilla ajena, conjunto vacio y lote mixto incompatible",
+      "Restricciones actuales por accion, sin inventar PB01/Q07",
+      "Sin transporte, perfil, sesion, respaldo o cambios de privilegio",
+      "Contratos inmutables, entradas rechazadas y transaccion exigida antes de bloquear"
+    ],
+    "concurrencia": {
+      "escenarios": 6,
+      "conexion": "PID distintos y conexiones independientes sobre test_entrepares",
+      "limites": "lock_timeout 5s, statement_timeout 10s, barreras/eventos y future.result acotados",
+      "casos": [
+        "Doble cancelacion: un commit y un conflicto",
+        "Anclas de cuentas solicitadas en orden inverso, sin ciclo de bloqueo",
+        "Cuenta deshabilitada antes de obtener ancla",
+        "Comprobacion vence mientras espera ancla",
+        "Correo cambia antes de obtener ancla y se usa destino actual",
+        "Restriccion temporal entra en vigor al esperar la salida: reautorizacion final deniega"
+      ],
+      "observacion": "pg_blocking_pids acredita esperas reales en cuatro escenarios de cambio durante espera"
+    },
+    "regresion": {
+      "antes": ".cache/sprint02/t14-regresion-antes.xml",
+      "fallo_reproducido": "El caso se confirmaba tras esperar salida aunque empezara una restriccion temporal",
+      "correccion": "Reautorizar con reloj y hechos actuales tras todos los bloqueos, antes de escribir",
+      "despues": "Escenario correcto en suite dirigida de 38 y flujo completo"
+    },
+    "ajuste_datos_sinteticos": "Primera suite: 34 correctas y 2 fallos de fixture por content_action omitido; corregido como none, sin cambiar la restriccion del modelo"
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261108T043223Z-97bbcad1/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 442,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 986,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 1428,
+    "resultado": "Todos los pasos correctos",
+    "pasos": [
+      {
+        "nombre": "version-node",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "version-npm",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "version-uv",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "arquitectura",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "bloqueo-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "compatibilidad-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "dependencias-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "analisis-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "formato-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "pruebas-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "dependencias-node",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "muestra-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "pruebas-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "tipos-y-build-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "preparar-web",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "django-check",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "collectstatic",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "integracion-postgresql",
+        "salida": 0,
+        "limite_segundos": 900
+      },
+      {
+        "nombre": "migraciones",
+        "salida": 0,
+        "limite_segundos": 300
+      }
+    ],
+    "avisos_limpieza_externa": 0
+  },
+  "desarrollo": {
+    "sin_cambios_de_esquema_o_datos": true,
+    "migraciones_nuevas": 0,
+    "estado": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "access_capability",
+        "access_grant",
+        "audit_event",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "moderation_decision",
+        "moderation_measure",
+        "moderation_report",
+        "moderation_restriction",
+        "moderation_review_decision",
+        "moderation_review_request",
+        "notifications_delivery_attempt",
+        "notifications_notice",
+        "notifications_outbox",
+        "opportunities_contact",
+        "opportunities_funding",
+        "opportunities_lifecycle_event",
+        "opportunities_need",
+        "opportunities_opportunity",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile",
+        "publications_event_detail",
+        "publications_highlight",
+        "publications_publication"
+      ],
+      "table_count": 45,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0,
+        "access_capability": 0,
+        "access_grant": 0,
+        "audit_event": 0,
+        "opportunities_opportunity": 0,
+        "opportunities_lifecycle_event": 0,
+        "opportunities_need": 0,
+        "opportunities_funding": 0,
+        "opportunities_contact": 0,
+        "publications_publication": 0,
+        "publications_event_detail": 0,
+        "publications_highlight": 0,
+        "moderation_report": 0,
+        "moderation_decision": 0,
+        "moderation_measure": 0,
+        "moderation_restriction": 0,
+        "moderation_review_request": 0,
+        "moderation_review_decision": 0,
+        "notifications_notice": 0,
+        "notifications_outbox": 0,
+        "notifications_delivery_attempt": 0
+      },
+      "migration_count": 31,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards",
+        "0003_personal_verification_view"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation",
+        "0002_organization_verification_view"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education",
+        "0002_profile_completeness_view"
+      ],
+      "access_migrations": [
+        "0001_capabilities_and_grants"
+      ],
+      "audit_migrations": [
+        "0001_audit_events"
+      ],
+      "opportunities_migrations": [
+        "0001_opportunities_and_funding",
+        "0002_opportunity_funding_view"
+      ],
+      "publications_migrations": [
+        "0001_publications_events_and_highlights"
+      ],
+      "moderation_migrations": [
+        "0001_moderation_and_review"
+      ],
+      "notifications_migrations": [
+        "0001_notices_outbox_and_attempts"
+      ],
+      "views": [
+        "model_opportunity_funding",
+        "model_organization_verification",
+        "model_personal_verification",
+        "model_profile_completeness"
+      ],
+      "composite_foreign_keys": {
+        "fk_t09_02": "FOREIGN KEY (parent_id, institution_id) REFERENCES academics_scope(id, institution_id) ON DELETE RESTRICT",
+        "fk_t12_02": "FOREIGN KEY (challenge_id, account_id) REFERENCES identity_email_challenge(id, account_id) ON DELETE RESTRICT",
+        "fk_t14_05": "FOREIGN KEY (source_request_id, account_id, academic_scope_id) REFERENCES academics_researcher_request(id, account_id, academic_scope_id) ON DELETE RESTRICT",
+        "fk_t24_01": "FOREIGN KEY (publication_id, publication_kind) REFERENCES publications_publication(id, kind) ON DELETE RESTRICT",
+        "fk_t30_01": "FOREIGN KEY (measure_id, requested_by) REFERENCES moderation_measure(id, account_id) ON DELETE RESTRICT",
+        "fk_t33_07": "FOREIGN KEY (parent_grant_id, granted_by) REFERENCES access_grant(id, account_id) ON DELETE RESTRICT",
+        "fk_t34_01": "FOREIGN KEY (opportunity_id, validity_revision) REFERENCES opportunities_lifecycle_event(opportunity_id, validity_revision) ON DELETE RESTRICT"
+      },
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "bases_persistentes": 2,
+    "base_efimera_eliminada": true
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/application/examples/__init__.py": "8a0c3373fd2ddeffcfa153a1c16499b9360c627a2f5791c304e3d3a419b813ae",
+      "backend/application/examples/confirmation.py": "0bd24034bcd7d76eb91b0bd792b088ba2517a6ecae90329bed04be74ce496a8e",
+      "backend/application/tests/test_transaction_examples.py": "2fdec09480020d5f20207c3e6af985dbee171d02d1a04f8ede5bf48a44fcb643",
+      "backend/application/tests/test_transaction_examples_postgresql.py": "2887bb53b69c0399b146724970805b8504029485b7186e7f191ed3eff4dc0b8e",
+      "backend/modules/access/contracts/__init__.py": "6025fde34dab2bb9f75f4b273d7f8f87be45d8a7e29b32cf42e0ac6bae6545ae",
+      "backend/modules/access/policies.py": "d8b98742432f5a94e7c776a8c08a1d02fef40e7f4e6bfda57e4fc4a32ac88eef",
+      "backend/modules/audit/contracts/__init__.py": "c01265ca40154e7d48a1acb4191d03faa2267d41f2cb9fa3cb751deaa7698119",
+      "backend/modules/identity/commands/__init__.py": "3c906074a04904c6b36b84ea3efa670932a4c8522b07469430306d1d1298cf3d",
+      "backend/modules/identity/contracts/__init__.py": "71ece7e3a7f944c3c5790eb6b3aae703deae901c621663d320d1abb9111f4399",
+      "backend/modules/identity/selectors/__init__.py": "3a96ddba54b6641bceb7aae7774cef18ec134130d940f48f2091538a6a33076c",
+      "backend/modules/moderation/contracts/restrictions.py": "dc4d5e6c7d0312d11f0b859552fa02908b33feced3204bcd82f3215f586abc9d",
+      "backend/modules/moderation/selectors/__init__.py": "b19bd9731f2cb49198dce471128b49f8eb3294ebda7242658c4bc0d34bf15f2e",
+      "backend/modules/notifications/commands/__init__.py": "6c3adedf491a1b09c2712a157c065743937ccbc05fd0760689418b1a1f0c1851",
+      "backend/modules/notifications/contracts/__init__.py": "0f21da265957b89668545b375e667ad3d8ac2738f05979ac4c8f201d36c0c2c1",
+      "backend/modules/notifications/selectors/__init__.py": "bc1175dd7e3bce9e4d6bb82db0c94c695daf1ce662b0361fd3fb59852fcbbbc0",
+      "docs/transacciones-y-auditoria.md": "b968907e9ee6a09a7db42098841d1ffc119029493ce6cafe47dafde8c43bab72"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue abierto: catorce de 17 tareas completadas",
+    "Solo casos internos de muestra, sin endpoints/CLI/ejecutor que los invoque",
+    "No se afirma registro, control de correo, respaldo institucional o recuperacion completados",
+    "Sin adaptador, reclamacion, envio, entrega o reintento externo; T15 posterior",
+    "La disciplina de bloqueo debe aplicarse a futuros escritores; no es una garantia global sobre todo SQL",
+    "Condiciones PB/Q, RF45/RF59 y validaciones institucionales no resueltas por este incremento",
+    "Sin dependencias, migraciones, datos reales de participantes o piloto añadidos"
+  ],
+  "siguiente": "SP02-T15: crear adaptador y ejecutor de salida"
+}

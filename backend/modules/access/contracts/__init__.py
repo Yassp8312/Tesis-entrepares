@@ -46,6 +46,7 @@ class Condition(StrEnum):
 
 
 class ResourceKind(StrEnum):
+    ACCOUNT = "account"
     DIRECTORY = "directory"
     PROFILE = "profile"
     OPPORTUNITY = "opportunity"
@@ -67,6 +68,8 @@ class Action(StrEnum):
     """Identificadores internos del servidor; no son una lista de endpoints habilitados."""
 
     OPPORTUNITY_PUBLIC_READ = "opportunities.public_read"
+    CONFIRMATION_SAMPLE_PREPARE = "identity.confirmation_sample.prepare"
+    CONFIRMATION_SAMPLE_CANCEL = "identity.confirmation_sample.cancel"
     PUBLICATION_PUBLIC_READ = "publications.public_read"
     ORGANIZATION_PUBLIC_READ = "organizations.public_read"
     DIRECTORY_READ = "directory.read"

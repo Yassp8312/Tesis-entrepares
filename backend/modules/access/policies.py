@@ -417,6 +417,14 @@ def authorize(
     restriction = _restriction(actor, context, action, facts, now)
     if not restriction:
         return restriction
+    if action in (Action.CONFIRMATION_SAMPLE_PREPARE, Action.CONFIRMATION_SAMPLE_CANCEL):
+        if context.kind is not ContextKind.PERSONAL or resource.kind is not ResourceKind.ACCOUNT:
+            return _deny()
+        return (
+            _ALLOW
+            if resource.id == resource.owner_account_id == actor.account_id
+            else _deny(DecisionCode.NOT_OWNER)
+        )
     if action in (Action.DIRECTORY_READ, Action.DIRECTORY_RESEARCHER_FILTER):
         if resource.kind is not ResourceKind.DIRECTORY:
             return _deny()
