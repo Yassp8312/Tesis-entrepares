@@ -1,0 +1,443 @@
+{
+  "fecha": "2026-11-08",
+  "tarea": "SP02-T15",
+  "resultado": "Ejecutor de salida y adaptador Django intercambiable, con reclamacion duradera, control de generacion, revalidacion de origen, reintentos y recuperacion conservadora de incertidumbre",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI09"
+    ],
+    "modulo_principal": "M09",
+    "lecturas_propietarias": [
+      "M01",
+      "M04",
+      "M05"
+    ],
+    "tablas_escritas": [
+      "T35",
+      "T36"
+    ],
+    "tabla_de_origen_leida": "T34",
+    "DL": [
+      "DL17"
+    ],
+    "SYS": [
+      "SYS02"
+    ],
+    "RNF": [
+      "RNF14"
+    ],
+    "pruebas": [
+      "AT10: reclamacion/reintento/caida con transportes sinteticos, parcial",
+      "CT11: aceptacion externa frente a persistencia y resultado incierto, parcial sin SMTP real"
+    ]
+  },
+  "arquitectura": {
+    "coordinador": "application.delivery.worker.OutboxWorker",
+    "escritor": "modules.notifications.commands.delivery (solo T35/T36)",
+    "fases": [
+      "Recuperar vencidas en atomic duradera",
+      "Reclamar SKIP LOCKED y crear intento running en atomic duradera",
+      "Preparar bajo anclas de origen y salida, revalidar hechos/reloj antes y despues de renderizar",
+      "Llamar transporte fuera de toda atomic",
+      "Cerrar intento/salida en atomic nueva si conserva generacion y plazo"
+    ],
+    "orden_de_preparacion": "Cuentas UUID -> entidad si aplica -> comprobacion u oportunidad -> aviso -> salida/intento; las fases solo M09 no adquieren anclas ajenas",
+    "anclas": "Contrato para futuros escritores; no garantia global sobre SQL directo",
+    "fencing": "UUID/número del ultimo intento running y lease_until exacto, todavia vigente",
+    "sin_modelos_en_application": true,
+    "migraciones_nuevas": 0,
+    "dependencias_nuevas": 0
+  },
+  "politica_tecnica_inicial": {
+    "plazo_segundos": 120,
+    "maximo_intentos": 3,
+    "espera_inicial_segundos": 30,
+    "espera_maxima_segundos": 3600,
+    "reintentar_incierto_por_defecto": false,
+    "reintento_incierto": "Exige politica expresa y transporte con garantia real de idempotencia; SMTP declara False",
+    "limite": "No resuelve calendario de oportunidades ni condiciones funcionales Q03/Q08"
+  },
+  "revalidacion": {
+    "comprobacion": "Cuenta activa, destinatario y correo snapshot actuales, finalidad/version de plantilla, vigencia, consumo e invalidacion; sample-only rechazado",
+    "aviso": "Cuenta actual, titular personal o representante vigente de entidad verificada, oportunidad activa/visible/publicada/no vencida, aviso no cancelado y ya programado, canal email explicito y revision todavia vigente",
+    "payload": "Solo challenge_id; o notice_id/opportunity_id/validity_revision entera, valores exactos; no se entrega payload libre a renderizador",
+    "plantillas": "Registro explicito e inmutable del servidor; vacio por defecto en CLI; desconocidas se retienen como fallo permanente, sin envio",
+    "limite": "Comprobacion puntual anterior al envio; no puede retirar un correo ya aceptado por un canal externo"
+  },
+  "transporte": {
+    "clase": "application.delivery.transports.DjangoEmailTransport",
+    "interfaz": "DeliveryTransport / PreparedEmail / TransportResult con accepted/temporary/permanent/unknown",
+    "backends_admitidos": [
+      "django.core.mail.backends.smtp.EmailBackend",
+      "django.core.mail.backends.locmem.EmailBackend"
+    ],
+    "privacidad": "Destino/asunto/cuerpo fuera de repr; un destinatario sin cc/bcc/adjuntos; consola/archivo rechazados; T36 solo codigos cerrados y UUID opaco opcional de proveedor",
+    "sin_garantia_exactly_once": true,
+    "SMTP_idempotente": false,
+    "timeout": "Operacion de socket acotada, menor al plazo declarado; no se afirma duracion total garantizada",
+    "ensayos": "Locmem y conexiones SMTP sustituidas; ningun envio real"
+  },
+  "recuperacion": {
+    "mecanismo": "Procesamiento vencido pasa a failed, intento unknown con delivery.lease_expired; estado incompleto registra observacion delivery.orphaned",
+    "concurrencia": "SKIP LOCKED evita recuperar una misma fila a la vez",
+    "generacion_antigua": "No puede sobrescribir el resultado de un sucesor",
+    "caida_tras_aceptacion": "Si no confirma el resultado, conserva running y luego unknown; no se inventa fallo temporal seguro ni aceptacion persistida"
+  },
+  "entrada_operativa": {
+    "comando": "scripts/django.ps1 deliver_outbox --limit 100",
+    "limites": "Lote finito 1..1000, sin servicio/cron/bucle automatico",
+    "salida": "Solo contadores de estados y recuperaciones; errores genericos sin parametros privados",
+    "plantillas": "Registro cerrado vacio hasta integrar cada flujo funcional y sus pruebas"
+  },
+  "pruebas_nuevas": {
+    "unitarias_archivo": "backend/application/tests/test_delivery_contracts.py",
+    "unitarias_correctas": 31,
+    "integracion_archivo": "backend/application/tests/test_delivery_postgresql.py",
+    "integracion_correctas": 47,
+    "fallidas_finales": 0,
+    "omitidas_finales": 0,
+    "junit_unitarias_privado": ".cache/sprint02/t15-unitarias.xml",
+    "junit_integracion_privado": ".cache/sprint02/t15-integracion-final.xml",
+    "integracion_comando": "scripts/probar.ps1 -Modo integracion backend/application/tests/test_delivery_postgresql.py --junitxml=.cache/sprint02/t15-integracion-final.xml --basetemp=.cache/sprint02/t15-integracion-final-temp -q",
+    "escenarios": [
+      "Contratos inmutables, limites de politica, backoff acotado, asunto sin inyeccion y repr privado",
+      "Clasificacion SMTP sin conexion real, rechazo de backends que impriman contenido",
+      "Claim/intento confirmados visibles desde otra conexion antes de llamar transporte",
+      "Ejecutor y adaptador rechazan transaccion exterior",
+      "Origen actual: finalidad/version/vencimiento/consumo/invalidacion/correo/destinatario/cuenta activa",
+      "Payload exacto y plantilla registrada; muestras T14 nunca enviadas",
+      "Avisos: revision, fecha, visibilidad, vigencia, titularidad, entidad y representacion actuales",
+      "Reintento temporal con espera y maximo; permanente/incierto retenidos",
+      "Retry incierto exige politica y garantia de idempotencia simultaneamente",
+      "Recuperacion en limite de plazo, estado huerfano y rechazo del resultado de una generacion antigua",
+      "Caida tras aceptacion y fallo de commit del resultado conservan incertidumbre sin reenvio automatico",
+      "Error antes del commit de reclamacion revierte intento y estado processing",
+      "Renderizador tarda hasta vencer origen/plazo o devuelve error/tipo incompatible sin envio ni datos privados"
+    ],
+    "concurrencia": {
+      "carreras": 5,
+      "lectura_independiente_adicional": "Una conexion verifica commit de claim/attempt durante la llamada al transporte",
+      "casos": [
+        "Dos reclamantes: fila bloqueada se omite, un solo intento",
+        "Dos ejecutores durante envio bloqueado: uno solo llama transporte",
+        "Dos recuperadores: una sola reparacion de la fila",
+        "Cuenta deshabilitada al esperar ancla: no envia",
+        "Origen vence al esperar ancla: no envia"
+      ],
+      "esperas_de_origen_observadas": "pg_blocking_pids, dos casos",
+      "limites": "lock_timeout 5s y statement_timeout 10s en conexiones de prueba explicitamente transaccionales; eventos/futuros acotados"
+    }
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261108T050317Z-3ee344e7/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 473,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 1033,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 1506,
+    "resultado": "Todos los pasos correctos",
+    "pasos": [
+      {
+        "nombre": "version-node",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "version-npm",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "version-uv",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "arquitectura",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "bloqueo-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "compatibilidad-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "dependencias-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "analisis-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "formato-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "pruebas-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "dependencias-node",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "muestra-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "pruebas-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "tipos-y-build-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "preparar-web",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "django-check",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "collectstatic",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "integracion-postgresql",
+        "salida": 0,
+        "limite_segundos": 900
+      },
+      {
+        "nombre": "migraciones",
+        "salida": 0,
+        "limite_segundos": 300
+      }
+    ],
+    "avisos_limpieza_externa": 0
+  },
+  "desarrollo": {
+    "sin_cambios_de_esquema_o_datos": true,
+    "estado": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "access_capability",
+        "access_grant",
+        "audit_event",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "moderation_decision",
+        "moderation_measure",
+        "moderation_report",
+        "moderation_restriction",
+        "moderation_review_decision",
+        "moderation_review_request",
+        "notifications_delivery_attempt",
+        "notifications_notice",
+        "notifications_outbox",
+        "opportunities_contact",
+        "opportunities_funding",
+        "opportunities_lifecycle_event",
+        "opportunities_need",
+        "opportunities_opportunity",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile",
+        "publications_event_detail",
+        "publications_highlight",
+        "publications_publication"
+      ],
+      "table_count": 45,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0,
+        "access_capability": 0,
+        "access_grant": 0,
+        "audit_event": 0,
+        "opportunities_opportunity": 0,
+        "opportunities_lifecycle_event": 0,
+        "opportunities_need": 0,
+        "opportunities_funding": 0,
+        "opportunities_contact": 0,
+        "publications_publication": 0,
+        "publications_event_detail": 0,
+        "publications_highlight": 0,
+        "moderation_report": 0,
+        "moderation_decision": 0,
+        "moderation_measure": 0,
+        "moderation_restriction": 0,
+        "moderation_review_request": 0,
+        "moderation_review_decision": 0,
+        "notifications_notice": 0,
+        "notifications_outbox": 0,
+        "notifications_delivery_attempt": 0
+      },
+      "migration_count": 31,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards",
+        "0003_personal_verification_view"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation",
+        "0002_organization_verification_view"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education",
+        "0002_profile_completeness_view"
+      ],
+      "access_migrations": [
+        "0001_capabilities_and_grants"
+      ],
+      "audit_migrations": [
+        "0001_audit_events"
+      ],
+      "opportunities_migrations": [
+        "0001_opportunities_and_funding",
+        "0002_opportunity_funding_view"
+      ],
+      "publications_migrations": [
+        "0001_publications_events_and_highlights"
+      ],
+      "moderation_migrations": [
+        "0001_moderation_and_review"
+      ],
+      "notifications_migrations": [
+        "0001_notices_outbox_and_attempts"
+      ],
+      "views": [
+        "model_opportunity_funding",
+        "model_organization_verification",
+        "model_personal_verification",
+        "model_profile_completeness"
+      ],
+      "composite_foreign_keys": {
+        "fk_t09_02": "FOREIGN KEY (parent_id, institution_id) REFERENCES academics_scope(id, institution_id) ON DELETE RESTRICT",
+        "fk_t12_02": "FOREIGN KEY (challenge_id, account_id) REFERENCES identity_email_challenge(id, account_id) ON DELETE RESTRICT",
+        "fk_t14_05": "FOREIGN KEY (source_request_id, account_id, academic_scope_id) REFERENCES academics_researcher_request(id, account_id, academic_scope_id) ON DELETE RESTRICT",
+        "fk_t24_01": "FOREIGN KEY (publication_id, publication_kind) REFERENCES publications_publication(id, kind) ON DELETE RESTRICT",
+        "fk_t30_01": "FOREIGN KEY (measure_id, requested_by) REFERENCES moderation_measure(id, account_id) ON DELETE RESTRICT",
+        "fk_t33_07": "FOREIGN KEY (parent_grant_id, granted_by) REFERENCES access_grant(id, account_id) ON DELETE RESTRICT",
+        "fk_t34_01": "FOREIGN KEY (opportunity_id, validity_revision) REFERENCES opportunities_lifecycle_event(opportunity_id, validity_revision) ON DELETE RESTRICT"
+      },
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "bases_persistentes": 2,
+    "base_efimera_eliminada": true
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/application/delivery/__init__.py": "3ab1ea18429bb684b9375eddcafd8fbaea3fb3eabfca89017b9afeb17e572214",
+      "backend/application/delivery/sources.py": "3f70b25e2c35f829c5bee8ea4f2c33f6df20cf570955901ee39010512acf8282",
+      "backend/application/delivery/transports.py": "28adf1dc410fbcde2837ee4aec3aff4e576c659da80dc334b06f23a88a617be9",
+      "backend/application/delivery/worker.py": "0b1560cc52e1bce3a5f84cf6bc7d7568c6b313fcadf54669219fd373254a61bf",
+      "backend/application/tests/test_delivery_contracts.py": "ace1432ed480e8aa2b298f63bb58abc026dbca4debc73d2b51c5801cb0d407cf",
+      "backend/application/tests/test_delivery_postgresql.py": "026d2b8bd6733802c6efbee85f5eeca034163a5037e9638426fff0ad92a6098c",
+      "backend/modules/identity/contracts/delivery.py": "8ea3c12746c804fe8927f780aa82a9cb10ca459cd195a63ed36cedb691555e85",
+      "backend/modules/identity/selectors/delivery.py": "5c2cbb47742373c50fbecaea0386d7d149c99fa70cce54d34c7d171735dd8f04",
+      "backend/modules/notifications/commands/delivery.py": "cd9c159ac0bb2569baaad16ac4ed8fbed6d57ee39406d68ac53aadb7476104d0",
+      "backend/modules/notifications/contracts/delivery.py": "797ab35eeeff41b24e8e96fb4936f6c864d4b144abcffb200f7dad240c55084f",
+      "backend/modules/notifications/management/__init__.py": "30a8813228e511c6f6e7e61c0cc67a981a976f135f96388339abacd5fc031214",
+      "backend/modules/notifications/management/commands/__init__.py": "eca6e868febc97d0bf6a15fdc12b64ae6ac0912318b2f458bad7c4c5d81d4f2c",
+      "backend/modules/notifications/management/commands/deliver_outbox.py": "1273b08cf1f6505f223ce1cc943329870c982aad0c735d1d0c9db66ae5a6da27",
+      "backend/modules/notifications/selectors/delivery.py": "a5714a7337568e3bbcbf72d4d6482e02d6dde617173fc51a195294ee3b3a1088",
+      "backend/modules/opportunities/contracts/delivery.py": "d42ca9390844dc736f20dd9c5963a6794b88d1dfa63048353a0ac28c4cab661e",
+      "backend/modules/opportunities/selectors/delivery.py": "85e326a5d69f406ede2824f0429932eb5de35596369d691e85d914037fa38fa2",
+      "backend/modules/organizations/selectors/delivery.py": "590c05ac5d243768fa2e843dba7df827085f4d33e4d9d715325a32b3ed48e17e",
+      "docs/ejecutor-de-salida.md": "2c7a018969ec5cd2646a67ef2189b898730a4cd570217bd25fb2fa287fac90ae"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue abierto: quince de 17 tareas completadas",
+    "No se afirma entrega exactamente una vez, recepcion o lectura en buzon",
+    "Transportes sinteticos y SMTP sustituido: sin envio real ni piloto",
+    "Plantillas de identidad y avisos, firma y procedimientos de negocio se integran en sus incrementos",
+    "Registro de plantillas CLI vacio: no habilita muestras T14 o flujos incompletos",
+    "No se resuelven PB/Q/RF45/RF59 ni se modifica documentacion historica",
+    "Sin broker, dependencia, migracion, cron/servicio automatico o datos reales de participantes añadidos"
+  ],
+  "siguiente": "SP02-T16: comprobar esquema y datos sinteticos"
+}
