@@ -1,0 +1,4815 @@
+{
+  "version": "2026-10-29 logico v1",
+  "dictionary_sha256": "94ce2f274e5b2ebe38b95941a839e102800833cb357d5e2b08d1949ebef59132",
+  "sql_sha256": "2ae98fdeb8f6fdf0efeac37b7d9b93d10750ae86fb3d43528c1b40f4d466c585",
+  "scope": "Contrato estructural sin datos de participantes; no es un volcado ni una migración",
+  "tables": [
+    {
+      "id": "T01",
+      "name": "identity_account",
+      "module": "M01",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "email",
+          "type": "varchar(254)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "password",
+          "type": "varchar(128)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "is_active",
+          "type": "boolean",
+          "nullable": false,
+          "default": "true",
+          "pk": false
+        },
+        {
+          "name": "is_staff",
+          "type": "boolean",
+          "nullable": false,
+          "default": "false",
+          "pk": false
+        },
+        {
+          "name": "is_superuser",
+          "type": "boolean",
+          "nullable": false,
+          "default": "false",
+          "pk": false
+        },
+        {
+          "name": "last_login",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "date_joined",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t01_01": "length(btrim(email)) > 0",
+        "ck_t01_02": "length(btrim(password)) > 0"
+      },
+      "unique": {},
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "expression": "lower(email)",
+          "unique": true,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "uq_t01_01"
+        }
+      ]
+    },
+    {
+      "id": "T02",
+      "name": "identity_email_challenge",
+      "module": "M01",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "account_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "purpose",
+          "type": "varchar(24)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "email_snapshot",
+          "type": "varchar(254)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "key_version",
+          "type": "varchar(32)",
+          "nullable": false,
+          "default": "'v1'",
+          "pk": false
+        },
+        {
+          "name": "expires_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "consumed_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "invalidated_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t02_01": "purpose IN ('email_confirmation', 'password_reset')",
+        "ck_t02_02": "length(btrim(email_snapshot)) > 0",
+        "ck_t02_03": "length(btrim(key_version)) > 0",
+        "ck_t02_04": "expires_at > created_at",
+        "ck_t02_05": "NOT (consumed_at IS NOT NULL AND invalidated_at IS NOT NULL)"
+      },
+      "unique": {
+        "uq_t02_key01": [
+          "id",
+          "account_id"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t02_01"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "account_id, purpose, expires_at",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t02_01"
+        }
+      ]
+    },
+    {
+      "id": "T03",
+      "name": "identity_recovery_request",
+      "module": "M01",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "claimed_email",
+          "type": "varchar(254)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "account_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "reply_contact",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "statement",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "status",
+          "type": "varchar(24)",
+          "nullable": false,
+          "default": "'pending'",
+          "pk": false
+        },
+        {
+          "name": "decided_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decided_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decision_reason",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t03_01": "status IN ('pending', 'approved', 'rejected')",
+        "ck_t03_02": "length(btrim(claimed_email)) > 0",
+        "ck_t03_03": "length(btrim(statement)) > 0",
+        "ck_t03_04": "(status = 'pending' AND decided_at IS NULL AND decided_by IS NULL) OR (status <> 'pending' AND decided_at IS NOT NULL AND decided_by IS NOT NULL AND decision_reason IS NOT NULL AND length(btrim(decision_reason)) > 0)",
+        "ck_t03_05": "status <> 'approved' OR account_id IS NOT NULL"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t03_01"
+        },
+        {
+          "fields": [
+            "decided_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t03_02"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "account_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t03_01"
+        },
+        {
+          "expression": "decided_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t03_02"
+        }
+      ]
+    },
+    {
+      "id": "T04",
+      "name": "profiles_profile",
+      "module": "M02",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "account_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "full_name",
+          "type": "varchar(200)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "bio",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "experience_summary",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "experience_years",
+          "type": "numeric(5,1)",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "interests",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t04_01": "length(btrim(full_name)) > 0",
+        "ck_t04_02": "experience_years IS NULL OR experience_years >= 0"
+      },
+      "unique": {
+        "uq_t04_key01": [
+          "account_id"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t04_01"
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "T05",
+      "name": "profiles_education",
+      "module": "M02",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "profile_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "discipline_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "institution_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "condition",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "ended_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t05_01": "condition IN ('student', 'graduate')"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "profile_id"
+          ],
+          "target": "profiles_profile",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t05_01"
+        },
+        {
+          "fields": [
+            "discipline_id"
+          ],
+          "target": "academics_discipline",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t05_02"
+        },
+        {
+          "fields": [
+            "institution_id"
+          ],
+          "target": "academics_institution",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t05_03"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "profile_id, discipline_id, institution_id, condition",
+          "unique": true,
+          "where": "ended_at IS NULL",
+          "nulls_not_distinct": false,
+          "name": "uq_t05_01"
+        },
+        {
+          "expression": "profile_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t05_02"
+        },
+        {
+          "expression": "discipline_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t05_03"
+        },
+        {
+          "expression": "institution_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t05_04"
+        }
+      ]
+    },
+    {
+      "id": "T06",
+      "name": "profiles_contact",
+      "module": "M02",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "profile_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "value",
+          "type": "varchar(320)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "label",
+          "type": "varchar(80)",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "is_visible",
+          "type": "boolean",
+          "nullable": false,
+          "default": "true",
+          "pk": false
+        },
+        {
+          "name": "sort_order",
+          "type": "integer",
+          "nullable": false,
+          "default": "0",
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t06_01": "kind IN ('email', 'phone', 'whatsapp', 'telegram')",
+        "ck_t06_02": "length(btrim(value)) > 0",
+        "ck_t06_03": "sort_order >= 0"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "profile_id"
+          ],
+          "target": "profiles_profile",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t06_01"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "profile_id, kind, value",
+          "unique": true,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "uq_t06_01"
+        }
+      ]
+    },
+    {
+      "id": "T07",
+      "name": "profiles_merit",
+      "module": "M02",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "profile_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "title",
+          "type": "varchar(200)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "awarded_on",
+          "type": "date",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t07_01": "length(btrim(title)) > 0"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "profile_id"
+          ],
+          "target": "profiles_profile",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t07_01"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "profile_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t07_01"
+        }
+      ]
+    },
+    {
+      "id": "T08",
+      "name": "academics_institution",
+      "module": "M03",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "varchar(200)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "kind",
+          "type": "varchar(24)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "origin",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t08_01": "length(btrim(name)) > 0",
+        "ck_t08_02": "kind IN ('university', 'research_center', 'productive', 'other')",
+        "ck_t08_03": "origin IN ('curated', 'declared')"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "created_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t08_01"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "lower(name)",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t08_01"
+        },
+        {
+          "expression": "created_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t08_02"
+        }
+      ]
+    },
+    {
+      "id": "T09",
+      "name": "academics_scope",
+      "module": "M03",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "institution_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "parent_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "name",
+          "type": "varchar(200)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t09_01": "length(btrim(name)) > 0",
+        "ck_t09_02": "kind IN ('institution', 'faculty', 'career', 'other')",
+        "ck_t09_03": "parent_id IS NULL OR parent_id <> id"
+      },
+      "unique": {
+        "uq_t09_key01": [
+          "id",
+          "institution_id"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "institution_id"
+          ],
+          "target": "academics_institution",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t09_01"
+        },
+        {
+          "fields": [
+            "parent_id",
+            "institution_id"
+          ],
+          "target": "academics_scope",
+          "reference": [
+            "id",
+            "institution_id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t09_02"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "institution_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t09_01"
+        },
+        {
+          "expression": "parent_id, institution_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t09_02"
+        }
+      ]
+    },
+    {
+      "id": "T10",
+      "name": "academics_discipline",
+      "module": "M03",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "varchar(200)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "origin",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t10_01": "length(btrim(name)) > 0",
+        "ck_t10_02": "origin IN ('curated', 'declared')"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "created_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t10_01"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "lower(name)",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t10_01"
+        },
+        {
+          "expression": "created_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t10_02"
+        }
+      ]
+    },
+    {
+      "id": "T11",
+      "name": "academics_domain",
+      "module": "M03",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "domain_ascii",
+          "type": "varchar(253)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "institution_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "status",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'pending'",
+          "pk": false
+        },
+        {
+          "name": "evidence_reference",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decided_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decided_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t11_01": "length(btrim(domain_ascii)) > 0",
+        "ck_t11_02": "status IN ('pending', 'recognized', 'withdrawn')",
+        "ck_t11_03": "domain_ascii = lower(btrim(domain_ascii))",
+        "ck_t11_04": "status = 'pending' OR (decided_by IS NOT NULL AND decided_at IS NOT NULL AND evidence_reference IS NOT NULL AND length(btrim(evidence_reference)) > 0)"
+      },
+      "unique": {
+        "uq_t11_key01": [
+          "domain_ascii"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "institution_id"
+          ],
+          "target": "academics_institution",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t11_01"
+        },
+        {
+          "fields": [
+            "decided_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t11_02"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "institution_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t11_01"
+        },
+        {
+          "expression": "decided_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t11_02"
+        }
+      ]
+    },
+    {
+      "id": "T12",
+      "name": "academics_personal_verification",
+      "module": "M03",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "account_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "method",
+          "type": "varchar(24)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "status",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'pending'",
+          "pk": false
+        },
+        {
+          "name": "challenge_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "domain_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "academic_scope_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "evidence_reference",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decided_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decided_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decision_reason",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t12_01": "method IN ('institutional_email', 'manual')",
+        "ck_t12_02": "status IN ('pending', 'approved', 'rejected', 'withdrawn')",
+        "ck_t12_03": "((status = 'pending' AND decided_at IS NULL AND decided_by IS NULL) OR (status <> 'pending' AND decided_at IS NOT NULL))",
+        "ck_t12_04": "(method = 'institutional_email' AND challenge_id IS NOT NULL AND domain_id IS NOT NULL AND academic_scope_id IS NULL) OR (method = 'manual' AND challenge_id IS NULL AND domain_id IS NULL AND academic_scope_id IS NOT NULL)",
+        "ck_t12_05": "status = 'pending' OR (decision_reason IS NOT NULL AND length(btrim(decision_reason)) > 0)",
+        "ck_t12_06": "method <> 'manual' OR status = 'pending' OR decided_by IS NOT NULL"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t12_01"
+        },
+        {
+          "fields": [
+            "challenge_id",
+            "account_id"
+          ],
+          "target": "identity_email_challenge",
+          "reference": [
+            "id",
+            "account_id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t12_02"
+        },
+        {
+          "fields": [
+            "domain_id"
+          ],
+          "target": "academics_domain",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t12_03"
+        },
+        {
+          "fields": [
+            "academic_scope_id"
+          ],
+          "target": "academics_scope",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t12_04"
+        },
+        {
+          "fields": [
+            "decided_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t12_05"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "challenge_id",
+          "unique": true,
+          "where": "challenge_id IS NOT NULL",
+          "nulls_not_distinct": false,
+          "name": "uq_t12_01"
+        },
+        {
+          "expression": "account_id",
+          "unique": true,
+          "where": "method = 'manual' AND status = 'pending'",
+          "nulls_not_distinct": false,
+          "name": "uq_t12_02"
+        },
+        {
+          "expression": "account_id, status",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t12_03"
+        },
+        {
+          "expression": "challenge_id, account_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t12_04"
+        },
+        {
+          "expression": "domain_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t12_05"
+        },
+        {
+          "expression": "academic_scope_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t12_06"
+        },
+        {
+          "expression": "decided_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t12_07"
+        }
+      ]
+    },
+    {
+      "id": "T13",
+      "name": "academics_researcher_request",
+      "module": "M03",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "account_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "academic_scope_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "requested_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "justification",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decision",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'pending'",
+          "pk": false
+        },
+        {
+          "name": "decided_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decided_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decision_reason",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t13_01": "length(btrim(justification)) > 0",
+        "ck_t13_02": "decision IN ('pending', 'approved', 'rejected')",
+        "ck_t13_03": "decision = 'pending' OR (decided_by IS NOT NULL AND decided_at IS NOT NULL AND decision_reason IS NOT NULL AND length(btrim(decision_reason)) > 0)"
+      },
+      "unique": {
+        "uq_t13_key01": [
+          "id",
+          "account_id",
+          "academic_scope_id"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t13_01"
+        },
+        {
+          "fields": [
+            "requested_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t13_02"
+        },
+        {
+          "fields": [
+            "decided_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t13_03"
+        },
+        {
+          "fields": [
+            "academic_scope_id"
+          ],
+          "target": "academics_scope",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t13_04"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "account_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t13_01"
+        },
+        {
+          "expression": "requested_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t13_02"
+        },
+        {
+          "expression": "decided_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t13_03"
+        },
+        {
+          "expression": "academic_scope_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t13_04"
+        }
+      ]
+    },
+    {
+      "id": "T14",
+      "name": "academics_researcher_award",
+      "module": "M03",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "account_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "academic_scope_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "source_request_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "awarded_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "justification",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "ended_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "ended_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t14_01": "length(btrim(justification)) > 0",
+        "ck_t14_02": "(ended_at IS NULL) = (ended_by IS NULL)"
+      },
+      "unique": {
+        "uq_t14_key01": [
+          "source_request_id"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t14_01"
+        },
+        {
+          "fields": [
+            "awarded_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t14_02"
+        },
+        {
+          "fields": [
+            "ended_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t14_03"
+        },
+        {
+          "fields": [
+            "academic_scope_id"
+          ],
+          "target": "academics_scope",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t14_04"
+        },
+        {
+          "fields": [
+            "source_request_id",
+            "account_id",
+            "academic_scope_id"
+          ],
+          "target": "academics_researcher_request",
+          "reference": [
+            "id",
+            "account_id",
+            "academic_scope_id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t14_05"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "account_id, academic_scope_id",
+          "unique": true,
+          "where": "ended_at IS NULL",
+          "nulls_not_distinct": false,
+          "name": "uq_t14_01"
+        },
+        {
+          "expression": "account_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t14_02"
+        },
+        {
+          "expression": "awarded_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t14_03"
+        },
+        {
+          "expression": "ended_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t14_04"
+        },
+        {
+          "expression": "academic_scope_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t14_05"
+        },
+        {
+          "expression": "source_request_id, account_id, academic_scope_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t14_06"
+        }
+      ]
+    },
+    {
+      "id": "T15",
+      "name": "organizations_organization",
+      "module": "M04",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "name",
+          "type": "varchar(200)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "kind",
+          "type": "varchar(24)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "institution_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t15_01": "length(btrim(name)) > 0",
+        "ck_t15_02": "kind IN ('university', 'private', 'state_other', 'other')"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "institution_id"
+          ],
+          "target": "academics_institution",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t15_01"
+        },
+        {
+          "fields": [
+            "created_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t15_02"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "lower(name)",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t15_01"
+        },
+        {
+          "expression": "institution_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t15_02"
+        },
+        {
+          "expression": "created_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t15_03"
+        }
+      ]
+    },
+    {
+      "id": "T16",
+      "name": "organizations_verification",
+      "module": "M04",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "organization_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "requested_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "status",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'pending'",
+          "pk": false
+        },
+        {
+          "name": "evidence_reference",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decided_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decided_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decision_reason",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t16_01": "status IN ('pending', 'approved', 'rejected', 'withdrawn')",
+        "ck_t16_02": "((status = 'pending' AND decided_at IS NULL AND decided_by IS NULL) OR (status <> 'pending' AND decided_at IS NOT NULL))",
+        "ck_t16_03": "status = 'pending' OR (decided_by IS NOT NULL AND decision_reason IS NOT NULL AND length(btrim(decision_reason)) > 0)"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "organization_id"
+          ],
+          "target": "organizations_organization",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t16_01"
+        },
+        {
+          "fields": [
+            "requested_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t16_02"
+        },
+        {
+          "fields": [
+            "decided_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t16_03"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "organization_id",
+          "unique": true,
+          "where": "status = 'pending'",
+          "nulls_not_distinct": false,
+          "name": "uq_t16_01"
+        },
+        {
+          "expression": "organization_id, status",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t16_02"
+        },
+        {
+          "expression": "requested_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t16_03"
+        },
+        {
+          "expression": "decided_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t16_04"
+        }
+      ]
+    },
+    {
+      "id": "T17",
+      "name": "organizations_representation",
+      "module": "M04",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "organization_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "account_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "granted_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "revoked_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "revoked_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "revocation_reason",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t17_01": "(revoked_at IS NULL) = (revoked_by IS NULL)",
+        "ck_t17_02": "revoked_at IS NULL OR revoked_at >= created_at"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "organization_id"
+          ],
+          "target": "organizations_organization",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t17_01"
+        },
+        {
+          "fields": [
+            "account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t17_02"
+        },
+        {
+          "fields": [
+            "granted_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t17_03"
+        },
+        {
+          "fields": [
+            "revoked_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t17_04"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "organization_id, account_id",
+          "unique": true,
+          "where": "revoked_at IS NULL",
+          "nulls_not_distinct": false,
+          "name": "uq_t17_01"
+        },
+        {
+          "expression": "organization_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t17_02"
+        },
+        {
+          "expression": "account_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t17_03"
+        },
+        {
+          "expression": "granted_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t17_04"
+        },
+        {
+          "expression": "revoked_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t17_05"
+        }
+      ]
+    },
+    {
+      "id": "T18",
+      "name": "opportunities_opportunity",
+      "module": "M05",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "owner_account_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "owner_organization_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "author_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "title",
+          "type": "varchar(200)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "area",
+          "type": "varchar(150)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "responsible_label",
+          "type": "varchar(200)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "lifecycle",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'draft'",
+          "pk": false
+        },
+        {
+          "name": "visibility",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'visible'",
+          "pk": false
+        },
+        {
+          "name": "published_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "expires_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "row_version",
+          "type": "integer",
+          "nullable": false,
+          "default": "1",
+          "pk": false
+        },
+        {
+          "name": "validity_revision",
+          "type": "integer",
+          "nullable": false,
+          "default": "0",
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t18_01": "(owner_account_id IS NULL) <> (owner_organization_id IS NULL)",
+        "ck_t18_02": "length(btrim(title)) > 0",
+        "ck_t18_03": "length(btrim(description)) > 0",
+        "ck_t18_04": "length(btrim(area)) > 0",
+        "ck_t18_05": "length(btrim(responsible_label)) > 0",
+        "ck_t18_06": "lifecycle IN ('draft', 'active', 'closed', 'expired')",
+        "ck_t18_07": "visibility IN ('visible', 'hidden', 'removed')",
+        "ck_t18_08": "row_version > 0",
+        "ck_t18_09": "validity_revision >= 0",
+        "ck_t18_10": "lifecycle = 'draft' OR (published_at IS NOT NULL AND expires_at IS NOT NULL AND validity_revision > 0)",
+        "ck_t18_11": "expires_at IS NULL OR published_at IS NULL OR expires_at > published_at"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "owner_account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t18_01"
+        },
+        {
+          "fields": [
+            "owner_organization_id"
+          ],
+          "target": "organizations_organization",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t18_02"
+        },
+        {
+          "fields": [
+            "author_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t18_03"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "expires_at",
+          "unique": false,
+          "where": "lifecycle = 'active'",
+          "nulls_not_distinct": false,
+          "name": "ix_t18_01"
+        },
+        {
+          "expression": "published_at DESC, id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t18_02"
+        },
+        {
+          "expression": "lower(area)",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t18_03"
+        },
+        {
+          "expression": "owner_account_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t18_04"
+        },
+        {
+          "expression": "owner_organization_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t18_05"
+        },
+        {
+          "expression": "author_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t18_06"
+        }
+      ]
+    },
+    {
+      "id": "T19",
+      "name": "opportunities_lifecycle_event",
+      "module": "M05",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "opportunity_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "validity_revision",
+          "type": "integer",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "event_kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "from_state",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "to_state",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "previous_expires_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "new_expires_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t19_01": "event_kind IN ('publish', 'close', 'extend', 'expire', 'reactivate')",
+        "ck_t19_02": "from_state IN ('draft', 'active', 'closed', 'expired')",
+        "ck_t19_03": "to_state IN ('active', 'closed', 'expired')",
+        "ck_t19_04": "validity_revision > 0",
+        "ck_t19_05": "(event_kind = 'expire' AND actor_id IS NULL) OR (event_kind <> 'expire' AND actor_id IS NOT NULL)"
+      },
+      "unique": {
+        "uq_t19_key01": [
+          "opportunity_id",
+          "validity_revision"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "opportunity_id"
+          ],
+          "target": "opportunities_opportunity",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t19_01"
+        },
+        {
+          "fields": [
+            "actor_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t19_02"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "actor_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t19_01"
+        }
+      ]
+    },
+    {
+      "id": "T20",
+      "name": "opportunities_need",
+      "module": "M05",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "opportunity_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "discipline_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "sort_order",
+          "type": "integer",
+          "nullable": false,
+          "default": "0",
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t20_01": "length(btrim(description)) > 0",
+        "ck_t20_02": "sort_order >= 0"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "opportunity_id"
+          ],
+          "target": "opportunities_opportunity",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t20_01"
+        },
+        {
+          "fields": [
+            "discipline_id"
+          ],
+          "target": "academics_discipline",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t20_02"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "opportunity_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t20_01"
+        },
+        {
+          "expression": "discipline_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t20_02"
+        }
+      ]
+    },
+    {
+      "id": "T21",
+      "name": "opportunities_funding",
+      "module": "M05",
+      "fields": [
+        {
+          "name": "opportunity_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": true
+        },
+        {
+          "name": "estimated_amount",
+          "type": "numeric(18,2)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "currency_code",
+          "type": "varchar(3)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "coverage",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "payment_kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "payment_detail",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t21_01": "estimated_amount >= 0",
+        "ck_t21_02": "currency_code ~ '^[A-Z]{3}$'",
+        "ck_t21_03": "payment_kind <> 'other' OR (payment_detail IS NOT NULL AND length(btrim(payment_detail)) > 0)",
+        "ck_t21_04": "coverage IN ('project', 'collaboration')",
+        "ck_t21_05": "payment_kind IN ('one_off', 'monthly', 'other')"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "opportunity_id"
+          ],
+          "target": "opportunities_opportunity",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t21_01"
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "T22",
+      "name": "opportunities_contact",
+      "module": "M05",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "opportunity_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "value",
+          "type": "varchar(320)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "label",
+          "type": "varchar(80)",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "sort_order",
+          "type": "integer",
+          "nullable": false,
+          "default": "0",
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t22_01": "kind IN ('email', 'phone', 'whatsapp', 'telegram')",
+        "ck_t22_02": "length(btrim(value)) > 0",
+        "ck_t22_03": "sort_order >= 0"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "opportunity_id"
+          ],
+          "target": "opportunities_opportunity",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t22_01"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "opportunity_id, kind, value",
+          "unique": true,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "uq_t22_01"
+        }
+      ]
+    },
+    {
+      "id": "T23",
+      "name": "publications_publication",
+      "module": "M06",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "owner_account_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "owner_organization_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "author_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "title",
+          "type": "varchar(200)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "body",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "status",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'draft'",
+          "pk": false
+        },
+        {
+          "name": "visibility",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'visible'",
+          "pk": false
+        },
+        {
+          "name": "published_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "row_version",
+          "type": "integer",
+          "nullable": false,
+          "default": "1",
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t23_01": "(owner_account_id IS NULL) <> (owner_organization_id IS NULL)",
+        "ck_t23_02": "kind IN ('news', 'event')",
+        "ck_t23_03": "status IN ('draft', 'published', 'withdrawn')",
+        "ck_t23_04": "visibility IN ('visible', 'hidden', 'removed')",
+        "ck_t23_05": "length(btrim(title)) > 0",
+        "ck_t23_06": "length(btrim(body)) > 0",
+        "ck_t23_07": "status = 'draft' OR published_at IS NOT NULL",
+        "ck_t23_08": "row_version > 0"
+      },
+      "unique": {
+        "uq_t23_key01": [
+          "id",
+          "kind"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "owner_account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t23_01"
+        },
+        {
+          "fields": [
+            "owner_organization_id"
+          ],
+          "target": "organizations_organization",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t23_02"
+        },
+        {
+          "fields": [
+            "author_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t23_03"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "published_at DESC, id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t23_01"
+        },
+        {
+          "expression": "owner_account_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t23_02"
+        },
+        {
+          "expression": "owner_organization_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t23_03"
+        },
+        {
+          "expression": "author_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t23_04"
+        }
+      ]
+    },
+    {
+      "id": "T24",
+      "name": "publications_event_detail",
+      "module": "M06",
+      "fields": [
+        {
+          "name": "publication_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": true
+        },
+        {
+          "name": "publication_kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'event'",
+          "pk": false
+        },
+        {
+          "name": "event_date",
+          "type": "date",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "start_time",
+          "type": "time",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "time_zone",
+          "type": "varchar(64)",
+          "nullable": false,
+          "default": "'America/Havana'",
+          "pk": false
+        },
+        {
+          "name": "mode",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "venue",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "participation_url",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "contact_kind",
+          "type": "varchar(16)",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "contact_value",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t24_01": "publication_kind = 'event'",
+        "ck_t24_02": "(contact_kind IS NULL) = (contact_value IS NULL)",
+        "ck_t24_03": "(participation_url IS NOT NULL AND length(btrim(participation_url)) > 0) OR (contact_value IS NOT NULL AND length(btrim(contact_value)) > 0)",
+        "ck_t24_04": "mode IN ('in_person', 'online', 'hybrid')",
+        "ck_t24_05": "contact_kind IN ('email', 'phone', 'whatsapp', 'telegram')",
+        "ck_t24_06": "(venue IS NULL OR length(btrim(venue)) > 0)",
+        "ck_t24_07": "(participation_url IS NULL OR length(btrim(participation_url)) > 0)",
+        "ck_t24_08": "(contact_value IS NULL OR length(btrim(contact_value)) > 0)",
+        "ck_t24_09": "length(btrim(time_zone)) > 0"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "publication_id",
+            "publication_kind"
+          ],
+          "target": "publications_publication",
+          "reference": [
+            "id",
+            "kind"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t24_01"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "publication_id, publication_kind",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t24_01"
+        }
+      ]
+    },
+    {
+      "id": "T25",
+      "name": "publications_highlight",
+      "module": "M06",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "opportunity_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "publication_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "granted_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "source_grant_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "starts_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "ends_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "revoked_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "revoked_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t25_01": "(opportunity_id IS NULL) <> (publication_id IS NULL)",
+        "ck_t25_02": "ends_at IS NULL OR ends_at > starts_at",
+        "ck_t25_03": "(revoked_at IS NULL) = (revoked_by IS NULL)"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "opportunity_id"
+          ],
+          "target": "opportunities_opportunity",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t25_01"
+        },
+        {
+          "fields": [
+            "publication_id"
+          ],
+          "target": "publications_publication",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t25_02"
+        },
+        {
+          "fields": [
+            "granted_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t25_03"
+        },
+        {
+          "fields": [
+            "source_grant_id"
+          ],
+          "target": "access_grant",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t25_04"
+        },
+        {
+          "fields": [
+            "revoked_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t25_05"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "opportunity_id",
+          "unique": true,
+          "where": "revoked_at IS NULL AND opportunity_id IS NOT NULL",
+          "nulls_not_distinct": false,
+          "name": "uq_t25_01"
+        },
+        {
+          "expression": "publication_id",
+          "unique": true,
+          "where": "revoked_at IS NULL AND publication_id IS NOT NULL",
+          "nulls_not_distinct": false,
+          "name": "uq_t25_02"
+        },
+        {
+          "expression": "opportunity_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t25_03"
+        },
+        {
+          "expression": "publication_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t25_04"
+        },
+        {
+          "expression": "granted_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t25_05"
+        },
+        {
+          "expression": "source_grant_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t25_06"
+        },
+        {
+          "expression": "revoked_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t25_07"
+        }
+      ]
+    },
+    {
+      "id": "T26",
+      "name": "moderation_report",
+      "module": "M07",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "opportunity_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "publication_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "reported_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t26_01": "(opportunity_id IS NULL) <> (publication_id IS NULL)",
+        "ck_t26_02": "length(btrim(reason)) > 0"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "opportunity_id"
+          ],
+          "target": "opportunities_opportunity",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t26_01"
+        },
+        {
+          "fields": [
+            "publication_id"
+          ],
+          "target": "publications_publication",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t26_02"
+        },
+        {
+          "fields": [
+            "reported_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t26_03"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "opportunity_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t26_01"
+        },
+        {
+          "expression": "publication_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t26_02"
+        },
+        {
+          "expression": "reported_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t26_03"
+        }
+      ]
+    },
+    {
+      "id": "T27",
+      "name": "moderation_decision",
+      "module": "M07",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "report_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decided_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "outcome",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "content_action",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t27_01": "outcome IN ('violation', 'no_violation')",
+        "ck_t27_02": "content_action IN ('none', 'hide', 'remove')",
+        "ck_t27_03": "length(btrim(reason)) > 0",
+        "ck_t27_04": "outcome <> 'no_violation' OR content_action = 'none'"
+      },
+      "unique": {
+        "uq_t27_key01": [
+          "report_id"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "report_id"
+          ],
+          "target": "moderation_report",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t27_01"
+        },
+        {
+          "fields": [
+            "decided_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t27_02"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "decided_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t27_01"
+        }
+      ]
+    },
+    {
+      "id": "T28",
+      "name": "moderation_measure",
+      "module": "M07",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "account_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "source_decision_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "starts_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "ends_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "note",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "revoked_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "revoked_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t28_01": "kind IN ('warning', 'ban')",
+        "ck_t28_02": "ends_at IS NULL OR ends_at > starts_at",
+        "ck_t28_03": "(revoked_at IS NULL) = (revoked_by IS NULL)",
+        "ck_t28_04": "kind <> 'warning' OR ends_at IS NULL"
+      },
+      "unique": {
+        "uq_t28_key01": [
+          "id",
+          "account_id"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t28_01"
+        },
+        {
+          "fields": [
+            "source_decision_id"
+          ],
+          "target": "moderation_decision",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t28_02"
+        },
+        {
+          "fields": [
+            "revoked_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t28_03"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "account_id, starts_at",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t28_01"
+        },
+        {
+          "expression": "source_decision_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t28_02"
+        },
+        {
+          "expression": "revoked_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t28_03"
+        }
+      ]
+    },
+    {
+      "id": "T29",
+      "name": "moderation_restriction",
+      "module": "M07",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "measure_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "capability_code",
+          "type": "varchar(80)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "context_kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t29_01": "context_kind IN ('personal', 'organization', 'both')",
+        "ck_t29_02": "capability_code <> 'moderation.request_review'"
+      },
+      "unique": {
+        "uq_t29_key01": [
+          "measure_id",
+          "capability_code",
+          "context_kind"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "measure_id"
+          ],
+          "target": "moderation_measure",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t29_01"
+        },
+        {
+          "fields": [
+            "capability_code"
+          ],
+          "target": "access_capability",
+          "reference": [
+            "code"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t29_02"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "capability_code",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t29_01"
+        }
+      ]
+    },
+    {
+      "id": "T30",
+      "name": "moderation_review_request",
+      "module": "M07",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "measure_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "requested_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t30_01": "length(btrim(reason)) > 0"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "measure_id",
+            "requested_by"
+          ],
+          "target": "moderation_measure",
+          "reference": [
+            "id",
+            "account_id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t30_01"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "measure_id, requested_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t30_01"
+        }
+      ]
+    },
+    {
+      "id": "T31",
+      "name": "moderation_review_decision",
+      "module": "M07",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "decided_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "outcome",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "replacement_measure_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t31_01": "outcome IN ('upheld', 'revoked', 'replaced')",
+        "ck_t31_02": "length(btrim(reason)) > 0",
+        "ck_t31_03": "(outcome = 'replaced') = (replacement_measure_id IS NOT NULL)"
+      },
+      "unique": {
+        "uq_t31_key01": [
+          "request_id"
+        ],
+        "uq_t31_key02": [
+          "replacement_measure_id"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "request_id"
+          ],
+          "target": "moderation_review_request",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t31_01"
+        },
+        {
+          "fields": [
+            "decided_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t31_02"
+        },
+        {
+          "fields": [
+            "replacement_measure_id"
+          ],
+          "target": "moderation_measure",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t31_03"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "decided_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t31_01"
+        }
+      ]
+    },
+    {
+      "id": "T32",
+      "name": "access_capability",
+      "module": "M08",
+      "fields": [
+        {
+          "name": "code",
+          "type": "varchar(80)",
+          "nullable": false,
+          "default": null,
+          "pk": true
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "is_delegable",
+          "type": "boolean",
+          "nullable": false,
+          "default": "false",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t32_01": "length(btrim(code)) > 0",
+        "ck_t32_02": "length(btrim(description)) > 0"
+      },
+      "unique": {},
+      "foreign_keys": [],
+      "indexes": []
+    },
+    {
+      "id": "T33",
+      "name": "access_grant",
+      "module": "M08",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "account_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "capability_code",
+          "type": "varchar(80)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "scope_kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "academic_scope_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "organization_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "granted_by",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "parent_grant_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "source",
+          "type": "varchar(24)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "valid_from",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "valid_until",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "ended_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "ended_by",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "end_reason",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t33_01": "scope_kind IN ('global', 'academic', 'organization')",
+        "ck_t33_02": "source IN ('bootstrap', 'delegation', 'administrative')",
+        "ck_t33_03": "(scope_kind = 'global' AND academic_scope_id IS NULL AND organization_id IS NULL) OR (scope_kind = 'academic' AND academic_scope_id IS NOT NULL AND organization_id IS NULL) OR (scope_kind = 'organization' AND academic_scope_id IS NULL AND organization_id IS NOT NULL)",
+        "ck_t33_04": "parent_grant_id IS NULL OR parent_grant_id <> id",
+        "ck_t33_05": "valid_until IS NULL OR valid_until > valid_from",
+        "ck_t33_06": "(ended_at IS NULL) = (ended_by IS NULL)",
+        "ck_t33_07": "ended_at IS NULL OR (end_reason IS NOT NULL AND length(btrim(end_reason)) > 0)"
+      },
+      "unique": {
+        "uq_t33_key01": [
+          "id",
+          "account_id"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t33_01"
+        },
+        {
+          "fields": [
+            "granted_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t33_02"
+        },
+        {
+          "fields": [
+            "ended_by"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t33_03"
+        },
+        {
+          "fields": [
+            "capability_code"
+          ],
+          "target": "access_capability",
+          "reference": [
+            "code"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t33_04"
+        },
+        {
+          "fields": [
+            "academic_scope_id"
+          ],
+          "target": "academics_scope",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t33_05"
+        },
+        {
+          "fields": [
+            "organization_id"
+          ],
+          "target": "organizations_organization",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t33_06"
+        },
+        {
+          "fields": [
+            "parent_grant_id",
+            "granted_by"
+          ],
+          "target": "access_grant",
+          "reference": [
+            "id",
+            "account_id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t33_07"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "account_id, capability_code, scope_kind, academic_scope_id, organization_id",
+          "unique": true,
+          "where": "ended_at IS NULL",
+          "nulls_not_distinct": true,
+          "name": "uq_t33_01"
+        },
+        {
+          "expression": "account_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t33_02"
+        },
+        {
+          "expression": "granted_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t33_03"
+        },
+        {
+          "expression": "ended_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t33_04"
+        },
+        {
+          "expression": "capability_code",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t33_05"
+        },
+        {
+          "expression": "academic_scope_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t33_06"
+        },
+        {
+          "expression": "organization_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t33_07"
+        },
+        {
+          "expression": "parent_grant_id, granted_by",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t33_08"
+        }
+      ]
+    },
+    {
+      "id": "T34",
+      "name": "notifications_notice",
+      "module": "M09",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "opportunity_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "validity_revision",
+          "type": "integer",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "kind",
+          "type": "varchar(32)",
+          "nullable": false,
+          "default": "'expiry_reminder'",
+          "pk": false
+        },
+        {
+          "name": "scheduled_for",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "channel",
+          "type": "varchar(32)",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "cancelled_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "cancellation_reason",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t34_01": "kind = 'expiry_reminder'",
+        "ck_t34_02": "validity_revision > 0"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "opportunity_id",
+            "validity_revision"
+          ],
+          "target": "opportunities_lifecycle_event",
+          "reference": [
+            "opportunity_id",
+            "validity_revision"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t34_01"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "opportunity_id, validity_revision, kind, channel",
+          "unique": true,
+          "where": null,
+          "nulls_not_distinct": true,
+          "name": "uq_t34_01"
+        },
+        {
+          "expression": "scheduled_for",
+          "unique": false,
+          "where": "cancelled_at IS NULL",
+          "nulls_not_distinct": false,
+          "name": "ix_t34_02"
+        }
+      ]
+    },
+    {
+      "id": "T35",
+      "name": "notifications_outbox",
+      "module": "M09",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "notice_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "challenge_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "recipient_account_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "channel",
+          "type": "varchar(32)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "destination",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "template_key",
+          "type": "varchar(80)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "payload",
+          "type": "jsonb",
+          "nullable": false,
+          "default": "'{}'::jsonb",
+          "pk": false
+        },
+        {
+          "name": "idempotency_key",
+          "type": "varchar(160)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "status",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'pending'",
+          "pk": false
+        },
+        {
+          "name": "available_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "lease_until",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "sent_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t35_01": "(notice_id IS NULL) <> (challenge_id IS NULL)",
+        "ck_t35_02": "jsonb_typeof(payload) = 'object'",
+        "ck_t35_03": "status <> 'processing' OR lease_until IS NOT NULL",
+        "ck_t35_04": "(status = 'sent') = (sent_at IS NOT NULL)",
+        "ck_t35_05": "status IN ('pending', 'processing', 'sent', 'failed', 'cancelled')",
+        "ck_t35_06": "length(btrim(channel)) > 0",
+        "ck_t35_07": "length(btrim(destination)) > 0",
+        "ck_t35_08": "length(btrim(template_key)) > 0",
+        "ck_t35_09": "length(btrim(idempotency_key)) > 0"
+      },
+      "unique": {
+        "uq_t35_key01": [
+          "idempotency_key"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "notice_id"
+          ],
+          "target": "notifications_notice",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t35_01"
+        },
+        {
+          "fields": [
+            "challenge_id"
+          ],
+          "target": "identity_email_challenge",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t35_02"
+        },
+        {
+          "fields": [
+            "recipient_account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t35_03"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "available_at",
+          "unique": false,
+          "where": "status IN ('pending', 'failed')",
+          "nulls_not_distinct": false,
+          "name": "ix_t35_01"
+        },
+        {
+          "expression": "lease_until",
+          "unique": false,
+          "where": "status = 'processing'",
+          "nulls_not_distinct": false,
+          "name": "ix_t35_02"
+        },
+        {
+          "expression": "notice_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t35_03"
+        },
+        {
+          "expression": "challenge_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t35_04"
+        },
+        {
+          "expression": "recipient_account_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t35_05"
+        }
+      ]
+    },
+    {
+      "id": "T36",
+      "name": "notifications_delivery_attempt",
+      "module": "M09",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "outbox_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "attempt_no",
+          "type": "integer",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "started_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "finished_at",
+          "type": "timestamptz",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "result",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": "'running'",
+          "pk": false
+        },
+        {
+          "name": "provider_reference",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "error_code",
+          "type": "varchar(80)",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t36_01": "result IN ('running', 'accepted', 'failed', 'unknown')",
+        "ck_t36_02": "attempt_no > 0",
+        "ck_t36_03": "finished_at IS NULL OR finished_at >= started_at",
+        "ck_t36_04": "(result = 'running') = (finished_at IS NULL)"
+      },
+      "unique": {
+        "uq_t36_key01": [
+          "outbox_id",
+          "attempt_no"
+        ]
+      },
+      "foreign_keys": [
+        {
+          "fields": [
+            "outbox_id"
+          ],
+          "target": "notifications_outbox",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t36_01"
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "T37",
+      "name": "audit_event",
+      "module": "M10",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "pk": true
+        },
+        {
+          "name": "actor_kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "actor_account_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "context_kind",
+          "type": "varchar(16)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "organization_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "academic_scope_id",
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "action_code",
+          "type": "varchar(80)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "resource_kind",
+          "type": "varchar(80)",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "resource_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "occurred_at",
+          "type": "timestamptz",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "before_state",
+          "type": "jsonb",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "after_state",
+          "type": "jsonb",
+          "nullable": true,
+          "default": null,
+          "pk": false
+        },
+        {
+          "name": "correlation_id",
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "pk": false
+        }
+      ],
+      "checks": {
+        "ck_t37_01": "actor_kind IN ('account', 'system')",
+        "ck_t37_02": "context_kind IN ('personal', 'organization', 'system')",
+        "ck_t37_03": "length(btrim(action_code)) > 0",
+        "ck_t37_04": "length(btrim(resource_kind)) > 0",
+        "ck_t37_05": "(actor_kind = 'system' AND actor_account_id IS NULL AND context_kind = 'system') OR (actor_kind = 'account' AND actor_account_id IS NOT NULL AND context_kind <> 'system')",
+        "ck_t37_06": "(context_kind = 'organization') = (organization_id IS NOT NULL)",
+        "ck_t37_07": "before_state IS NULL OR jsonb_typeof(before_state) = 'object'",
+        "ck_t37_08": "after_state IS NULL OR jsonb_typeof(after_state) = 'object'"
+      },
+      "unique": {},
+      "foreign_keys": [
+        {
+          "fields": [
+            "actor_account_id"
+          ],
+          "target": "identity_account",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t37_01"
+        },
+        {
+          "fields": [
+            "organization_id"
+          ],
+          "target": "organizations_organization",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t37_02"
+        },
+        {
+          "fields": [
+            "academic_scope_id"
+          ],
+          "target": "academics_scope",
+          "reference": [
+            "id"
+          ],
+          "on_delete": "RESTRICT",
+          "name": "fk_t37_03"
+        }
+      ],
+      "indexes": [
+        {
+          "expression": "resource_kind, resource_id, occurred_at",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t37_01"
+        },
+        {
+          "expression": "actor_account_id, occurred_at",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t37_02"
+        },
+        {
+          "expression": "correlation_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t37_03"
+        },
+        {
+          "expression": "organization_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t37_04"
+        },
+        {
+          "expression": "academic_scope_id",
+          "unique": false,
+          "where": null,
+          "nulls_not_distinct": false,
+          "name": "ix_t37_05"
+        }
+      ]
+    }
+  ],
+  "views": {
+    "model_profile_completeness": {
+      "profile_id": "uuid",
+      "account_id": "uuid",
+      "is_complete": "boolean"
+    },
+    "model_personal_verification": {
+      "account_id": "uuid",
+      "is_verified": "boolean"
+    },
+    "model_organization_verification": {
+      "organization_id": "uuid",
+      "is_verified": "boolean"
+    },
+    "model_opportunity_funding": {
+      "opportunity_id": "uuid",
+      "is_funded": "boolean"
+    }
+  }
+}

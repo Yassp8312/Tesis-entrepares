@@ -1,0 +1,476 @@
+{
+  "fecha": "2026-11-08",
+  "tarea": "SP02-T16",
+  "resultado": "37 tablas,345 campos y85 FK contrastados contra diseño fijado; predicados de frontera y fábricas identificadas comprobados en PostgreSQL",
+  "trazabilidad": {
+    "sprint": "SP02",
+    "WI": [
+      "WI05",
+      "WI09"
+    ],
+    "modulos": [
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "M06",
+      "M07",
+      "M08",
+      "M09",
+      "M10"
+    ],
+    "DL": "DL01-DL20: estructura y corpus sintético, no flujos completos",
+    "RNF": [
+      "RNF12",
+      "RNF14"
+    ],
+    "pruebas": [
+      "AT15: reconstrucción mediante migraciones y contraste, parcial; no restauración de copia física",
+      "AT18: integridad estructural y datos sintéticos, parcial",
+      "VD01/VD02/VD03/VD08/VD09/VD10/VD15/VD17/VD18: aporte estructural; casos funcionales conservan sus incrementos"
+    ]
+  },
+  "referencia": {
+    "version": "2026-10-29 logico v1",
+    "proyeccion": "backend/tests/reference/logical-schema.json",
+    "diccionario_sha256": "94ce2f274e5b2ebe38b95941a839e102800833cb357d5e2b08d1949ebef59132",
+    "sql_sha256": "2ae98fdeb8f6fdf0efeac37b7d9b93d10750ae86fb3d43528c1b40f4d466c585",
+    "generador": "scripts/crear_referencia_esquema.py",
+    "reproducida_byte_a_byte": true,
+    "origen": "Solo estructura extraída del diccionario y cotejada con SQL original; sin datos, propósitos de investigación o documentos completos",
+    "limite": "No se genera el valor esperado desde la BD implementada"
+  },
+  "contraste": {
+    "desarrollo": {
+      "informe_privado": ".cache/sprint02/t16-esquema-desarrollo-final.json",
+      "matched": true,
+      "counts": {
+        "tables": 37,
+        "fields": 345,
+        "foreign_keys": 85,
+        "checks": 143,
+        "views": 4,
+        "infrastructure_tables": 8,
+        "primary_keys": 37,
+        "composite_foreign_keys": 7,
+        "unique_constraints": 19,
+        "indexes": 153
+      }
+    },
+    "base_efimera_migrada": {
+      "informe_privado": ".cache/sprint02/t16-esquema-pruebas.json",
+      "matched": true,
+      "counts": {
+        "tables": 37,
+        "fields": 345,
+        "foreign_keys": 85,
+        "checks": 143,
+        "views": 4,
+        "infrastructure_tables": 8,
+        "primary_keys": 37,
+        "composite_foreign_keys": 7,
+        "unique_constraints": 19,
+        "indexes": 153
+      }
+    },
+    "diferencias_pendientes": [],
+    "parametros": [
+      "Inventario exacto de tablas/campos/vistas e infraestructura separada",
+      "Tipos, nulabilidad y defaults por columna, preservando literales",
+      "37 PK,85 FK (7 compuestas): columnas/orden/destino/esquema/RESTRICT/NO ACTION/MATCH SIMPLE/validada/no diferible",
+      "143 CHECK y nombres de claves/índices",
+      "Btree,claves,expresiones,DESC,orden NULL,clases de operadores,unicidad,NULLS NOT DISTINCT,validación/sin INCLUDE",
+      "Modelos actuales y estado histórico de migraciones:345 campos concretos,tipos/nulabilidad/PK; plan de migración vacío"
+    ],
+    "concreciones_documentadas": {
+      "version": "2026-11-08 SP02-T16",
+      "scope": "Concreciones técnicas explícitas; no cambian las fuentes históricas ni las reglas de negocio",
+      "unique_index_constraints": [
+        {
+          "table": "profiles_contact",
+          "name": "uq_t06_01",
+          "reason": "UniqueConstraint de Django crea una restricción UNIQUE y su índice único sobre los mismos tres campos; se comprueban campos, nulabilidad y unicidad del índice"
+        },
+        {
+          "table": "opportunities_contact",
+          "name": "uq_t22_01",
+          "reason": "UniqueConstraint de Django representa el índice único completo del diseño como restricción y su índice de apoyo, con idénticos campos"
+        },
+        {
+          "table": "notifications_notice",
+          "name": "uq_t34_01",
+          "reason": "UniqueConstraint con nulls_distinct=False conserva las cuatro claves y NULLS NOT DISTINCT del índice de referencia"
+        }
+      ],
+      "auxiliary_indexes": [
+        {
+          "table": "access_capability",
+          "name": "access_capability_code_72401c64_like",
+          "keys": [
+            "code"
+          ],
+          "operator_classes": [
+            "varchar_pattern_ops"
+          ],
+          "unique": false,
+          "reason": "Índice auxiliar que Django crea para búsquedas de patrón sobre la PK varchar; no sustituye PK/UNIQUE ni concede capacidades"
+        }
+      ]
+    },
+    "orden_fisico": {
+      "tablas": 36,
+      "tratamiento": "Notas de creación/herencia ORM; atributos se contrastan por nombre, orden lógico de claves/índices sí se comprueba"
+    },
+    "predicados": {
+      "checks": 143,
+      "filtros_indices": 13,
+      "total": 156,
+      "combinaciones": 8568,
+      "discrepancias": 0,
+      "regla_check": "IS NOT FALSE",
+      "regla_indice": "IS TRUE",
+      "valores": "Fronteras tipadas y admisibles: vacíos/espacios/tabuladores,estados,UUID iguales/distintos,números,fechas,booleanos,JSON y NULL SQL",
+      "limite": "Conjunto finito explícito, no demostración universal de equivalencia"
+    },
+    "lector": "scripts/contrastar_esquema.py, transacción REPEATABLE READ READ ONLY, catálogo y SELECT con parámetros sobre valores generados; no consulta filas del producto"
+  },
+  "fabricas": {
+    "archivo": "backend/tests/support/factories.py",
+    "clase": "SyntheticFactory",
+    "recibo": "SyntheticGraph con namespace y copias de filas identificadas",
+    "cobertura": "Un registro de cada T01-T37 y los345 campos, con referencias válidas y variantes de expediente manual/correo institucional pendientes",
+    "barrera": "Solo configuración test, rol/base/host previstos, cluster privado identificado PostgreSQL17; caché ligada a conexión física; preflight pytest conservado",
+    "datos": "SINTETICO,UUID por namespace,correos/URL example.invalid,contraseña inutilizable,sin banderas técnicas de privilegio",
+    "estados": "Verificaciones pendientes;representación/medidas revocadas;concesiones/distinciones terminadas;contenido oculto/borrador;aviso y salida cancelados;metadatos sample-only",
+    "atomicidad": "Fallo tras financiación revierte grafo parcial y conserva corpus anterior",
+    "limite": "Persistencia de prueba, no ejercicio de autoridad o proceso institucional; no hay comando de siembra para desarrollo/producción"
+  },
+  "pruebas_nuevas": {
+    "unitarias_archivo": "backend/tests/test_schema_contract.py",
+    "unitarias_correctas": 22,
+    "integracion_archivo": "backend/tests/test_schema_postgresql.py",
+    "integracion_correctas": 23,
+    "fallidas_finales": 0,
+    "omitidas_finales": 0,
+    "junit_unitarias_privado": ".cache/sprint02/t16-unitarias-definitivas.xml",
+    "junit_integracion_privado": ".cache/sprint02/t16-integracion-definitiva.xml",
+    "escenarios": [
+      "Procedencia del contrato,métricas,rechazo de fuentes no identificadas y parser que conserva literales",
+      "Aliases de tipo/default e índice limitados;SQL ajeno y llamadas no admitidas rechazadas",
+      "Guards de fábrica impiden usar desarrollo o destino no identificado",
+      "Catálogo global y8568 fronteras contra CHECK/filtros instalados",
+      "345 valores de37 tablas leídos después de insertar,JSON decodificado por tipo",
+      "Dos namespaces sin colisiones y grafo parcial revertido íntegro",
+      "UNIQUE de contactos y avisos conserva duplicados y NULLS NOT DISTINCT",
+      "Cambios de tipo/nulabilidad/default/acción/orden FK/deferibilidad/DESC/opclass/NULLs/auxiliar detectados",
+      "CHECK sustituido por true y FK alterada en base efímera:detectados y DDL restaurado por rollback",
+      "UNKNOWN aceptado por CHECK pero excluido por índice",
+      "Modelos actuales e históricos de migración coinciden con todos los campos de referencia"
+    ],
+    "ajustes_de_pruebas": "Primera suite: decodificación JSON al leer SQL directo y aserción por objeto en diferencias sin registro; prueba histórica añadió alias de espacio en numeric. Corregidos sin cambiar datos o modelo del producto"
+  },
+  "flujo_completo": {
+    "comando": "scripts/comprobar.ps1 -ConPostgreSQL",
+    "informe_privado": ".cache/comprobaciones/20261108T054812Z-00267f38/informe.json",
+    "pruebas": {
+      "python": {
+        "tests": 495,
+        "failed": 0,
+        "skipped": 0
+      },
+      "frontend": {
+        "tests": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "postgresql": {
+        "tests": 1056,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "servidor_total": 1551,
+    "resultado": "Todos los pasos correctos",
+    "pasos": [
+      {
+        "nombre": "version-node",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "version-npm",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "version-uv",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "arquitectura",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "bloqueo-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "compatibilidad-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "dependencias-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "analisis-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "formato-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "pruebas-python",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "dependencias-node",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "muestra-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "pruebas-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "tipos-y-build-vue",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "preparar-web",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "django-check",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "collectstatic",
+        "salida": 0,
+        "limite_segundos": 300
+      },
+      {
+        "nombre": "integracion-postgresql",
+        "salida": 0,
+        "limite_segundos": 900
+      },
+      {
+        "nombre": "migraciones",
+        "salida": 0,
+        "limite_segundos": 300
+      }
+    ],
+    "avisos_limpieza_externa": 0
+  },
+  "desarrollo": {
+    "sin_cambios_de_esquema_o_datos": true,
+    "migraciones_nuevas": 0,
+    "estado": {
+      "postgresql": "17.11",
+      "tables": [
+        "academics_discipline",
+        "academics_domain",
+        "academics_institution",
+        "academics_personal_verification",
+        "academics_researcher_award",
+        "academics_researcher_request",
+        "academics_scope",
+        "access_capability",
+        "access_grant",
+        "audit_event",
+        "auth_group",
+        "auth_group_permissions",
+        "auth_permission",
+        "django_content_type",
+        "django_migrations",
+        "django_session",
+        "identity_account",
+        "identity_account_groups",
+        "identity_account_user_permissions",
+        "identity_email_challenge",
+        "identity_recovery_request",
+        "moderation_decision",
+        "moderation_measure",
+        "moderation_report",
+        "moderation_restriction",
+        "moderation_review_decision",
+        "moderation_review_request",
+        "notifications_delivery_attempt",
+        "notifications_notice",
+        "notifications_outbox",
+        "opportunities_contact",
+        "opportunities_funding",
+        "opportunities_lifecycle_event",
+        "opportunities_need",
+        "opportunities_opportunity",
+        "organizations_organization",
+        "organizations_representation",
+        "organizations_verification",
+        "profiles_contact",
+        "profiles_education",
+        "profiles_merit",
+        "profiles_profile",
+        "publications_event_detail",
+        "publications_highlight",
+        "publications_publication"
+      ],
+      "table_count": 45,
+      "rows": {
+        "identity_account": 0,
+        "identity_email_challenge": 0,
+        "identity_recovery_request": 0,
+        "academics_institution": 0,
+        "academics_scope": 0,
+        "academics_discipline": 0,
+        "academics_domain": 0,
+        "organizations_organization": 0,
+        "organizations_verification": 0,
+        "organizations_representation": 0,
+        "profiles_profile": 0,
+        "profiles_education": 0,
+        "profiles_contact": 0,
+        "profiles_merit": 0,
+        "academics_personal_verification": 0,
+        "academics_researcher_request": 0,
+        "academics_researcher_award": 0,
+        "access_capability": 0,
+        "access_grant": 0,
+        "audit_event": 0,
+        "opportunities_opportunity": 0,
+        "opportunities_lifecycle_event": 0,
+        "opportunities_need": 0,
+        "opportunities_funding": 0,
+        "opportunities_contact": 0,
+        "publications_publication": 0,
+        "publications_event_detail": 0,
+        "publications_highlight": 0,
+        "moderation_report": 0,
+        "moderation_decision": 0,
+        "moderation_measure": 0,
+        "moderation_restriction": 0,
+        "moderation_review_request": 0,
+        "moderation_review_decision": 0,
+        "notifications_notice": 0,
+        "notifications_outbox": 0,
+        "notifications_delivery_attempt": 0
+      },
+      "migration_count": 31,
+      "identity_migrations": [
+        "0001_initial",
+        "0002_email_challenge_and_recovery_request"
+      ],
+      "academics_migrations": [
+        "0001_catalogs_and_scopes",
+        "0002_personal_verifications_and_researcher_awards",
+        "0003_personal_verification_view"
+      ],
+      "organizations_migrations": [
+        "0001_organizations_and_representation",
+        "0002_organization_verification_view"
+      ],
+      "profiles_migrations": [
+        "0001_profiles_and_education",
+        "0002_profile_completeness_view"
+      ],
+      "access_migrations": [
+        "0001_capabilities_and_grants"
+      ],
+      "audit_migrations": [
+        "0001_audit_events"
+      ],
+      "opportunities_migrations": [
+        "0001_opportunities_and_funding",
+        "0002_opportunity_funding_view"
+      ],
+      "publications_migrations": [
+        "0001_publications_events_and_highlights"
+      ],
+      "moderation_migrations": [
+        "0001_moderation_and_review"
+      ],
+      "notifications_migrations": [
+        "0001_notices_outbox_and_attempts"
+      ],
+      "views": [
+        "model_opportunity_funding",
+        "model_organization_verification",
+        "model_personal_verification",
+        "model_profile_completeness"
+      ],
+      "composite_foreign_keys": {
+        "fk_t09_02": "FOREIGN KEY (parent_id, institution_id) REFERENCES academics_scope(id, institution_id) ON DELETE RESTRICT",
+        "fk_t12_02": "FOREIGN KEY (challenge_id, account_id) REFERENCES identity_email_challenge(id, account_id) ON DELETE RESTRICT",
+        "fk_t14_05": "FOREIGN KEY (source_request_id, account_id, academic_scope_id) REFERENCES academics_researcher_request(id, account_id, academic_scope_id) ON DELETE RESTRICT",
+        "fk_t24_01": "FOREIGN KEY (publication_id, publication_kind) REFERENCES publications_publication(id, kind) ON DELETE RESTRICT",
+        "fk_t30_01": "FOREIGN KEY (measure_id, requested_by) REFERENCES moderation_measure(id, account_id) ON DELETE RESTRICT",
+        "fk_t33_07": "FOREIGN KEY (parent_grant_id, granted_by) REFERENCES access_grant(id, account_id) ON DELETE RESTRICT",
+        "fk_t34_01": "FOREIGN KEY (opportunity_id, validity_revision) REFERENCES opportunities_lifecycle_event(opportunity_id, validity_revision) ON DELETE RESTRICT"
+      },
+      "databases": [
+        "entrepares_development",
+        "entrepares_test"
+      ]
+    },
+    "bases_persistentes": 2,
+    "base_efimera_eliminada": true
+  },
+  "proveniencia": {
+    "fuentes_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "backend/tests/reference/logical-schema.json": "e008aa65b90adde98eeb86dc64f97035ef8c17574cd486b409c3f3b5e1b6e781",
+      "backend/tests/reference/schema-adjustments.json": "592126ea30897400d441322fe3c80925eaef71f07b7672dfb995275eabbea5fb",
+      "backend/tests/support/__init__.py": "bb27523763b957e098c9c611517a21fd2ba48b8fb9f1a877311941e79d178278",
+      "backend/tests/support/schema.py": "6287cd64cfe2b06db583dba1809ab2080ffbac944b3dac58e23da27dfd080f7a",
+      "backend/tests/support/factories.py": "0788881ca1d7925e0738632dd9460ccb48aa9463aca8c510bdc5d8336ab8ee19",
+      "backend/tests/test_schema_contract.py": "c63f6fa33530ffcedf1913b7af354a8bc245d7b740b0ff7efc6d0ffdd388904e",
+      "backend/tests/test_schema_postgresql.py": "a6b69f79ebc1176fdcadbd8070064db8c68bdb6b1e4ec14131d940fdc21b4dbd",
+      "scripts/crear_referencia_esquema.py": "d0537bde3a6f40732ffc518b585bbac87216e5add2939a82d6ca7c846c72d090",
+      "scripts/contrastar_esquema.py": "eb23e4e8bdd7797f4d7483d5936b897c1a9f41e74bf068ecaf0d24bf7a5954f0",
+      "docs/esquema-y-datos-sinteticos.md": "d3c1d9725800e63af1ff11aa3cc81c9e9cd8a45fe2833d38ed5c73f9b2e6290e"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    },
+    "secretos_conocidos": "Sin coincidencias en archivos modificados o nuevos revisados"
+  },
+  "limites": [
+    "SP02 sigue abierto:dieciséis de17 tareas;T17 pendiente",
+    "Conformidad de atributos y aceptación en fronteras,no prueba formal universal o evidencia de piloto",
+    "Corpus sintético no es siembra operativa ni participantes reales",
+    "Sin modelos/migraciones/dependencias nuevas o modificación de fuentes históricas",
+    "Casos funcionales VD y restauración desde copia física siguen en sus incrementos",
+    "No se resuelven políticas PB/Q o RF45/RF59 por comparar esquema"
+  ],
+  "siguiente": "SP02-T17:cerrar las migraciones y sus límites"
+}

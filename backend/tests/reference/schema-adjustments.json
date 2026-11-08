@@ -1,0 +1,12 @@
+{
+  "version": "2026-11-08 SP02-T16",
+  "scope": "Concreciones técnicas explícitas; no cambian las fuentes históricas ni las reglas de negocio",
+  "unique_index_constraints": [
+    {"table": "profiles_contact", "name": "uq_t06_01", "reason": "UniqueConstraint de Django crea una restricción UNIQUE y su índice único sobre los mismos tres campos; se comprueban campos, nulabilidad y unicidad del índice"},
+    {"table": "opportunities_contact", "name": "uq_t22_01", "reason": "UniqueConstraint de Django representa el índice único completo del diseño como restricción y su índice de apoyo, con idénticos campos"},
+    {"table": "notifications_notice", "name": "uq_t34_01", "reason": "UniqueConstraint con nulls_distinct=False conserva las cuatro claves y NULLS NOT DISTINCT del índice de referencia"}
+  ],
+  "auxiliary_indexes": [
+    {"table": "access_capability", "name": "access_capability_code_72401c64_like", "keys": ["code"], "operator_classes": ["varchar_pattern_ops"], "unique": false, "reason": "Índice auxiliar que Django crea para búsquedas de patrón sobre la PK varchar; no sustituye PK/UNIQUE ni concede capacidades"}
+  ]
+}
