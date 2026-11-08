@@ -1,0 +1,650 @@
+{
+  "tarea": "SP02-T17",
+  "fecha": "2026-11-08",
+  "resultado": {
+    "SP02": "Cerrado en implementación:17/17 tareas",
+    "WI05": "Cerrado por criterio real",
+    "SP03": "Sin iniciar"
+  },
+  "trazabilidad": {
+    "WI": [
+      "WI05"
+    ],
+    "RNF": [
+      "RNF12"
+    ],
+    "modulos": [
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "M06",
+      "M07",
+      "M08",
+      "M09",
+      "M10"
+    ],
+    "DL": "DL01–DL20; alcance físico y soportes transversales",
+    "dependencia": "SP02-T16"
+  },
+  "criterio_padre": {
+    "archivo": "DSRM/03 - Diseno y desarrollo/05 - Planificacion de iteraciones/Lista de trabajo OpenUP.json",
+    "sha256": "bd1281299652e25dea0e4caabfa1bb1f52089e942588f8b695145cdd01ad59dd",
+    "WI05_criterio": "Una base vacía se crea mediante migraciones; relaciones, unicidad y datos sintéticos se comprueban sin afirmar que el modelo conceptual sea el esquema final.",
+    "WI05_estado_historico": "En curso",
+    "WI04_estado_documental": "Terminado",
+    "plan_original_modificado": false
+  },
+  "reproduccion": {
+    "empty_database": {
+      "tables": [],
+      "views": []
+    },
+    "migration_order": [
+      {
+        "app": "contenttypes",
+        "name": "0001_initial",
+        "dependencies": [],
+        "operations_reversible": true
+      },
+      {
+        "app": "contenttypes",
+        "name": "0002_remove_content_type_name",
+        "dependencies": [
+          [
+            "contenttypes",
+            "0001_initial"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0001_initial",
+        "dependencies": [
+          [
+            "contenttypes",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0002_alter_permission_name_max_length",
+        "dependencies": [
+          [
+            "auth",
+            "0001_initial"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0003_alter_user_email_max_length",
+        "dependencies": [
+          [
+            "auth",
+            "0002_alter_permission_name_max_length"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0004_alter_user_username_opts",
+        "dependencies": [
+          [
+            "auth",
+            "0003_alter_user_email_max_length"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0005_alter_user_last_login_null",
+        "dependencies": [
+          [
+            "auth",
+            "0004_alter_user_username_opts"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0006_require_contenttypes_0002",
+        "dependencies": [
+          [
+            "auth",
+            "0005_alter_user_last_login_null"
+          ],
+          [
+            "contenttypes",
+            "0002_remove_content_type_name"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0007_alter_validators_add_error_messages",
+        "dependencies": [
+          [
+            "auth",
+            "0006_require_contenttypes_0002"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0008_alter_user_username_max_length",
+        "dependencies": [
+          [
+            "auth",
+            "0007_alter_validators_add_error_messages"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0009_alter_user_last_name_max_length",
+        "dependencies": [
+          [
+            "auth",
+            "0008_alter_user_username_max_length"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0010_alter_group_name_max_length",
+        "dependencies": [
+          [
+            "auth",
+            "0009_alter_user_last_name_max_length"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0011_update_proxy_permissions",
+        "dependencies": [
+          [
+            "auth",
+            "0010_alter_group_name_max_length"
+          ],
+          [
+            "contenttypes",
+            "0002_remove_content_type_name"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "auth",
+        "name": "0012_alter_user_first_name_max_length",
+        "dependencies": [
+          [
+            "auth",
+            "0011_update_proxy_permissions"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "identity",
+        "name": "0001_initial",
+        "dependencies": [
+          [
+            "auth",
+            "0012_alter_user_first_name_max_length"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "identity",
+        "name": "0002_email_challenge_and_recovery_request",
+        "dependencies": [
+          [
+            "identity",
+            "0001_initial"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "academics",
+        "name": "0001_catalogs_and_scopes",
+        "dependencies": [
+          [
+            "identity",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "academics",
+        "name": "0002_personal_verifications_and_researcher_awards",
+        "dependencies": [
+          [
+            "academics",
+            "0001_catalogs_and_scopes"
+          ],
+          [
+            "identity",
+            "0002_email_challenge_and_recovery_request"
+          ],
+          [
+            "identity",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "academics",
+        "name": "0003_personal_verification_view",
+        "dependencies": [
+          [
+            "academics",
+            "0002_personal_verifications_and_researcher_awards"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "organizations",
+        "name": "0001_organizations_and_representation",
+        "dependencies": [
+          [
+            "academics",
+            "0001_catalogs_and_scopes"
+          ],
+          [
+            "identity",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "access",
+        "name": "0001_capabilities_and_grants",
+        "dependencies": [
+          [
+            "academics",
+            "0002_personal_verifications_and_researcher_awards"
+          ],
+          [
+            "organizations",
+            "0001_organizations_and_representation"
+          ],
+          [
+            "identity",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "audit",
+        "name": "0001_audit_events",
+        "dependencies": [
+          [
+            "academics",
+            "0002_personal_verifications_and_researcher_awards"
+          ],
+          [
+            "organizations",
+            "0001_organizations_and_representation"
+          ],
+          [
+            "identity",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "opportunities",
+        "name": "0001_opportunities_and_funding",
+        "dependencies": [
+          [
+            "academics",
+            "0002_personal_verifications_and_researcher_awards"
+          ],
+          [
+            "organizations",
+            "0001_organizations_and_representation"
+          ],
+          [
+            "identity",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "publications",
+        "name": "0001_publications_events_and_highlights",
+        "dependencies": [
+          [
+            "access",
+            "0001_capabilities_and_grants"
+          ],
+          [
+            "opportunities",
+            "0001_opportunities_and_funding"
+          ],
+          [
+            "organizations",
+            "0001_organizations_and_representation"
+          ],
+          [
+            "identity",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "moderation",
+        "name": "0001_moderation_and_review",
+        "dependencies": [
+          [
+            "access",
+            "0001_capabilities_and_grants"
+          ],
+          [
+            "opportunities",
+            "0001_opportunities_and_funding"
+          ],
+          [
+            "publications",
+            "0001_publications_events_and_highlights"
+          ],
+          [
+            "identity",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "notifications",
+        "name": "0001_notices_outbox_and_attempts",
+        "dependencies": [
+          [
+            "identity",
+            "0002_email_challenge_and_recovery_request"
+          ],
+          [
+            "opportunities",
+            "0001_opportunities_and_funding"
+          ],
+          [
+            "identity",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "opportunities",
+        "name": "0002_opportunity_funding_view",
+        "dependencies": [
+          [
+            "opportunities",
+            "0001_opportunities_and_funding"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "organizations",
+        "name": "0002_organization_verification_view",
+        "dependencies": [
+          [
+            "organizations",
+            "0001_organizations_and_representation"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "profiles",
+        "name": "0001_profiles_and_education",
+        "dependencies": [
+          [
+            "academics",
+            "0001_catalogs_and_scopes"
+          ],
+          [
+            "identity",
+            "__first__"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "profiles",
+        "name": "0002_profile_completeness_view",
+        "dependencies": [
+          [
+            "profiles",
+            "0001_profiles_and_education"
+          ]
+        ],
+        "operations_reversible": true
+      },
+      {
+        "app": "sessions",
+        "name": "0001_initial",
+        "dependencies": [],
+        "operations_reversible": true
+      }
+    ],
+    "applied_migrations": 31,
+    "installed": {
+      "matched": true,
+      "counts": {
+        "tables": 37,
+        "fields": 345,
+        "foreign_keys": 85,
+        "checks": 143,
+        "views": 4,
+        "infrastructure_tables": 8,
+        "primary_keys": 37,
+        "composite_foreign_keys": 7,
+        "unique_constraints": 19,
+        "indexes": 153
+      },
+      "business_rows_before_corpus": 0,
+      "predicate_cases": 8568
+    },
+    "second_application": {
+      "plan": [],
+      "unchanged": true,
+      "schema_sha256": "a1029fe6d9b25b4328493920706c1ca9e564ea3765da2613f3f57d3c914f2874",
+      "synthetic_rows_by_table": {
+        "T01": 1,
+        "T02": 1,
+        "T03": 1,
+        "T04": 1,
+        "T05": 1,
+        "T06": 1,
+        "T07": 1,
+        "T08": 1,
+        "T09": 1,
+        "T10": 1,
+        "T11": 1,
+        "T12": 1,
+        "T13": 1,
+        "T14": 1,
+        "T15": 1,
+        "T16": 1,
+        "T17": 1,
+        "T18": 1,
+        "T19": 1,
+        "T20": 1,
+        "T21": 1,
+        "T22": 1,
+        "T23": 1,
+        "T24": 1,
+        "T25": 1,
+        "T26": 1,
+        "T27": 1,
+        "T28": 1,
+        "T29": 1,
+        "T30": 1,
+        "T31": 1,
+        "T32": 1,
+        "T33": 1,
+        "T34": 1,
+        "T35": 1,
+        "T36": 1,
+        "T37": 1
+      },
+      "synthetic_data_sha256": "7983e4acbd001d516a32e57b6ead2bcba77046c1f491361741f896aac62c2bdf",
+      "migration_history_sha256": "fb0b81c6255b51466f567c96b2dd9cf73a230587a77e9746229ab2bb7b3feeb1",
+      "output": [
+        "Operations to perform:",
+        "  Apply all migrations: academics, access, audit, auth, contenttypes, identity, moderation, notifications, opportunities, organizations, profiles, publications, sessions",
+        "Running migrations:",
+        "  No migrations to apply."
+      ]
+    },
+    "reverse_all": {
+      "inventory": {
+        "tables": [
+          "django_migrations"
+        ],
+        "views": []
+      },
+      "applied_migrations": 0
+    },
+    "reapply": {
+      "matched": true,
+      "counts": {
+        "tables": 37,
+        "fields": 345,
+        "foreign_keys": 85,
+        "checks": 143,
+        "views": 4,
+        "infrastructure_tables": 8,
+        "primary_keys": 37,
+        "composite_foreign_keys": 7,
+        "unique_constraints": 19,
+        "indexes": 153
+      }
+    },
+    "limits": [
+      "Reversión total destructiva solo sobre corpus sintético efímero.",
+      "La reconstrucción del esquema no restaura los datos retirados.",
+      "No prueba backup, actualización de una versión futura, piloto o correos reales."
+    ],
+    "temporary_database_removed": true,
+    "executed_at_utc": "2026-11-08T06:06:03.745989+00:00"
+  },
+  "comprobaciones": {
+    "dirigidas": {
+      "casos": 30,
+      "sin_base": 6,
+      "postgresql": 24,
+      "fallos": 0,
+      "omisiones": 0,
+      "informe_privado": ".cache/sprint02/t17-final.xml"
+    },
+    "flujo_general_actual_sin_postgresql": {
+      "pruebas": {
+        "python": {
+          "tests": 501,
+          "failed": 0,
+          "skipped": 0
+        },
+        "frontend": {
+          "tests": 68,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "pasos": [
+        "version-node",
+        "version-npm",
+        "version-uv",
+        "arquitectura",
+        "bloqueo-python",
+        "compatibilidad-python",
+        "dependencias-python",
+        "analisis-python",
+        "formato-python",
+        "pruebas-python",
+        "dependencias-node",
+        "muestra-vue",
+        "pruebas-vue",
+        "tipos-y-build-vue",
+        "preparar-web",
+        "django-check",
+        "collectstatic"
+      ],
+      "informe_privado": ".cache/comprobaciones/20261108T060717Z-1aefaace/informe.json"
+    },
+    "ultima_regresion_general_postgresql": {
+      "tarea": "SP02-T16",
+      "casos": 1056,
+      "fallos": 0,
+      "repetida_en_T17": false,
+      "informe_privado": ".cache/comprobaciones/20261108T054812Z-00267f38/informe.json"
+    },
+    "desarrollo": {
+      "django_check": "Sin problemas (un chequeo sustituido por comprobación propia)",
+      "makemigrations_check_dry_run": "Sin cambios",
+      "migrate_check": "Sin pendientes",
+      "antes_despues_iguales": true,
+      "tablas_totales": 45,
+      "migraciones": 31,
+      "vistas": 4,
+      "FK_compuestas": 7,
+      "tablas_negocio": 37,
+      "filas_negocio": 0,
+      "bases_persistentes": [
+        "entrepares_development",
+        "entrepares_test"
+      ],
+      "base_efimera_eliminada": true
+    },
+    "incidencia_corregida": "stderr cp1252 del subproceso de prueba en Windows; fijado UTF-8 y repetidos los 30 casos sin avisos"
+  },
+  "proveniencia": {
+    "fuentes_originales_verificadas": 7,
+    "huellas_originales_intactas": true,
+    "artefactos_sha256": {
+      "scripts/comprobar_migraciones.py": "b7287fe68ebdc4ffcabfc84f70ce4fe2bc8ab26a3efac78a7f3c1e1f0be4c35d",
+      "scripts/comprobar_migraciones.ps1": "49ee50d23c5bb4f85d0cf1518c4eda163aaaeb0f75e8e087437b2d24926c5680",
+      "backend/tests/test_migration_reproduction.py": "5dbfa5c11257b804768026f0a9f0092d15f6792a6a7d70dc6968aeaae02975ef",
+      "docs/migraciones-y-cierre-sp02.md": "7b6e3b1c7e5bb4eb58c750bfddafa13a936affdb71a52b212101abec521e2807"
+    },
+    "bloqueos_sin_cambios": {
+      "uv.lock": "e45db5ed8ea4c9b42a5b2e46e82a556ff24bf00b4f9584062f891eea87119609",
+      "frontend/package-lock.json": "7c644d40a66d6583b22c59aec9e061dbf5f726a16147e7b44761526789bcc2a8"
+    }
+  },
+  "limites": [
+    "No modelos, migraciones, dependencias o datos reales nuevos",
+    "Sin cierre global de WI08/WI09, RNF o escenarios del piloto",
+    "Sin restauración desde backup, entrega SMTP o identidad funcional completa",
+    "PB/Q y RF45/RF59 conservan sus condiciones documentales",
+    "Commit y etiqueta de SP02 locales; sin push en esta tarea"
+  ],
+  "siguiente": "SP03:cuenta,sesión y recuperación"
+}
